@@ -18,8 +18,24 @@ io-neruda
 
 - Python 3.8+
 - WordPress REST API habilitada
-- Credenciales de cliente en `.env` files
+- E:\lib\003-Pipeline-Contenidos accesible
+- Credenciales en `.env.cliente` files
 - Google Drive API (opcional, para guardar borradores)
+
+### Instalación Rápida
+
+```bash
+# 1. Instalar dependencias
+pip install -r requirements.txt
+
+# 2. Copiar template de configuración
+copy .env.example .env.resogar
+copy .env.example .env.esgarden
+
+# 3. Editar credenciales de WordPress
+notepad .env.resogar
+# Agregar WORDPRESS_URL, WORDPRESS_USERNAME, WORDPRESS_PASSWORD
+```
 
 ## 🚀 Inicio Rápido
 
@@ -63,6 +79,22 @@ python scripts/publish_to_wp.py \
   --publish
 ```
 
+## 🔍 Verificar Pipeline
+
+```bash
+# Ver estado del pipeline
+python scripts/pipeline.py status
+
+# Listar insights disponibles
+python scripts/pipeline.py list --type insights
+
+# Listar planes
+python scripts/pipeline.py list --type plans
+
+# Listar posts listos para publicar
+python scripts/pipeline.py list --type ready
+```
+
 ## 📖 Documentación Completa
 
 Ver: `Instrucciones-io-neruda.md` en E:\git\tools\
@@ -96,4 +128,11 @@ Ver: `Instrucciones-io-neruda.md` en E:\git\tools\
 
 - Versión: 1.0.0
 - Estado: Producción
-- Última actualización: 2026-05-18
+- Última actualización: 2026-05-20
+- Pipeline local integrado: ✅ E:\lib\003-Pipeline-Contenidos
+
+## 🔧 Scripts Disponibles
+
+- `tone_selector.py` - Selecciona tonos para clientes
+- `publish_to_wp.py` - Publica contenido a WordPress  
+- `pipeline.py` - Orquesta el flujo completo (NEW)
