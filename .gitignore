@@ -48,3 +48,28 @@ backups/
 temp/
 tmp/
 *.tmp
+
+# Logs
+*.log
+*.pid
+test-results-*.log
+
+# Node modules
+node_modules/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build outputs
+.next/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
