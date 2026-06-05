@@ -2,15 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
-
-interface Project {
-  id: string;
-  name: string;
-  display_name: string;
-  type: string;
-  status: string;
-}
+import { api, type Project } from '@/lib/api';
 
 interface Stats {
   insights: number;

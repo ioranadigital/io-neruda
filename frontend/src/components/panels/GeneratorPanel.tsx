@@ -15,11 +15,17 @@ export default function GeneratorPanel() {
   const { generateContent, isGenerating } = useGenerateContent();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    keywordsNiche: string[];
+    keywordsLongtail: string[];
+    tone: Configuration['tone'];
+    enabledFormats: EnabledFormats;
+  }>({
     name: '',
-    keywordsNiche: [] as string[],
-    keywordsLongtail: [] as string[],
-    tone: 'professional' as const,
+    keywordsNiche: [],
+    keywordsLongtail: [],
+    tone: 'professional',
     enabledFormats: {
       blog: false,
       email: false,
@@ -27,7 +33,7 @@ export default function GeneratorPanel() {
       social_instagram: false,
       whatsapp: false,
       pdf: false,
-    } as EnabledFormats,
+    },
   });
 
   const handleStep1Next = () => {
@@ -44,9 +50,14 @@ export default function GeneratorPanel() {
 
   const handleSaveAndGenerate = async () => {
     try {
-      // Save configuration
+      // Save configuration (map camelCase form -> snake_case Configuration)
       const config = await createConfig({
-        ...formData,
+        name: formData.name,
+        project_id: null,
+        keywords_niche: formData.keywordsNiche,
+        keywords_longtail: formData.keywordsLongtail,
+        tone: formData.tone,
+        enabled_formats: formData.enabledFormats,
         is_template: true,
         description: `Auto-generated config for ${formData.name}`,
       });
