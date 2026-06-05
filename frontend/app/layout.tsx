@@ -3,9 +3,6 @@ import { ErrorBoundary } from '@/src/components/shared/ErrorBoundary';
 import { ToastProvider } from '@/src/components/shared/Toast';
 import { OfflineIndicator } from '@/src/components/shared/OfflineIndicator';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 export const metadata = {
   title: 'io-neruda Dashboard',
   description: 'Gestión de contenidos multipropósito',
