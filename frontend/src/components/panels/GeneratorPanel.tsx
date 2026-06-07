@@ -12,6 +12,8 @@ import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector'
 import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
 import SEOConfigHeader from './SEOConfigHeader';
+import TechnicalAuditAccordion from './TechnicalAuditAccordion';
+import { TECHNICAL_AUDIT_DATA } from '../../data/technicalAudit';
 import { showToast } from '../shared/Toast';
 import { X } from 'lucide-react';
 
@@ -281,6 +283,12 @@ export default function GeneratorPanel() {
           </div>
         </div>
       )}
+
+      {/* Technical Audit Section */}
+      <div className="mt-8 px-6 pb-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">📋 Auditoría Técnica</h2>
+        <TechnicalAuditAccordion categories={TECHNICAL_AUDIT_DATA} />
+      </div>
     </div>
   );
 }
