@@ -12,6 +12,7 @@ import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/Co
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
+import SEOConfigHeader from './SEOConfigHeader';
 import { showToast } from '../shared/Toast';
 import { X } from 'lucide-react';
 
@@ -51,6 +52,26 @@ export default function GeneratorPanel() {
     localGeoValue: '',
     blogLength: 'standard',
   });
+
+  const [seoConfig, setSeoConfig] = useState({
+    h1Title: '',
+    primaryKeyword: '',
+    secondaryKeywords: [] as string[],
+    urlSlug: '',
+    searchIntent: '',
+    funnelStage: '',
+    mainTone: '',
+    subTone: '',
+    wordCount: '',
+    headingStructure: '',
+    visualElements: { lists: false, tables: false, alerts: false },
+    bannedWords: ['En conclusión', 'Es crucial', 'Sumérgete'],
+    styleFilters: { noObviousIntro: true, directStart: true, noBoldWords: true },
+  });
+
+  const handleSEOChange = (field: string, value: any) => {
+    setSeoConfig((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleGenerate = async () => {
     if (!selectedClient || !formData.name || formData.keywordsNiche.length === 0) {
@@ -127,6 +148,12 @@ export default function GeneratorPanel() {
           selectedClient={selectedClient}
           clients={clients}
           onSelectClient={selectClient}
+        />
+
+        {/* SEO Configuration Header */}
+        <SEOConfigHeader
+          config={seoConfig}
+          onChange={handleSEOChange}
         />
 
         {/* Main Content Grid */}
