@@ -155,7 +155,7 @@ export default function ToneSelector({ selectedTone, onChange }: ToneSelectorPro
 
             {/* Subtones (Expandable) */}
             {expandedTone === toneKey && (
-              <div className="bg-gray-50 border-t border-gray-200 p-2 space-y-2">
+              <div className="bg-gray-50 border-t border-gray-200 p-2 grid grid-cols-1 md:grid-cols-3 gap-2">
                 {Object.entries(toneInfo.subtones).map(([subtoneKey, subtoneInfo]) => {
                   const fullKey = `${toneKey}_${subtoneKey}`;
                   return (
