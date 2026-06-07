@@ -25,7 +25,7 @@ export const TECHNICAL_AUDIT_DATA = [
   {
     id: 'content-quality',
     icon: 'file-text',
-    title: 'Calidad del Contenido',
+    title: 'Formato de Salida',
     description: 'Análisis de relevancia y optimización de contenido',
     subcategories: [
       {
