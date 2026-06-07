@@ -6,7 +6,6 @@ import { Configuration, EnabledFormats } from '../../types/generator';
 import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
 import FormatSelector from '../selectors/FormatSelector';
-import ToneSelector from '../selectors/ToneSelector';
 import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
@@ -135,34 +134,7 @@ export default function GeneratorPanel() {
 
         {/* Main Content Grid */}
         <div className="flex-1 overflow-hidden px-6 py-6 flex flex-col gap-6">
-          {/* ROW 1: 3x Tone Selector */}
-          <div className="grid grid-cols-3 gap-6">
-            {/* Tone 1 */}
-            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm overflow-y-auto max-h-[500px]">
-              <ToneSelector
-                selectedTone={formData.tone}
-                onChange={(tone) => setFormData({ ...formData, tone })}
-              />
-            </div>
-
-            {/* Tone 2 (Duplicado) */}
-            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm overflow-y-auto max-h-[500px]">
-              <ToneSelector
-                selectedTone={formData.tone}
-                onChange={(tone) => setFormData({ ...formData, tone })}
-              />
-            </div>
-
-            {/* Tone 3 (Duplicado) */}
-            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm overflow-y-auto max-h-[500px]">
-              <ToneSelector
-                selectedTone={formData.tone}
-                onChange={(tone) => setFormData({ ...formData, tone })}
-              />
-            </div>
-          </div>
-
-          {/* ROW 2: Other Controls */}
+          {/* Content Controls */}
           <div className="flex flex-col gap-4 overflow-y-auto flex-1">
             {/* Content Definition */}
             <ContentDefinition
