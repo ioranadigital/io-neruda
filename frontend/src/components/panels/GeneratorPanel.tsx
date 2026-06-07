@@ -11,10 +11,10 @@ import KeywordInput from '../selectors/KeywordInput';
 import ClientSelector from '../selectors/ClientSelector';
 import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
-import ClientCard from '../shared/ClientCard';
 import PreviewPanel from './PreviewPanel';
 import { showToast } from '../shared/Toast';
-import { X } from 'lucide-react';
+import { X, Edit } from 'lucide-react';
+import Link from 'next/link';
 
 export default function GeneratorPanel() {
   const { clients, selectedClient, setError, error, selectClient } = useGenerator();
@@ -140,13 +140,6 @@ export default function GeneratorPanel() {
                 />
               </div>
 
-              {/* Client Info Card */}
-              {selectedClient && (
-                <div>
-                  <ClientCard client={selectedClient} />
-                </div>
-              )}
-
               {/* Configuration Name */}
               <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -215,10 +208,17 @@ export default function GeneratorPanel() {
               {/* Cliente Summary */}
               {selectedClient && (
                 <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <h3 className="text-sm font-bold text-gray-800 mb-2">👤 Cliente Seleccionado</h3>
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-sm font-bold text-gray-800">👤 Cliente Seleccionado</h3>
+                    <Link href={`/clients/${selectedClient.id}/edit`}>
+                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition" title="Editar ficha del cliente">
+                        <Edit size={16} style={{ color: '#7BF1A8' }} />
+                      </button>
+                    </Link>
+                  </div>
                   <p className="text-lg font-semibold" style={{ color: '#7BF1A8' }}>{selectedClient.name}</p>
                   {selectedClient.description && (
-                    <p className="text-xs text-gray-600 mt-1">{selectedClient.description}</p>
+                    <p className="text-xs text-gray-600 mt-2">{selectedClient.description}</p>
                   )}
                 </div>
               )}
