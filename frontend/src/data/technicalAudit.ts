@@ -10,56 +10,7 @@ export const TECHNICAL_AUDIT_DATA = [
         title: 'Título del Contenido',
         icon: 'check-circle',
         color: 'red' as const,
-        checks: [
-          {
-            id: 'title-presence',
-            title: 'Título Principal Presente',
-            status: 'pass' as const,
-            description: 'Título único y descriptivo',
-          },
-          {
-            id: 'title-length',
-            title: 'Longitud Óptima',
-            status: 'pass' as const,
-            description: '50-60 caracteres',
-          },
-          {
-            id: 'title-keyword',
-            title: 'Keyword en Título',
-            status: 'pass' as const,
-            description: 'Palabra clave principal incluida',
-          },
-          {
-            id: 'title-uniqueness',
-            title: 'Título Único',
-            status: 'pass' as const,
-            description: 'No duplicado en el sitio',
-          },
-          {
-            id: 'title-clarity',
-            title: 'Claridad del Título',
-            status: 'pass' as const,
-            description: 'Comunica claramente el tema',
-          },
-          {
-            id: 'title-engagement',
-            title: 'Valor Atractivo',
-            status: 'warning' as const,
-            description: 'Genera engagement en SERP',
-          },
-          {
-            id: 'title-brand',
-            title: 'Marca Incluida',
-            status: 'pass' as const,
-            description: 'Nombre de marca presente',
-          },
-          {
-            id: 'title-modifiers',
-            title: 'Modificadores Presentes',
-            status: 'pass' as const,
-            description: '2024, Guía, Tutorial, etc.',
-          },
-        ],
+        checks: [],
       },
       {
         id: 'url-config',
