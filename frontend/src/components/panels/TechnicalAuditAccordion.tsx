@@ -138,7 +138,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
                   {/* Level 3: H1 Title Input (Content Title only) */}
                   {expandedSubcategory === subcategory.id && subcategory.id === 'content-title' && (
-                    <div className="px-8 py-4 border-t" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+                    <div className="px-8 py-4 border-t" style={{ borderColor: webColors.primary, backgroundColor: '#f3f4f6' }}>
                       <div className="mb-4">
                         <label className="block text-sm font-semibold text-gray-800 mb-2">H1 Título:</label>
                         <input
@@ -147,7 +147,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                           onChange={(e) => setH1Title(e.target.value)}
                           placeholder="Ej: 5 trucos para encender carbón"
                           className="w-full px-4 py-2 border-2 rounded-lg text-sm focus:outline-none transition"
-                          style={{ borderColor: webColors.primary, backgroundColor: '#f3f4f6' }}
+                          style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
                         />
                       </div>
                     </div>
