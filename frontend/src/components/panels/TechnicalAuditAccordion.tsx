@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, X, Shield, FileText, CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
 
 interface AuditCheck {
   id: string;
@@ -20,11 +20,19 @@ interface AuditSubcategory {
 
 interface AuditCategory {
   id: string;
-  icon: string;
+  icon: string; // 'shield', 'file-text', etc.
   title: string;
   description: string;
   subcategories: AuditSubcategory[];
 }
+
+const iconMap: Record<string, React.ReactNode> = {
+  shield: <Shield className="w-6 h-6" />,
+  'file-text': <FileText className="w-6 h-6" />,
+  'check-circle': <CheckCircle2 className="w-5 h-5" />,
+  'alert-circle': <AlertCircle className="w-5 h-5" />,
+  'x-circle': <XCircle className="w-5 h-5" />,
+};
 
 interface TechnicalAuditAccordionProps {
   categories: AuditCategory[];
@@ -68,11 +76,13 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
           {/* Level 1: Category Header */}
           <button
             onClick={() => toggleCategory(category.id)}
-            className="w-full px-6 py-4 flex items-center justify-between transition"
-            style={{ backgroundColor: webColors.background }}
+            className="w-full px-6 py-4 flex items-center justify-between transition hover:bg-gray-50"
+            style={{ backgroundColor: '#ffffff' }}
           >
             <div className="flex items-center gap-4">
-              <span className="text-2xl">{category.icon}</span>
+              <div style={{ color: webColors.primary }}>
+                {iconMap[category.icon] || category.icon}
+              </div>
               <div className="text-left">
                 <h3 className="font-bold text-gray-900 text-lg">{category.title}</h3>
                 <p className="text-sm text-gray-600">{category.description}</p>
@@ -99,19 +109,19 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
           {/* Level 1 Content: Subcategories */}
           {expandedCategory === category.id && (
-            <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}>
+            <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: '#f9fafb' }}>
               {category.subcategories.map((subcategory) => (
                 <div key={subcategory.id} className="border-b last:border-b-0" style={{ borderColor: webColors.background }}>
                   {/* Level 2: Subcategory Header */}
                   <button
                     onClick={() => toggleSubcategory(subcategory.id)}
-                    className="w-full px-8 py-3 flex items-center justify-between transition"
-                    style={{ backgroundColor: webColors.background }}
+                    className="w-full px-8 py-3 flex items-center justify-between transition hover:bg-gray-50"
+                    style={{ backgroundColor: '#ffffff' }}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${categoryColorDot[subcategory.color]}`}></div>
                       <span className="font-medium text-gray-800">
-                        {subcategory.icon} {subcategory.title} ({subcategory.checks.length} checks)
+                        {iconMap[subcategory.icon] || subcategory.icon} {subcategory.title} ({subcategory.checks.length} checks)
                       </span>
                     </div>
                     <ChevronDown
@@ -124,7 +134,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
                   {/* Level 3: Checks Grid */}
                   {expandedSubcategory === subcategory.id && (
-                    <div className="px-8 py-4 border-t" style={{ borderColor: webColors.background, backgroundColor: webColors.background }}>
+                    <div className="px-8 py-4 border-t" style={{ borderColor: '#e5e7eb', backgroundColor: '#ffffff' }}>
                       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
                         {subcategory.checks.map((check) => (
                           <div

@@ -1,14 +1,14 @@
 export const TECHNICAL_AUDIT_DATA = [
   {
     id: 'seo-technical',
-    icon: '🔒',
+    icon: 'shield',
     title: 'SEO Técnico y Rastreabilidad',
     description: 'Verifica la estructura técnica y accesibilidad del sitio',
     subcategories: [
       {
         id: 'seo-basics',
         title: 'SEO Técnico',
-        icon: '🧱',
+        icon: 'check-circle',
         color: 'red' as const,
         checks: [
           {
@@ -64,7 +64,7 @@ export const TECHNICAL_AUDIT_DATA = [
       {
         id: 'crawlability',
         title: 'Rastreabilidad',
-        icon: '🕷️',
+        icon: 'alert-circle',
         color: 'yellow' as const,
         checks: [
           {
@@ -98,14 +98,14 @@ export const TECHNICAL_AUDIT_DATA = [
   },
   {
     id: 'content-quality',
-    icon: '✍️',
+    icon: 'file-text',
     title: 'Calidad del Contenido',
     description: 'Análisis de relevancia y optimización de contenido',
     subcategories: [
       {
         id: 'content-optimization',
         title: 'Optimización de Contenido',
-        icon: '📝',
+        icon: 'check-circle',
         color: 'green' as const,
         checks: [
           {
