@@ -42,6 +42,13 @@ const categoryColorDot = {
   green: 'bg-green-500',
 };
 
+// Colores personalizados de la web
+const webColors = {
+  primary: '#7BF1A8',
+  primaryDark: '#333333',
+  background: '#f5f5f5',
+};
+
 export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAccordionProps) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [expandedSubcategory, setExpandedSubcategory] = useState<string | null>(null);
@@ -57,17 +64,18 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   return (
     <div className="w-full space-y-4">
       {categories.map((category) => (
-        <div key={category.id} className="border border-gray-700 rounded-lg overflow-hidden bg-zinc-900">
+        <div key={category.id} className="border-2 rounded-lg overflow-hidden" style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}>
           {/* Level 1: Category Header */}
           <button
             onClick={() => toggleCategory(category.id)}
-            className="w-full px-6 py-4 flex items-center justify-between hover:bg-zinc-800 transition"
+            className="w-full px-6 py-4 flex items-center justify-between transition"
+            style={{ backgroundColor: webColors.background }}
           >
             <div className="flex items-center gap-4">
               <span className="text-2xl">{category.icon}</span>
               <div className="text-left">
-                <h3 className="font-bold text-white text-lg">{category.title}</h3>
-                <p className="text-sm text-gray-400">{category.description}</p>
+                <h3 className="font-bold text-gray-900 text-lg">{category.title}</h3>
+                <p className="text-sm text-gray-600">{category.description}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -76,59 +84,67 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                   e.stopPropagation();
                   // Deselect all handler
                 }}
-                className="px-3 py-1 text-xs font-medium text-gray-300 hover:text-white transition"
+                className="px-3 py-1 text-xs font-medium text-gray-700 hover:text-gray-900 transition"
               >
                 Desmarcar todo
               </button>
               <ChevronDown
-                className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+                className={`w-5 h-5 transition-transform duration-200 ${
                   expandedCategory === category.id ? 'rotate-180' : ''
                 }`}
+                style={{ color: webColors.primary }}
               />
             </div>
           </button>
 
           {/* Level 1 Content: Subcategories */}
           {expandedCategory === category.id && (
-            <div className="border-t border-gray-700 bg-zinc-950">
+            <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}>
               {category.subcategories.map((subcategory) => (
-                <div key={subcategory.id} className="border-b border-gray-800 last:border-b-0">
+                <div key={subcategory.id} className="border-b last:border-b-0" style={{ borderColor: webColors.background }}>
                   {/* Level 2: Subcategory Header */}
                   <button
                     onClick={() => toggleSubcategory(subcategory.id)}
-                    className="w-full px-8 py-3 flex items-center justify-between hover:bg-zinc-900 transition"
+                    className="w-full px-8 py-3 flex items-center justify-between transition"
+                    style={{ backgroundColor: webColors.background }}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${categoryColorDot[subcategory.color]}`}></div>
-                      <span className="font-medium text-gray-200">
+                      <span className="font-medium text-gray-800">
                         {subcategory.icon} {subcategory.title} ({subcategory.checks.length} checks)
                       </span>
                     </div>
                     <ChevronDown
-                      className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+                      className={`w-4 h-4 transition-transform duration-200 ${
                         expandedSubcategory === subcategory.id ? 'rotate-180' : ''
                       }`}
+                      style={{ color: webColors.primary }}
                     />
                   </button>
 
                   {/* Level 3: Checks Grid */}
                   {expandedSubcategory === subcategory.id && (
-                    <div className="px-8 py-4 border-t border-gray-800 bg-zinc-900/50">
+                    <div className="px-8 py-4 border-t" style={{ borderColor: webColors.background, backgroundColor: webColors.background }}>
                       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
                         {subcategory.checks.map((check) => (
                           <div
                             key={check.id}
                             className={`p-3 rounded-lg border-2 flex items-center gap-2 cursor-pointer transition ${statusBadgeColor[check.status]}`}
+                            style={{
+                              backgroundColor: check.status === 'pass' ? '#f0fdf4' : check.status === 'fail' ? '#fef2f2' : '#fffbeb',
+                              borderColor: check.status === 'pass' ? webColors.primary : undefined,
+                            }}
                           >
                             <input
                               type="checkbox"
                               className="w-4 h-4 rounded"
                               defaultChecked={check.status === 'pass'}
+                              style={{ accentColor: webColors.primary }}
                               onChange={() => {
                                 // Handle checkbox change
                               }}
                             />
-                            <span className="text-xs font-medium truncate">{check.title}</span>
+                            <span className="text-xs font-medium truncate text-gray-800">{check.title}</span>
                           </div>
                         ))}
                       </div>
