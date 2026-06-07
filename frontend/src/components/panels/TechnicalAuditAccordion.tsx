@@ -75,7 +75,6 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [expandedKeywordLevel, setExpandedKeywordLevel] = useState<string | null>(null);
   const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(new Set());
   const [h2Title, setH2Title] = useState<string>('');
-  const [urlInterno2, setUrlInterno2] = useState<string>('');
   const [semanticElements, setSemanticElements] = useState<Record<string, boolean>>({
     lists: false,
     tables: false,
