@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, X, Shield, FileText, CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
 import ToneSelector from '../selectors/ToneSelector';
+import { KEYWORD_STRUCTURE } from '../../data/keywordStructure';
 
 interface AuditCheck {
   id: string;
@@ -71,6 +72,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [urlInterno1, setUrlInterno1] = useState<string>('');
   const [urlInterno2, setUrlInterno2] = useState<string>('');
   const [urlTone, setUrlTone] = useState<string>('professional');
+  const [expandedKeywordLevel, setExpandedKeywordLevel] = useState<string | null>(null);
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
@@ -164,15 +166,54 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
             </div>
           )}
 
-          {/* Level 1 Content: Fields Only (For KW Definition) */}
+          {/* Level 1 Content: Keywords Structure (For KW Definition) */}
           {expandedCategory === category.id && category.showToneSelectors && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-              <div className="grid grid-cols-2 gap-4">
-                {/* Block 1 - Empty (Reserved) */}
-                <div></div>
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-gray-800 mb-4">Investigación y mapeo de palabras clave</h4>
 
-                {/* Block 2 - Empty (Reserved) */}
-                <div></div>
+                {/* Keywords Levels */}
+                {KEYWORD_STRUCTURE.map((level) => (
+                  <div key={level.id} className="border-2 rounded-lg overflow-hidden" style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}>
+                    {/* Level Header */}
+                    <button
+                      onClick={() => setExpandedKeywordLevel(expandedKeywordLevel === level.id ? null : level.id)}
+                      className="w-full px-4 py-3 flex items-center justify-between transition hover:bg-gray-50"
+                      style={{ backgroundColor: '#ffffff' }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{level.icon}</span>
+                        <div className="text-left">
+                          <p className="text-xs font-semibold text-gray-600">{level.level}</p>
+                          <p className="text-sm font-bold text-gray-900">{level.title}</p>
+                        </div>
+                      </div>
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          expandedKeywordLevel === level.id ? 'rotate-180' : ''
+                        }`}
+                        style={{ color: webColors.primary }}
+                      />
+                    </button>
+
+                    {/* Level Content */}
+                    {expandedKeywordLevel === level.id && (
+                      <div className="px-4 py-4 border-t-2 space-y-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+                        {level.items.map((item) => (
+                          <div key={item.id} className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1">
+                                <p className="text-xs font-semibold text-gray-800">{item.name}</p>
+                                <p className="text-xs text-gray-600 mt-1">{item.description}</p>
+                              </div>
+                              <span className="px-2 py-1 rounded bg-gray-100 text-xs font-medium text-gray-700 whitespace-nowrap">{item.count} keywords</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
