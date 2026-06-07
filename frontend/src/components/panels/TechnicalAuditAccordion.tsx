@@ -318,20 +318,9 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
             </div>
           )}
 
-          {/* Level 1 Content: Tone Selector Block + Subcategories */}
+          {/* Level 1 Content: Subcategories */}
           {expandedCategory === category.id && !category.showToneSelectors && (
             <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-              {/* Tone Selector Block 1 */}
-              <div className="px-8 py-4 border-b-2" style={{ borderColor: webColors.primary }}>
-                <label className="block text-sm font-semibold text-gray-800 mb-4">Tono de Contenido - Bloque 1:</label>
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <ToneSelector
-                    selectedTone={urlTone}
-                    onChange={(tone) => setUrlTone(tone)}
-                  />
-                </div>
-              </div>
-
               {/* Subcategories Section */}
               {category.subcategories.map((subcategory) => (
                 <div key={subcategory.id} className="border-b last:border-b-0" style={{ borderColor: webColors.background }}>
