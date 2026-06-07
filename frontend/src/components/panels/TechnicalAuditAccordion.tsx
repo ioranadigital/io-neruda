@@ -333,8 +333,15 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
             </div>
           )}
 
+          {/* Level 1 Content: Special handling for content-quality */}
+          {expandedCategory === category.id && category.id === 'content-quality' && (
+            <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+              <FormatOutputSelector />
+            </div>
+          )}
+
           {/* Level 1 Content: Tone Selector + Subcategories */}
-          {expandedCategory === category.id && !category.showToneSelectors && (
+          {expandedCategory === category.id && !category.showToneSelectors && category.id !== 'content-quality' && (
             <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
               {/* Tone Selector Block (Strategy Section) */}
               {category.id === 'strategy-tone-approach' && (
