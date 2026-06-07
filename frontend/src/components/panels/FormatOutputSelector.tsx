@@ -207,9 +207,10 @@ export default function FormatOutputSelector({
 
   return (
     <div className="w-full space-y-6">
-      {/* Categories */}
-      {CATEGORIES.map((category) => (
-        <div key={category.id} className="space-y-3">
+      {/* Categories Grid - 3 Columns */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {CATEGORIES.map((category) => (
+          <div key={category.id} className="space-y-3">
           {/* Category Header */}
           <div
             className="px-4 py-2 rounded-lg text-sm font-bold text-white"
@@ -352,7 +353,8 @@ export default function FormatOutputSelector({
             })}
           </div>
         </div>
-      ))}
+        ))}
+      </div>
 
       {/* Selection Summary */}
       {Object.values(selectedFormats).some((f) => f.selected) && (
