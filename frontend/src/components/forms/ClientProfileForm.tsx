@@ -20,8 +20,9 @@ import TabReferences from './tabs/TabReferences';
 import TabIntegration from './tabs/TabIntegration';
 import TabMetrics from './tabs/TabMetrics';
 import TabManagement from './tabs/TabManagement';
+import TabKeywords from './tabs/TabKeywords';
 
-type TabType = 'identity' | 'audience' | 'brand' | 'content' | 'competition' | 'channels' | 'references' | 'integration' | 'metrics' | 'management';
+type TabType = 'identity' | 'audience' | 'brand' | 'content' | 'keywords' | 'competition' | 'channels' | 'references' | 'integration' | 'metrics' | 'management';
 
 interface ClientProfileFormProps {
   client: Client;
@@ -34,6 +35,7 @@ const TABS: { key: TabType; label: string; icon: React.ReactNode }[] = [
   { key: 'audience', label: 'Audiencia', icon: <Users size={18} /> },
   { key: 'brand', label: 'Marca', icon: <Palette size={18} /> },
   { key: 'content', label: 'Contenido', icon: <BookOpen size={18} /> },
+  { key: 'keywords', label: 'Keywords', icon: <BookOpen size={18} /> },
   { key: 'competition', label: 'Competencia', icon: <Sword size={18} /> },
   { key: 'channels', label: 'Canales', icon: <Megaphone size={18} /> },
   { key: 'references', label: 'Referencias', icon: <Library size={18} /> },
@@ -118,6 +120,7 @@ export default function ClientProfileForm({ client: initialClient, onSubmit, isL
         {activeTab === 'audience' && <TabAudience formData={formData} onChange={handleChange} />}
         {activeTab === 'brand' && <TabBrand formData={formData} onChange={handleChange} />}
         {activeTab === 'content' && <TabContent formData={formData} onChange={handleChange} />}
+        {activeTab === 'keywords' && <TabKeywords formData={formData} onChange={handleChange} />}
         {activeTab === 'competition' && <TabCompetition formData={formData} onChange={handleChange} />}
         {activeTab === 'channels' && <TabChannels formData={formData} onChange={handleChange} />}
         {activeTab === 'references' && <TabReferences formData={formData} onChange={handleChange} />}

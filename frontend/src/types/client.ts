@@ -47,6 +47,9 @@ export interface Client {
   avg_word_count?: number;
   tone_varies_by_channel?: boolean;
 
+  // Keywords Hierarchical Structure
+  keywords_hierarchical?: KeywordsHierarchy;
+
   // Competition & Positioning
   competitor_urls: string[];
   competitive_advantages?: string[];
@@ -220,4 +223,30 @@ export interface SessionBriefing {
     pdf: boolean;
   };
   createdAt: string;
+}
+
+export interface KeywordsHierarchy {
+  // Nivel 1: Keywords de Entidad y Core
+  level1_entity_core?: string[];
+  level1_branded?: string[];
+  level1_brand_third_party?: string[];
+  level1_niche_sector?: string[];
+
+  // Nivel 2: Keywords de Segmentación
+  level2_local?: string[];
+  level2_audience_profile?: string[];
+
+  // Nivel 3: Keywords Informacionales y Editoriales
+  level3_educational_howto?: string[];
+  level3_problem_symptom?: string[];
+  level3_seasonal?: string[];
+
+  // Nivel 4: Keywords de Investigación Comercial
+  level4_comparative_vs?: string[];
+  level4_lists_roundups?: string[];
+  level4_review_opinions?: string[];
+
+  // Nivel 5: Keywords de Larga Cola
+  level5_longtail_informational?: string[];
+  level5_longtail_transactional?: string[];
 }
