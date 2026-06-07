@@ -67,7 +67,8 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [expandedSubcategory, setExpandedSubcategory] = useState<string | null>(null);
   const [h1Title, setH1Title] = useState<string>('');
   const [urlSlug, setUrlSlug] = useState<string>('');
-  const [urlInterno, setUrlInterno] = useState<string>('');
+  const [urlInterno1, setUrlInterno1] = useState<string>('');
+  const [urlInterno2, setUrlInterno2] = useState<string>('');
   const [urlTone, setUrlTone] = useState<string>('professional');
 
   const toggleCategory = (categoryId: string) => {
@@ -120,10 +121,11 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
           {expandedCategory === category.id && category.showToneSelectors && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
               <div className="grid grid-cols-3 gap-4">
-                {/* Tone 1 - Left Block */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <label className="block text-sm font-semibold text-gray-800 mb-3">Tono de Contenido</label>
-                  <div className="mb-4">
+                {/* Block 1 - Left: Content & URL Configuration */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex flex-col gap-4">
+                  <h4 className="text-sm font-semibold text-gray-800 border-b pb-2" style={{ borderColor: webColors.primary }}>Tono de Contenido</h4>
+
+                  <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-2">Título del Contenido (&lt;h1&gt;):</label>
                     <input
                       type="text"
@@ -134,10 +136,44 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                       style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
                     />
                   </div>
-                  <ToneSelector
-                    selectedTone={urlTone}
-                    onChange={(tone) => setUrlTone(tone)}
-                  />
+
+                  <h4 className="text-sm font-semibold text-gray-800 border-b pb-2 mt-2" style={{ borderColor: webColors.primary }}>Configuración de URLs</h4>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-2">Slug de la URL:</label>
+                    <input
+                      type="text"
+                      value={urlSlug}
+                      onChange={(e) => setUrlSlug(e.target.value)}
+                      placeholder="Ej: /barbacoas-jardin-terraza/"
+                      className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                      style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 1:</label>
+                    <input
+                      type="text"
+                      value={urlInterno1}
+                      onChange={(e) => setUrlInterno1(e.target.value)}
+                      placeholder="Ej: /blog/como-elegir-barbacoa/"
+                      className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                      style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 2:</label>
+                    <input
+                      type="text"
+                      value={urlInterno2}
+                      onChange={(e) => setUrlInterno2(e.target.value)}
+                      placeholder="Ej: /tienda/accesorios-barbacoa/"
+                      className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                      style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                    />
+                  </div>
                 </div>
 
                 {/* Tone 2 */}
