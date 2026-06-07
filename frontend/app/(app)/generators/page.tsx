@@ -1,17 +1,11 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import GeneratorPanel from '@/src/components/panels/GeneratorPanel';
-import { useEmailTemplates } from '@/src/hooks/useEmailTemplates';
 import { useGenerator } from '@/src/context/GeneratorContext';
 
 export default function GeneratorsPage() {
-  const { getTemplates } = useEmailTemplates();
   const { isLoading } = useGenerator();
-
-  useEffect(() => {
-    getTemplates().catch(err => console.error('Failed to load templates:', err));
-  }, [getTemplates]);
 
   return (
     <>

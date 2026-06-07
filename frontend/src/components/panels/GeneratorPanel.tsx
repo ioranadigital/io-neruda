@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useGenerator } from '../../context/GeneratorContext';
 import { Configuration, EnabledFormats } from '../../types/generator';
 import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
-import { useClients } from '../../hooks/useClients';
 import FormatSelector from '../selectors/FormatSelector';
 import ToneSelector from '../selectors/ToneSelector';
 import KeywordInput from '../selectors/KeywordInput';
@@ -17,23 +16,9 @@ import PreviewPanel from './PreviewPanel';
 import { showToast } from '../shared/Toast';
 
 export default function GeneratorPanel() {
-  const { clients, selectedClient, setError, isLoading, error } = useGenerator();
+  const { clients, selectedClient, setError, error, selectClient } = useGenerator();
   const { createConfig } = useCreateConfiguration();
   const { generateContent, isGenerating } = useGenerateContent();
-  const { getClients, selectClientById } = useClients();
-  const [clientsLoaded, setClientsLoaded] = useState(false);
-
-  // Load clients on mount
-  useEffect(() => {
-    if (!clientsLoaded) {
-      getClients()
-        .then(() => setClientsLoaded(true))
-        .catch((err) => {
-          console.error('Failed to load clients:', err);
-          setClientsLoaded(true);
-        });
-    }
-  }, [clientsLoaded, getClients]);
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -147,8 +132,8 @@ export default function GeneratorPanel() {
               <ClientSelector
                 clients={clients}
                 selectedClient={selectedClient}
-                onSelectClient={(client: any) => selectClientById(client.id)}
-                isLoading={isLoading}
+                onSelectClient={(client: any) => selectClient(client)}
+                isLoading={false}
               />
             </div>
 
