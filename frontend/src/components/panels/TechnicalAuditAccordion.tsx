@@ -25,6 +25,7 @@ interface AuditCategory {
   title: string;
   description: string;
   subcategories: AuditSubcategory[];
+  showToneSelectors?: boolean;
 }
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -115,8 +116,40 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
             </div>
           </button>
 
+          {/* Level 1 Content: Tone Selectors (For Semantic Definition) */}
+          {expandedCategory === category.id && category.showToneSelectors && (
+            <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+              <label className="block text-sm font-semibold text-gray-800 mb-4">Tono de Contenido:</label>
+              <div className="grid grid-cols-3 gap-4">
+                {/* Tone 1 */}
+                <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <ToneSelector
+                    selectedTone={urlTone}
+                    onChange={(tone) => setUrlTone(tone)}
+                  />
+                </div>
+
+                {/* Tone 2 */}
+                <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <ToneSelector
+                    selectedTone={urlTone}
+                    onChange={(tone) => setUrlTone(tone)}
+                  />
+                </div>
+
+                {/* Tone 3 */}
+                <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <ToneSelector
+                    selectedTone={urlTone}
+                    onChange={(tone) => setUrlTone(tone)}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Level 1 Content: Subcategories */}
-          {expandedCategory === category.id && (
+          {expandedCategory === category.id && !category.showToneSelectors && (
             <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
               {category.subcategories.map((subcategory) => (
                 <div key={subcategory.id} className="border-b last:border-b-0" style={{ borderColor: webColors.background }}>
