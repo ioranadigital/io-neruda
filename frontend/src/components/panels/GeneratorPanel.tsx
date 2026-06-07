@@ -10,6 +10,8 @@ import FormatSelector from '../selectors/FormatSelector';
 import ToneSelector from '../selectors/ToneSelector';
 import KeywordInput from '../selectors/KeywordInput';
 import ClientSelector from '../selectors/ClientSelector';
+import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
+import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import ClientCard from '../shared/ClientCard';
 import PreviewPanel from './PreviewPanel';
 import { showToast } from '../shared/Toast';
@@ -39,6 +41,11 @@ export default function GeneratorPanel() {
     keywordsLongtail: string[];
     tone: Configuration['tone'];
     enabledFormats: EnabledFormats;
+    insightOrigin: InsightOrigin;
+    contentIntent: ContentIntent;
+    localGeoEnabled: boolean;
+    localGeoValue: string;
+    blogLength: BlogLength;
   }>({
     name: '',
     keywordsNiche: [],
@@ -52,11 +59,22 @@ export default function GeneratorPanel() {
       whatsapp: false,
       pdf: false,
     },
+    insightOrigin: 'direct_idea',
+    contentIntent: 'educational',
+    localGeoEnabled: false,
+    localGeoValue: '',
+    blogLength: 'standard',
   });
 
   const handleGenerate = async () => {
     if (!selectedClient || !formData.name || formData.keywordsNiche.length === 0) {
       setError('Completa: cliente, nombre y al menos 1 keyword');
+      return;
+    }
+
+    const enabledFormatsCount = Object.values(formData.enabledFormats).filter(Boolean).length;
+    if (enabledFormatsCount === 0) {
+      setError('Selecciona al menos un formato de contenido');
       return;
     }
 
@@ -69,9 +87,14 @@ export default function GeneratorPanel() {
         keywordsLongtail: formData.keywordsLongtail,
         tone: formData.tone,
         enabledFormats: formData.enabledFormats,
+        insightOrigin: formData.insightOrigin,
+        contentIntent: formData.contentIntent,
+        localGeoEnabled: formData.localGeoEnabled,
+        localGeoValue: formData.localGeoValue,
+        blogLength: formData.blogLength,
       });
 
-      showToast.success('✅ Contenido generado exitosamente');
+      showToast.success('✅ Ecosistema de contenido generado exitosamente');
 
       setFormData({
         name: '',
@@ -86,6 +109,11 @@ export default function GeneratorPanel() {
           whatsapp: false,
           pdf: false,
         },
+        insightOrigin: 'direct_idea',
+        contentIntent: 'educational',
+        localGeoEnabled: false,
+        localGeoValue: '',
+        blogLength: 'standard',
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error generating content';
@@ -164,13 +192,34 @@ export default function GeneratorPanel() {
               />
             </div>
 
+            {/* Content Definition */}
+            <ContentDefinition
+              insightOrigin={formData.insightOrigin}
+              contentIntent={formData.contentIntent}
+              localGeoEnabled={formData.localGeoEnabled}
+              localGeoValue={formData.localGeoValue}
+              onInsightOriginChange={(origin) => setFormData({ ...formData, insightOrigin: origin })}
+              onContentIntentChange={(intent) => setFormData({ ...formData, contentIntent: intent })}
+              onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
+              onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
+            />
+
             {/* Formats */}
             <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <label className="block text-sm font-bold text-gray-800 mb-3">🎯 Formatos de Salida</label>
               <FormatSelector
                 selectedFormats={formData.enabledFormats}
                 onChange={(formats) => setFormData({ ...formData, enabledFormats: formats })}
               />
             </div>
+
+            {/* Blog Length Selector (Conditional) */}
+            {formData.enabledFormats.blog && (
+              <BlogLengthSelector
+                value={formData.blogLength}
+                onChange={(length) => setFormData({ ...formData, blogLength: length })}
+              />
+            )}
           </div>
 
           {/* RIGHT PANEL (60%) */}

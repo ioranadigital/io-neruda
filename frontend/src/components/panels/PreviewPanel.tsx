@@ -15,6 +15,11 @@ interface PreviewPanelProps {
     keywordsLongtail: string[];
     tone: Configuration['tone'];
     enabledFormats: EnabledFormats;
+    insightOrigin?: string;
+    contentIntent?: string;
+    localGeoEnabled?: boolean;
+    localGeoValue?: string;
+    blogLength?: string;
   };
   isGenerating?: boolean;
   onGenerate?: () => Promise<void>;
@@ -106,6 +111,8 @@ Generado: ${new Date().toLocaleString()}
   };
 
   const isReady = selectedClient && formData.name && formData.keywordsNiche.length > 0;
+  const enabledFormatsCount = Object.values(formData.enabledFormats).filter((v) => v).length;
+  const isMultiFormat = enabledFormatsCount > 1;
 
   return (
     <div className="flex flex-col w-full h-full bg-gray-50 rounded-lg border-2 border-gray-200 shadow-lg">
@@ -191,19 +198,19 @@ Generado: ${new Date().toLocaleString()}
             </button>
             <button
               onClick={onGenerate}
-              disabled={!isReady || isGenerating}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-white rounded-lg transition disabled:opacity-50 font-medium"
-              style={{ backgroundColor: isReady && !isGenerating ? '#18bdc1' : '#70c5d0' }}
+              disabled={!isReady || isGenerating || enabledFormatsCount === 0}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-black rounded-lg transition disabled:opacity-50 font-medium"
+              style={{ backgroundColor: isReady && !isGenerating && enabledFormatsCount > 0 ? '#7BF1A8' : '#d4f8e8' }}
             >
               {isGenerating ? (
                 <>
-                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                  Generando...
+                  <div className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full" />
+                  {isMultiFormat ? 'Generando ecosistema...' : 'Generando...'}
                 </>
               ) : (
                 <>
                   <Download size={16} />
-                  Generar
+                  {isMultiFormat ? 'Generar Ecosistema' : 'Generar Contenido'}
                 </>
               )}
             </button>
