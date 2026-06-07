@@ -191,7 +191,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                         <label className="block text-sm font-semibold text-gray-800 mb-4">Tono de Contenido:</label>
                         <div className="grid grid-cols-3 gap-4">
                           {/* Tone 1 */}
-                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm max-h-[400px] overflow-hidden">
+                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                             <ToneSelector
                               selectedTone={urlTone}
                               onChange={(tone) => setUrlTone(tone)}
@@ -199,7 +199,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                           </div>
 
                           {/* Tone 2 */}
-                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm max-h-[400px] overflow-hidden">
+                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                             <ToneSelector
                               selectedTone={urlTone}
                               onChange={(tone) => setUrlTone(tone)}
@@ -207,7 +207,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                           </div>
 
                           {/* Tone 3 */}
-                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm max-h-[400px] overflow-hidden">
+                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                             <ToneSelector
                               selectedTone={urlTone}
                               onChange={(tone) => setUrlTone(tone)}
