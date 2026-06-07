@@ -283,12 +283,12 @@ export default function GeneratorPanel() {
           </div>
         </div>
       )}
+    </div>
 
-      {/* Technical Audit Section */}
-      <div className="mt-8 px-6 pb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">📋 Auditoría Técnica</h2>
-        <TechnicalAuditAccordion categories={TECHNICAL_AUDIT_DATA} />
-      </div>
+    {/* Technical Audit Section - Outside main container */}
+    <div className="mt-8 px-6 pb-6 bg-white">
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">📋 Auditoría Técnica</h2>
+      <TechnicalAuditAccordion categories={TECHNICAL_AUDIT_DATA} />
     </div>
   );
 }
