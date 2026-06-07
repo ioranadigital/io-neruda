@@ -160,22 +160,13 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                         {subcategory.checks.map((check) => (
                           <div
                             key={check.id}
-                            className={`p-3 rounded-lg border-2 flex items-center gap-2 cursor-pointer transition ${statusBadgeColor[check.status]}`}
+                            className={`p-3 rounded-lg border-2 flex items-center justify-center cursor-pointer transition ${statusBadgeColor[check.status]}`}
                             style={{
                               backgroundColor: check.status === 'pass' ? '#f0fdf4' : check.status === 'fail' ? '#fef2f2' : '#fffbeb',
                               borderColor: check.status === 'pass' ? webColors.primary : undefined,
                             }}
                           >
-                            <input
-                              type="checkbox"
-                              className="w-4 h-4 rounded"
-                              defaultChecked={check.status === 'pass'}
-                              style={{ accentColor: webColors.primary }}
-                              onChange={() => {
-                                // Handle checkbox change
-                              }}
-                            />
-                            <span className="text-xs font-medium truncate text-gray-800">{check.title}</span>
+                            <span className="text-xs font-medium truncate text-gray-800 text-center">{check.title}</span>
                           </div>
                         ))}
                       </div>
