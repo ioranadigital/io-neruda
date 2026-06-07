@@ -74,6 +74,14 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [urlTone, setUrlTone] = useState<string>('professional');
   const [expandedKeywordLevel, setExpandedKeywordLevel] = useState<string | null>(null);
   const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(new Set());
+  const [semanticElements, setSemanticElements] = useState<Record<string, boolean>>({
+    headings: false,
+    lists: false,
+    tables: false,
+    blockquotes: false,
+    emphasis: false,
+    images: false,
+  });
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
@@ -91,6 +99,13 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
       newSelected.add(keyword);
     }
     setSelectedKeywords(newSelected);
+  };
+
+  const toggleSemanticElement = (key: string) => {
+    setSemanticElements((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   return (
@@ -131,47 +146,93 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
             </div>
           </button>
 
-          {/* Level 1 Content: Simple Fields (For Semantic Definition) */}
+          {/* Level 1 Content: Semantic Elements (For Semantic Definition) */}
           {expandedCategory === category.id && category.showSimpleFields && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-              <div className="grid grid-cols-3 gap-4">
-                {/* Field 1: H1 Title */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">Título del Contenido (&lt;h1&gt;):</label>
+              <h4 className="text-sm font-semibold text-gray-800 mb-4">Estructura semántica y definición de conceptos clave</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Element 1: Headings H2 y H3 */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
                   <input
-                    type="text"
-                    value={h1Title}
-                    onChange={(e) => setH1Title(e.target.value)}
-                    placeholder="Ej: 5 trucos para encender carbón"
-                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
-                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                    type="checkbox"
+                    checked={semanticElements.headings}
+                    onChange={() => toggleSemanticElement('headings')}
+                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
                   />
+                  <div>
+                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Headings H2 y H3</label>
+                    <p className="text-xs text-gray-600 mt-1">Estructura jerárquica de títulos secundarios y terciarios.</p>
+                  </div>
                 </div>
 
-                {/* Field 2: URL Slug */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">Slug de la URL:</label>
+                {/* Element 2: Lists */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
                   <input
-                    type="text"
-                    value={urlSlug}
-                    onChange={(e) => setUrlSlug(e.target.value)}
-                    placeholder="Ej: /barbacoas-jardin-terraza/"
-                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
-                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                    type="checkbox"
+                    checked={semanticElements.lists}
+                    onChange={() => toggleSemanticElement('lists')}
+                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
                   />
+                  <div>
+                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Listas con viñetas (&lt;ul&gt;, &lt;li&gt;)</label>
+                    <p className="text-xs text-gray-600 mt-1">Enumeraciones de puntos para facilitar lectura.</p>
+                  </div>
                 </div>
 
-                {/* Field 3: Internal Link 1 */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 1:</label>
+                {/* Element 3: Tables */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
                   <input
-                    type="text"
-                    value={urlInterno1}
-                    onChange={(e) => setUrlInterno1(e.target.value)}
-                    placeholder="Ej: /blog/como-elegir-barbacoa/"
-                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
-                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                    type="checkbox"
+                    checked={semanticElements.tables}
+                    onChange={() => toggleSemanticElement('tables')}
+                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
                   />
+                  <div>
+                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Tablas comparativas (&lt;table&gt;)</label>
+                    <p className="text-xs text-gray-600 mt-1">Comparaciones de características y precios.</p>
+                  </div>
+                </div>
+
+                {/* Element 4: Blockquotes */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={semanticElements.blockquotes}
+                    onChange={() => toggleSemanticElement('blockquotes')}
+                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                  />
+                  <div>
+                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Bloques de cita / Notas destacadas (&lt;blockquote&gt;)</label>
+                    <p className="text-xs text-gray-600 mt-1">Citas, testimonios y notas importantes.</p>
+                  </div>
+                </div>
+
+                {/* Element 5: Emphasis */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={semanticElements.emphasis}
+                    onChange={() => toggleSemanticElement('emphasis')}
+                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                  />
+                  <div>
+                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Énfasis (&lt;strong&gt;, &lt;em&gt;)</label>
+                    <p className="text-xs text-gray-600 mt-1">Palabras en negrita o cursiva para destacar.</p>
+                  </div>
+                </div>
+
+                {/* Element 6: Images */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={semanticElements.images}
+                    onChange={() => toggleSemanticElement('images')}
+                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                  />
+                  <div>
+                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Imágenes con alt text (&lt;img&gt;)</label>
+                    <p className="text-xs text-gray-600 mt-1">Optimización SEO de imágenes con texto alternativo.</p>
+                  </div>
                 </div>
               </div>
             </div>
