@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useGenerator as useGeneratorContext } from '../context/GeneratorContext';
 import { GenerateRequest, GeneratedContent } from '../types/generator';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4006/api/generators';
+import { generateMockContent } from '../data/mockGeneratedContent';
 
 export function useGenerateContent() {
   const { setLoading, setError, addGeneratedContent } = useGeneratorContext();
@@ -15,27 +14,31 @@ export function useGenerateContent() {
       setError(null);
 
       try {
-        const response = await fetch(`${API_BASE}/generate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(request),
+        // Simulate generation delay (2-4 seconds)
+        const delay = Math.random() * 2000 + 2000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+
+        const generatedContents: Record<string, GeneratedContent> = {};
+
+        // Generate content for each enabled format
+        const enabledFormats = request.enabledFormats
+          ? Object.entries(request.enabledFormats)
+              .filter(([, enabled]) => enabled)
+              .map(([format]) => format)
+          : ['blog'];
+
+        enabledFormats.forEach(format => {
+          const mockContent = generateMockContent(
+            request.clientId || 'Unknown Client',
+            request.configName || 'New Configuration',
+            request.keywordsNiche || ['content'],
+            format
+          );
+          generatedContents[format] = mockContent;
+          addGeneratedContent(mockContent);
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Generation failed');
-        }
-
-        const data = await response.json();
-
-        // Add each generated content to context
-        if (data.generatedContents) {
-          Object.values(data.generatedContents).forEach((content: any) => {
-            addGeneratedContent(content);
-          });
-        }
-
-        return data;
+        return { success: true, generatedContents };
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         setError(message);
@@ -61,18 +64,11 @@ export function useGetGeneratedContent() {
       setError(null);
 
       try {
-        const response = await fetch(`${API_BASE}/generated/${contentId}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
+        await new Promise(resolve => setTimeout(resolve, 300));
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch generated content');
-        }
-
-        const data = await response.json();
-        setContent(data);
-        return data;
+        // Mock: return empty array for now
+        setContent([]);
+        return [];
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         setError(message);
@@ -84,39 +80,5 @@ export function useGetGeneratedContent() {
     [setLoading, setError]
   );
 
-  return { getGeneratedContent, content, setContent };
-}
-
-export function useUpdateGeneratedContent() {
-  const { setLoading, setError } = useGeneratorContext();
-
-  const updateContent = useCallback(
-    async (contentId: string, updates: Partial<GeneratedContent>) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(`${API_BASE}/generated/${contentId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updates),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to update content');
-        }
-
-        return await response.json();
-      } catch (error) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        setError(message);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [setLoading, setError]
-  );
-
-  return { updateContent };
+  return { getGeneratedContent, content };
 }

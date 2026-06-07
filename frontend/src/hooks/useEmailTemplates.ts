@@ -2,7 +2,28 @@ import { useState, useCallback } from 'react';
 import { useGenerator } from '../context/GeneratorContext';
 import { EmailTemplate } from '../types/generator';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4006/api/generators';
+const MOCK_TEMPLATES: EmailTemplate[] = [
+  {
+    id: '1',
+    name: 'Welcome Email',
+    subject: 'Welcome to Our Platform',
+    body: 'Hello {{name}}, Welcome to our platform!',
+    variables: ['name'],
+    is_system: true,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: '2',
+    name: 'Monthly Newsletter',
+    subject: 'Your Monthly Newsletter',
+    body: 'Here are this month\'s updates...',
+    variables: [],
+    is_system: true,
+    created_at: new Date().toISOString(),
+  },
+];
+
+let mockTemplates = [...MOCK_TEMPLATES];
 
 export function useEmailTemplates() {
   const { setLoading, setError, setEmailTemplates } = useGenerator();
@@ -19,23 +40,15 @@ export function useEmailTemplates() {
       setError(null);
 
       try {
-        const url = new URL(`${API_BASE}/email-templates`);
-        if (projectId) {
-          url.searchParams.append('projectId', projectId);
-        }
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 200));
 
-        const response = await fetch(url.toString(), {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
+        const systemTemplates = mockTemplates.filter(t => t.is_system);
+        const projectTemplates = mockTemplates.filter(t => !t.is_system);
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch templates');
-        }
-
-        const data = await response.json();
+        const data = { system: systemTemplates, project: projectTemplates };
         setLocalTemplates(data);
-        setEmailTemplates([...data.system, ...data.project]);
+        setEmailTemplates([...systemTemplates, ...projectTemplates]);
         return data;
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
@@ -61,18 +74,17 @@ export function useCreateEmailTemplate() {
       setError(null);
 
       try {
-        const response = await fetch(`${API_BASE}/email-templates`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(template),
-        });
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 300));
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to create template');
-        }
+        const newTemplate: EmailTemplate = {
+          ...template,
+          id: `template_${Date.now()}`,
+          created_at: new Date().toISOString(),
+        };
 
-        return await response.json();
+        mockTemplates.push(newTemplate);
+        return newTemplate;
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         setError(message);

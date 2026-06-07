@@ -1,7 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useCallback, useEffect } from 'react';
 import { Configuration, GeneratedContent, BatchJob, EmailTemplate, GeneratorState } from '../types/generator';
+import { Client } from '../types/client';
+import { MOCK_CLIENTS } from '../data/mockClients';
 
 type GeneratorAction =
   | { type: 'SET_LOADING'; payload: boolean }
@@ -13,7 +15,11 @@ type GeneratorAction =
   | { type: 'ADD_GENERATED_CONTENT'; payload: GeneratedContent }
   | { type: 'SET_BATCH_JOBS'; payload: BatchJob[] }
   | { type: 'UPDATE_BATCH_JOB'; payload: BatchJob }
-  | { type: 'SET_EMAIL_TEMPLATES'; payload: EmailTemplate[] };
+  | { type: 'SET_EMAIL_TEMPLATES'; payload: EmailTemplate[] }
+  | { type: 'SET_CLIENTS'; payload: Client[] }
+  | { type: 'ADD_CLIENT'; payload: Client }
+  | { type: 'SELECT_CLIENT'; payload: Client | null }
+  | { type: 'UPDATE_CLIENT'; payload: Client };
 
 const initialState: GeneratorState = {
   configurations: [],
@@ -23,6 +29,9 @@ const initialState: GeneratorState = {
   emailTemplates: [],
   isLoading: false,
   error: null,
+  clients: [],
+  currentClientId: null,
+  selectedClient: null,
 };
 
 function generatorReducer(state: GeneratorState, action: GeneratorAction): GeneratorState {
@@ -50,6 +59,18 @@ function generatorReducer(state: GeneratorState, action: GeneratorAction): Gener
       };
     case 'SET_EMAIL_TEMPLATES':
       return { ...state, emailTemplates: action.payload };
+    case 'SET_CLIENTS':
+      return { ...state, clients: action.payload };
+    case 'ADD_CLIENT':
+      return { ...state, clients: [...state.clients, action.payload] };
+    case 'SELECT_CLIENT':
+      return { ...state, selectedClient: action.payload, currentClientId: action.payload?.id || null };
+    case 'UPDATE_CLIENT':
+      return {
+        ...state,
+        clients: state.clients.map(c => (c.id === action.payload.id ? action.payload : c)),
+        selectedClient: state.selectedClient?.id === action.payload.id ? action.payload : state.selectedClient,
+      };
     default:
       return state;
   }
@@ -67,12 +88,25 @@ interface GeneratorContextType extends GeneratorState {
   setBatchJobs: (jobs: BatchJob[]) => void;
   updateBatchJob: (job: BatchJob) => void;
   setEmailTemplates: (templates: EmailTemplate[]) => void;
+  setClients: (clients: Client[]) => void;
+  addClient: (client: Client) => void;
+  selectClient: (client: Client | null) => void;
+  updateClient: (client: Client) => void;
 }
 
 const GeneratorContext = createContext<GeneratorContextType | undefined>(undefined);
 
 export function GeneratorProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(generatorReducer, initialState);
+
+  // Load mock clients on mount
+  useEffect(() => {
+    dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
+    // Auto-select first client
+    if (MOCK_CLIENTS.length > 0) {
+      dispatch({ type: 'SELECT_CLIENT', payload: MOCK_CLIENTS[0] });
+    }
+  }, []);
 
   const setLoading = useCallback((loading: boolean) => {
     dispatch({ type: 'SET_LOADING', payload: loading });
@@ -114,6 +148,22 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_EMAIL_TEMPLATES', payload: templates });
   }, []);
 
+  const setClients = useCallback((clients: Client[]) => {
+    dispatch({ type: 'SET_CLIENTS', payload: clients });
+  }, []);
+
+  const addClient = useCallback((client: Client) => {
+    dispatch({ type: 'ADD_CLIENT', payload: client });
+  }, []);
+
+  const selectClient = useCallback((client: Client | null) => {
+    dispatch({ type: 'SELECT_CLIENT', payload: client });
+  }, []);
+
+  const updateClient = useCallback((client: Client) => {
+    dispatch({ type: 'UPDATE_CLIENT', payload: client });
+  }, []);
+
   const value: GeneratorContextType = {
     ...state,
     dispatch,
@@ -127,6 +177,10 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     setBatchJobs,
     updateBatchJob,
     setEmailTemplates,
+    setClients,
+    addClient,
+    selectClient,
+    updateClient,
   };
 
   return (

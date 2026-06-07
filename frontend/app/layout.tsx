@@ -1,22 +1,15 @@
 import './globals.css';
-import { ErrorBoundary } from '@/src/components/shared/ErrorBoundary';
-import { ToastProvider } from '@/src/components/shared/Toast';
-import { OfflineIndicator } from '@/src/components/shared/OfflineIndicator';
 
 export const metadata = {
-  title: 'io-neruda Dashboard',
-  description: 'Gestión de contenidos multipropósito',
+  title: 'IO Neruda - Dashboard',
+  description: 'Platform de generación de contenidos',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body suppressHydrationWarning>
-        <ErrorBoundary>
-          <ToastProvider />
-          <OfflineIndicator />
-          {children}
-        </ErrorBoundary>
+      <body className="font-sans" style={{ backgroundColor: '#f5f5f5' }} suppressHydrationWarning>
+        {children}
       </body>
     </html>
   );

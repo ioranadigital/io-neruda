@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useGenerator } from '../context/GeneratorContext';
 import { Configuration } from '../types/generator';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4006/api/generators';
+let mockConfigurations: Configuration[] = [];
 
 export function useCreateConfiguration() {
   const { setLoading, setError, addConfiguration } = useGenerator();
@@ -15,18 +15,17 @@ export function useCreateConfiguration() {
       setError(null);
 
       try {
-        const response = await fetch(`${API_BASE}/config`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(config),
-        });
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 300));
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to create configuration');
-        }
+        const newConfig: Configuration = {
+          ...config,
+          id: `config_${Date.now()}`,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
 
-        const newConfig = await response.json();
+        mockConfigurations.push(newConfig);
         addConfiguration(newConfig);
         return newConfig;
       } catch (error) {
@@ -54,16 +53,10 @@ export function useGetConfigurations() {
       setError(null);
 
       try {
-        const response = await fetch(`${API_BASE}/config/${projectId}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 200));
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch configurations');
-        }
-
-        const data = await response.json();
+        const data = mockConfigurations;
         setLocalConfigs(data);
         setConfigurations(data);
         return data;

@@ -1,5 +1,7 @@
 // Type definitions for Content Generation System
 
+import { Client } from './client';
+
 export interface Configuration {
   id: string;
   project_id: string | null;
@@ -93,6 +95,9 @@ export interface GeneratorState {
   emailTemplates: EmailTemplate[];
   isLoading: boolean;
   error: string | null;
+  clients: Client[];
+  currentClientId: string | null;
+  selectedClient: Client | null;
 }
 
 export interface GenerateRequest {

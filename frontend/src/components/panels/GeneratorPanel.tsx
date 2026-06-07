@@ -1,20 +1,38 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGenerator } from '../../context/GeneratorContext';
 import { Configuration, EnabledFormats } from '../../types/generator';
 import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
+import { useClients } from '../../hooks/useClients';
 import FormatSelector from '../selectors/FormatSelector';
 import ToneSelector from '../selectors/ToneSelector';
 import KeywordInput from '../selectors/KeywordInput';
+import ClientSelector from '../selectors/ClientSelector';
+import ClientCard from '../shared/ClientCard';
+import PreviewPanel from './PreviewPanel';
+import { showToast } from '../shared/Toast';
 
 export default function GeneratorPanel() {
-  const { configurations, selectedConfig, selectConfiguration, isLoading, error } = useGenerator();
+  const { clients, selectedClient, setError, isLoading, error } = useGenerator();
   const { createConfig } = useCreateConfiguration();
   const { generateContent, isGenerating } = useGenerateContent();
+  const { getClients, selectClientById } = useClients();
+  const [clientsLoaded, setClientsLoaded] = useState(false);
 
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  // Load clients on mount
+  useEffect(() => {
+    if (!clientsLoaded) {
+      getClients()
+        .then(() => setClientsLoaded(true))
+        .catch((err) => {
+          console.error('Failed to load clients:', err);
+          setClientsLoaded(true);
+        });
+    }
+  }, [clientsLoaded, getClients]);
+
   const [formData, setFormData] = useState<{
     name: string;
     keywordsNiche: string[];
@@ -36,42 +54,25 @@ export default function GeneratorPanel() {
     },
   });
 
-  const handleStep1Next = () => {
-    if (formData.name.trim()) {
-      setStep(2);
+  const handleGenerate = async () => {
+    if (!selectedClient || !formData.name || formData.keywordsNiche.length === 0) {
+      setError('Completa: cliente, nombre y al menos 1 keyword');
+      return;
     }
-  };
 
-  const handleStep2Next = () => {
-    if (Object.values(formData.enabledFormats).some(v => v)) {
-      setStep(3);
-    }
-  };
-
-  const handleSaveAndGenerate = async () => {
     try {
-      // Save configuration (map camelCase form -> snake_case Configuration)
-      const config = await createConfig({
-        name: formData.name,
-        project_id: null,
-        keywords_niche: formData.keywordsNiche,
-        keywords_longtail: formData.keywordsLongtail,
-        tone: formData.tone,
-        enabled_formats: formData.enabledFormats,
-        is_template: true,
-        description: `Auto-generated config for ${formData.name}`,
-      });
-
-      selectConfiguration(config);
-
-      // Generate content
       await generateContent({
         contentId: `content_${Date.now()}`,
-        configId: config.id,
+        configName: formData.name,
+        clientId: selectedClient.id,
+        keywordsNiche: formData.keywordsNiche,
+        keywordsLongtail: formData.keywordsLongtail,
+        tone: formData.tone,
+        enabledFormats: formData.enabledFormats,
       });
 
-      // Reset form
-      setStep(1);
+      showToast.success('✅ Contenido generado exitosamente');
+
       setFormData({
         name: '',
         keywordsNiche: [],
@@ -87,131 +88,101 @@ export default function GeneratorPanel() {
         },
       });
     } catch (err) {
-      console.error('Error:', err);
+      const message = err instanceof Error ? err.message : 'Error generating content';
+      setError(message);
+      showToast.error(`❌ ${message}`);
     }
   };
 
+
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Content Generator</h1>
+    <div className="w-full h-full flex flex-col" style={{ background: '#f5f5f5' }}>
+      <div className="flex-1 w-full flex flex-col overflow-hidden">
+        <div className="px-6 py-6">
+          <h1 className="text-3xl font-bold mb-6" style={{ color: '#333333' }}>Content Generation Workspace</h1>
 
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
+          {error && (
+            <div className="mb-4 p-4 rounded-lg w-full" style={{ backgroundColor: '#fee2e2', borderColor: '#fca5a5', color: '#991b1b', border: '1px solid' }}>
+              {error}
+            </div>
+          )}
         </div>
-      )}
 
-      {/* Step 1: Configuration Name & Formats */}
-      {step === 1 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-700">Step 1: Configuration</h2>
+        {/* Split-Screen Layout */}
+        <div className="flex-1 flex overflow-hidden px-6 pb-6 gap-6">
+          {/* LEFT PANEL (40%) */}
+          <div className="w-2/5 flex flex-col gap-4 overflow-y-auto pr-2">
+            {/* Client Selection */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <p className="text-sm font-medium text-gray-700 mb-3">Selecciona cliente</p>
+              <ClientSelector
+                clients={clients}
+                selectedClient={selectedClient}
+                onSelectClient={(client: any) => selectClientById(client.id)}
+                isLoading={isLoading}
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Configuration Name
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., Blog Posts Professional"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            {/* Client Info Card */}
+            {selectedClient && (
+              <div>
+                <ClientCard client={selectedClient} />
+              </div>
+            )}
+
+            {/* Configuration Name */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nombre de configuración
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="e.g., Blog Posts Professional"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Keywords */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <KeywordInput
+                niche={formData.keywordsNiche}
+                longtail={formData.keywordsLongtail}
+                onChange={(niche, longtail) =>
+                  setFormData({ ...formData, keywordsNiche: niche, keywordsLongtail: longtail })
+                }
+              />
+            </div>
+
+            {/* Tone */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <ToneSelector
+                selectedTone={formData.tone}
+                onChange={(tone) => setFormData({ ...formData, tone })}
+              />
+            </div>
+
+            {/* Formats */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <FormatSelector
+                selectedFormats={formData.enabledFormats}
+                onChange={(formats) => setFormData({ ...formData, enabledFormats: formats })}
+              />
+            </div>
+          </div>
+
+          {/* RIGHT PANEL (60%) */}
+          <div className="w-3/5 flex-1 overflow-hidden">
+            <PreviewPanel
+              selectedClient={selectedClient}
+              formData={formData}
+              isGenerating={isGenerating}
+              onGenerate={handleGenerate}
             />
           </div>
-
-          <FormatSelector
-            selectedFormats={formData.enabledFormats}
-            onChange={(formats) => setFormData({ ...formData, enabledFormats: formats })}
-          />
-
-          <button
-            onClick={handleStep1Next}
-            disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            Next →
-          </button>
         </div>
-      )}
-
-      {/* Step 2: Keywords & Tone */}
-      {step === 2 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-700">Step 2: Keywords & Tone</h2>
-
-          <KeywordInput
-            niche={formData.keywordsNiche}
-            longtail={formData.keywordsLongtail}
-            onChange={(niche, longtail) =>
-              setFormData({ ...formData, keywordsNiche: niche, keywordsLongtail: longtail })
-            }
-          />
-
-          <ToneSelector
-            selectedTone={formData.tone}
-            onChange={(tone) => setFormData({ ...formData, tone })}
-          />
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setStep(1)}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={handleStep2Next}
-              className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-            >
-              Next →
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Review & Generate */}
-      {step === 3 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-700">Step 3: Review</h2>
-
-          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-            <p>
-              <span className="font-semibold">Name:</span> {formData.name}
-            </p>
-            <p>
-              <span className="font-semibold">Tone:</span> {formData.tone}
-            </p>
-            <p>
-              <span className="font-semibold">Niche Keywords:</span> {formData.keywordsNiche.join(', ') || 'None'}
-            </p>
-            <p>
-              <span className="font-semibold">Long-tail Keywords:</span> {formData.keywordsLongtail.join(', ') || 'None'}
-            </p>
-            <p>
-              <span className="font-semibold">Formats:</span> {Object.entries(formData.enabledFormats)
-                .filter(([, v]) => v)
-                .map(([k]) => k)
-                .join(', ')}
-            </p>
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setStep(2)}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={handleSaveAndGenerate}
-              disabled={isGenerating || isLoading}
-              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
-            >
-              {isGenerating ? 'Generating...' : 'Generate Content'}
-            </button>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
