@@ -8,14 +8,12 @@ import { useGenerateContent } from '../../hooks/useGenerator';
 import FormatSelector from '../selectors/FormatSelector';
 import ToneSelector from '../selectors/ToneSelector';
 import KeywordInput from '../selectors/KeywordInput';
-import ClientSelector from '../selectors/ClientSelector';
 import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
 import { showToast } from '../shared/Toast';
-import { X, Edit } from 'lucide-react';
-import Link from 'next/link';
+import { X } from 'lucide-react';
 
 export default function GeneratorPanel() {
   const { clients, selectedClient, setError, error, selectClient } = useGenerator();
@@ -134,19 +132,8 @@ export default function GeneratorPanel() {
         {/* Main Content Grid */}
         <div className="flex-1 overflow-hidden px-6 py-6">
           <div className="grid grid-cols-3 gap-6 h-full overflow-y-auto pr-2">
-            {/* COLUMN 1 - Cliente & Configuración Básica */}
+            {/* COLUMN 1 - Configuración Básica */}
             <div className="flex flex-col gap-4">
-              {/* Client Selection */}
-              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <p className="text-sm font-medium text-gray-700 mb-3">Selecciona cliente</p>
-                <ClientSelector
-                  clients={clients}
-                  selectedClient={selectedClient}
-                  onSelectClient={(client: any) => selectClient(client)}
-                  isLoading={false}
-                />
-              </div>
-
               {/* Configuration Name */}
               <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -215,24 +202,6 @@ export default function GeneratorPanel() {
 
             {/* COLUMN 3 - Resumen & Acciones */}
             <div className="flex flex-col gap-4">
-              {/* Cliente Summary */}
-              {selectedClient && (
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-sm font-bold text-gray-800">👤 Cliente Seleccionado</h3>
-                    <Link href={`/clients/${selectedClient.id}/edit`}>
-                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition" title="Editar ficha del cliente">
-                        <Edit size={16} style={{ color: '#7BF1A8' }} />
-                      </button>
-                    </Link>
-                  </div>
-                  <p className="text-lg font-semibold" style={{ color: '#7BF1A8' }}>{selectedClient.name}</p>
-                  {selectedClient.description && (
-                    <p className="text-xs text-gray-600 mt-2">{selectedClient.description}</p>
-                  )}
-                </div>
-              )}
-
               {/* Configuration Summary */}
               {formData.name && (
                 <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
