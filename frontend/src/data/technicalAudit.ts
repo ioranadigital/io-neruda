@@ -5,7 +5,7 @@ export const TECHNICAL_AUDIT_DATA = [
     title: 'Definición y Mapeo Semántico',
     description: 'Estructura semántica y definición de conceptos clave',
     subcategories: [],
-    showToneSelectors: true,
+    showSimpleFields: true,
   },
   {
     id: 'kw-definition-mapping',

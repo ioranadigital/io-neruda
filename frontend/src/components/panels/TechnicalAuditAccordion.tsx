@@ -26,6 +26,7 @@ interface AuditCategory {
   description: string;
   subcategories: AuditSubcategory[];
   showToneSelectors?: boolean;
+  showSimpleFields?: boolean;
 }
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -117,7 +118,53 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
             </div>
           </button>
 
-          {/* Level 1 Content: Tone Selectors (For Semantic Definition) */}
+          {/* Level 1 Content: Simple Fields (For Semantic Definition) */}
+          {expandedCategory === category.id && category.showSimpleFields && (
+            <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+              <div className="grid grid-cols-3 gap-4">
+                {/* Field 1: H1 Title */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Título del Contenido (&lt;h1&gt;):</label>
+                  <input
+                    type="text"
+                    value={h1Title}
+                    onChange={(e) => setH1Title(e.target.value)}
+                    placeholder="Ej: 5 trucos para encender carbón"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                  />
+                </div>
+
+                {/* Field 2: URL Slug */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Slug de la URL:</label>
+                  <input
+                    type="text"
+                    value={urlSlug}
+                    onChange={(e) => setUrlSlug(e.target.value)}
+                    placeholder="Ej: /barbacoas-jardin-terraza/"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                  />
+                </div>
+
+                {/* Field 3: Internal Link 1 */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 1:</label>
+                  <input
+                    type="text"
+                    value={urlInterno1}
+                    onChange={(e) => setUrlInterno1(e.target.value)}
+                    placeholder="Ej: /blog/como-elegir-barbacoa/"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Level 1 Content: Tone Selectors (For KW Definition) */}
           {expandedCategory === category.id && category.showToneSelectors && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
               <div className="grid grid-cols-3 gap-4">
