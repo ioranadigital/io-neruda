@@ -170,9 +170,12 @@ export default function GeneratorPanel() {
             <div className="flex flex-col gap-4">
               {/* Configuration Name */}
               <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre de configuración
-                </label>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#7BF1A8', color: '#000' }}>1</span>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Nombre de configuración
+                  </label>
+                </div>
                 <input
                   type="text"
                   value={formData.name}

@@ -65,7 +65,10 @@ export default function SEOConfigHeader({ config, onChange }: SEOConfigHeaderPro
       <div className="grid grid-cols-4 gap-4">
         {/* BLOQUE 1: Arquitectura SEO On-Page */}
         <div className="border-l-4 border-blue-500 pl-3">
-          <h3 className="font-bold text-gray-800 text-sm mb-3">🧱 Arquitectura SEO On-Page</h3>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#7BF1A8', color: '#000' }}>2</span>
+            <h3 className="font-bold text-gray-800 text-sm">🧱 Arquitectura SEO On-Page</h3>
+          </div>
 
           <div className="space-y-2">
             {/* H1 Title */}
