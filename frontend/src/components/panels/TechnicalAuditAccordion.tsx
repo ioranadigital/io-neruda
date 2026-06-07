@@ -186,7 +186,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                   {/* Level 3: Checks Grid */}
                   {expandedSubcategory === subcategory.id && (
                     <div className="px-8 py-4 border-t" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         {subcategory.checks.map((check) => (
                           <div
                             key={check.id}
