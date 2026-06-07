@@ -73,6 +73,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [urlInterno2, setUrlInterno2] = useState<string>('');
   const [urlTone, setUrlTone] = useState<string>('professional');
   const [expandedKeywordLevel, setExpandedKeywordLevel] = useState<string | null>(null);
+  const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(new Set());
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
@@ -80,6 +81,16 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
   const toggleSubcategory = (subcategoryId: string) => {
     setExpandedSubcategory(expandedSubcategory === subcategoryId ? null : subcategoryId);
+  };
+
+  const toggleKeyword = (keyword: string) => {
+    const newSelected = new Set(selectedKeywords);
+    if (newSelected.has(keyword)) {
+      newSelected.delete(keyword);
+    } else {
+      newSelected.add(keyword);
+    }
+    setSelectedKeywords(newSelected);
   };
 
   return (
@@ -198,15 +209,32 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
                     {/* Level Content */}
                     {expandedKeywordLevel === level.id && (
-                      <div className="px-4 py-4 border-t-2 space-y-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+                      <div className="px-4 py-4 border-t-2 space-y-3" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
                         {level.items.map((item) => (
                           <div key={item.id} className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex-1">
-                                <p className="text-xs font-semibold text-gray-800">{item.name}</p>
-                                <p className="text-xs text-gray-600 mt-1">{item.description}</p>
-                              </div>
-                              <span className="px-2 py-1 rounded bg-gray-100 text-xs font-medium text-gray-700 whitespace-nowrap">{item.count} keywords</span>
+                            <div className="mb-2">
+                              <p className="text-xs font-semibold text-gray-800">{item.name}</p>
+                              <p className="text-xs text-gray-600 mt-1">{item.description}</p>
+                            </div>
+                            {/* Keywords Tags */}
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              {item.keywords.map((keyword) => (
+                                <button
+                                  key={keyword}
+                                  onClick={() => toggleKeyword(keyword)}
+                                  className={`px-3 py-1 rounded-full text-xs font-medium transition cursor-pointer border-2 ${
+                                    selectedKeywords.has(keyword)
+                                      ? 'border-gray-800 text-gray-900'
+                                      : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                                  }`}
+                                  style={{
+                                    backgroundColor: selectedKeywords.has(keyword) ? webColors.primary : '#ffffff',
+                                    color: selectedKeywords.has(keyword) ? '#333333' : '#666666',
+                                  }}
+                                >
+                                  {keyword}
+                                </button>
+                              ))}
                             </div>
                           </div>
                         ))}
