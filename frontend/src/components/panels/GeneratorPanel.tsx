@@ -114,20 +114,17 @@ export default function GeneratorPanel() {
   return (
     <div className="w-full h-full flex flex-col" style={{ background: '#f5f5f5' }}>
       <div className="flex-1 w-full flex flex-col overflow-hidden">
-        <div className="px-6 py-6">
-          <h1 className="text-3xl font-bold" style={{ color: '#333333' }}>Generador de Contenido</h1>
-          <p className="text-sm mt-2 mb-6" style={{ color: '#727272' }}>Crea contenido profesional en pocos clics</p>
-
-          {error && (
-            <div className="mb-4 p-4 rounded-lg w-full" style={{ backgroundColor: '#fee2e2', borderColor: '#fca5a5', color: '#991b1b', border: '1px solid' }}>
+        {error && (
+          <div className="px-6 pt-6 pb-0">
+            <div className="p-4 rounded-lg w-full" style={{ backgroundColor: '#fee2e2', borderColor: '#fca5a5', color: '#991b1b', border: '1px solid' }}>
               {error}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="flex-1 overflow-hidden px-6 pb-6">
-          <div className="grid grid-cols-2 gap-6 h-full overflow-y-auto pr-2">
-            {/* LEFT COLUMN */}
+        <div className="flex-1 overflow-hidden px-6 py-6">
+          <div className="grid grid-cols-3 gap-6 h-full overflow-y-auto pr-2">
+            {/* COLUMN 1 - Cliente & Configuración Básica */}
             <div className="flex flex-col gap-4">
               {/* Client Selection */}
               <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
@@ -164,7 +161,10 @@ export default function GeneratorPanel() {
                   }
                 />
               </div>
+            </div>
 
+            {/* COLUMN 2 - Configuración Avanzada */}
+            <div className="flex flex-col gap-4">
               {/* Tone */}
               <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                 <ToneSelector
@@ -203,7 +203,7 @@ export default function GeneratorPanel() {
               )}
             </div>
 
-            {/* RIGHT COLUMN - Configuration Summary */}
+            {/* COLUMN 3 - Resumen & Acciones */}
             <div className="flex flex-col gap-4">
               {/* Cliente Summary */}
               {selectedClient && (
