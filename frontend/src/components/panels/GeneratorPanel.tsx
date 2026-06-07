@@ -156,7 +156,7 @@ export default function GeneratorPanel() {
         <div className="h-1 mx-4" style={{ backgroundColor: '#f5f5f5' }}></div>
 
         {/* SEO Configuration Header */}
-        <div className="px-6 py-4 space-y-4">
+        <div className="px-4 py-3">
           <SEOConfigHeader
             config={seoConfig}
             onChange={handleSEOChange}
