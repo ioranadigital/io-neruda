@@ -4,6 +4,49 @@
 
 ---
 
+## INSTRUCCIÓN: Si el usuario escribe "menu", muestra el menú de abajo
+
+Si el usuario escribe exactamente `menu`, `Menu`, `MENU` o `/menu`, MUESTRA este menú y ESPERA que seleccione un número (1-10). No hagas nada más.
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ MENÚ DE OPCIONES - IO NERUDA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+¿Qué te gustaría hacer?
+
+1 Generar contenido
+2 Revisar/editar contenido generado
+3 Configurar prompts
+4 Mejorar performance
+5 Debuggear un problema
+6 Revisar datos de entrada
+7 Exportar contenido
+8 Integración con otros sistemas
+10 Ver status del proyecto (stack, entorno, TODOs)
+9 Otra cosa específica
+
+Escribe el número (1-10):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+---
+
+## ¿Qué te gustaría hacer?
+
+1 Generar contenido
+2 Revisar/editar contenido generado
+3 Configurar prompts
+4 Mejorar performance
+5 Debuggear un problema
+6 Revisar datos de entrada
+7 Exportar contenido
+8 Integración con otros sistemas
+10 Ver status del proyecto (stack, entorno, TODOs)
+9 Otra cosa específica
+
+---
+
 ## 🚀 Arranque Rápido
 
 ```powershell

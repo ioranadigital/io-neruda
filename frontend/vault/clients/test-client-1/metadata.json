@@ -1,0 +1,10 @@
+{
+  "exportedAt": "2026-06-05T22:45:41.793Z",
+  "version": "1.0",
+  "clientId": "test-client-1",
+  "clientName": "Test Client",
+  "files": [
+    "brand_profile.json",
+    "briefing.json"
+  ]
+}

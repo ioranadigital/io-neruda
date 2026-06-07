@@ -1,0 +1,20 @@
+{
+  "brandColors": {
+    "primary": "#3B82F6",
+    "secondary": "#10B981"
+  },
+  "targetAudience": "Test Audience",
+  "clientId": "test-client-1",
+  "updatedAt": "2026-06-05T22:45:41.0140009Z",
+  "defaultTone": "professional",
+  "competitorUrls": [
+    "https://example.com"
+  ],
+  "forbiddenKeywords": [
+    "spam",
+    "scam"
+  ],
+  "createdAt": "2026-06-05T22:45:41.0067902Z",
+  "description": "Test Description",
+  "clientName": "Test Client"
+}

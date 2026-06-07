@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 import { Client } from '@/src/types/client';
 import { useClients } from '@/src/hooks/useClients';
 import { showToast } from '../shared/Toast';
-import { Save, X } from 'lucide-react';
+import {
+  Save, X, Building2, Users, Palette, BookOpen, Sword,
+  Megaphone, Library, Zap, BarChart3, Settings
+} from 'lucide-react';
 
 // Sub-component imports (lazy loaded for performance)
 import TabIdentity from './tabs/TabIdentity';
@@ -22,27 +25,36 @@ type TabType = 'identity' | 'audience' | 'brand' | 'content' | 'competition' | '
 
 interface ClientProfileFormProps {
   client: Client;
+  onSubmit?: (formData: Partial<Client>) => Promise<void>;
+  isLoading?: boolean;
 }
 
-const TABS: { key: TabType; label: string; icon: string }[] = [
-  { key: 'identity', label: 'Identidad', icon: '🏢' },
-  { key: 'audience', label: 'Audiencia', icon: '👥' },
-  { key: 'brand', label: 'Marca', icon: '🎨' },
-  { key: 'content', label: 'Contenido', icon: '📝' },
-  { key: 'competition', label: 'Competencia', icon: '⚔️' },
-  { key: 'channels', label: 'Canales', icon: '📢' },
-  { key: 'references', label: 'Referencias', icon: '📚' },
-  { key: 'integration', label: 'Integración', icon: '🔌' },
-  { key: 'metrics', label: 'Métricas', icon: '📊' },
-  { key: 'management', label: 'Gestión', icon: '⚙️' },
+const TABS: { key: TabType; label: string; icon: React.ReactNode }[] = [
+  { key: 'identity', label: 'Identidad', icon: <Building2 size={18} /> },
+  { key: 'audience', label: 'Audiencia', icon: <Users size={18} /> },
+  { key: 'brand', label: 'Marca', icon: <Palette size={18} /> },
+  { key: 'content', label: 'Contenido', icon: <BookOpen size={18} /> },
+  { key: 'competition', label: 'Competencia', icon: <Sword size={18} /> },
+  { key: 'channels', label: 'Canales', icon: <Megaphone size={18} /> },
+  { key: 'references', label: 'Referencias', icon: <Library size={18} /> },
+  { key: 'integration', label: 'Integración', icon: <Zap size={18} /> },
+  { key: 'metrics', label: 'Métricas', icon: <BarChart3 size={18} /> },
+  { key: 'management', label: 'Gestión', icon: <Settings size={18} /> },
 ];
 
-export default function ClientProfileForm({ client: initialClient }: ClientProfileFormProps) {
+export default function ClientProfileForm({ client: initialClient, onSubmit, isLoading: externalIsLoading }: ClientProfileFormProps) {
   const [activeTab, setActiveTab] = useState<TabType>('identity');
   const [formData, setFormData] = useState<Partial<Client>>(initialClient);
   const [isDirty, setIsDirty] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isSaving, setIsSaving] = useState(externalIsLoading || false);
   const { updateClientBrandMemory } = useClients();
+
+  // Update local isSaving when external isLoading changes
+  React.useEffect(() => {
+    if (externalIsLoading !== undefined) {
+      setIsSaving(externalIsLoading);
+    }
+  }, [externalIsLoading]);
 
   const handleChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -57,9 +69,13 @@ export default function ClientProfileForm({ client: initialClient }: ClientProfi
 
     try {
       setIsSaving(true);
-      await updateClientBrandMemory(initialClient.id, formData);
-      setIsDirty(false);
-      showToast.success('✅ Cliente guardado exitosamente');
+      if (onSubmit) {
+        await onSubmit(formData);
+      } else {
+        await updateClientBrandMemory(initialClient.id, formData);
+        setIsDirty(false);
+        showToast.success('✅ Cliente guardado exitosamente');
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error guardando cliente';
       showToast.error(`❌ ${message}`);
@@ -87,8 +103,9 @@ export default function ClientProfileForm({ client: initialClient }: ClientProfi
                   ? 'text-blue-600 border-blue-600 bg-white'
                   : 'text-gray-600 border-transparent hover:text-gray-800'
               }`}
+              style={activeTab === tab.key ? { color: '#6045E2', borderColor: '#6045E2' } : {}}
             >
-              <span className="text-lg">{tab.icon}</span>
+              {tab.icon}
               {tab.label}
             </button>
           ))}

@@ -1,39 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useGenerator } from '@/src/context/GeneratorContext';
 import { useClients } from '@/src/hooks/useClients';
 import { showToast } from '@/src/components/shared/Toast';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import ClientModalForm from '@/src/components/shared/ClientModalForm';
 
 export default function ClientsPage() {
   const { clients, isLoading } = useGenerator();
-  const [showModal, setShowModal] = useState(false);
-  const { createNewClient, deactivateClient } = useClients();
-
-  const loadClients = async () => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      showToast.success('✅ Clientes actualizados');
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error cargando clientes';
-      showToast.error(`❌ ${message}`);
-    }
-  };
-
-  const handleCreateClient = async (input: any) => {
-    try {
-      await createNewClient(input);
-      showToast.success('✅ Cliente creado exitosamente');
-      setShowModal(false);
-      await loadClients();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error creando cliente';
-      showToast.error(`❌ ${message}`);
-    }
-  };
+  const { deactivateClient } = useClients();
 
   const handleDeleteClient = async (clientId: string, clientName: string) => {
     if (!confirm(`¿Desactivar cliente "${clientName}"?`)) return;
@@ -58,13 +34,6 @@ export default function ClientsPage() {
 
   return (
     <div className="w-full min-h-screen" style={{ background: '#f5f5f5' }}>
-      <ClientModalForm
-        isOpen={showModal}
-        isLoading={false}
-        onClose={() => setShowModal(false)}
-        onSubmit={handleCreateClient}
-      />
-
       <div className="px-6 py-6">
         {/* Header */}
         <div className="mb-8">
@@ -77,14 +46,14 @@ export default function ClientsPage() {
                 Gestiona todas las fichas de marca y contenido
               </p>
             </div>
-            <button
-              onClick={() => setShowModal(true)}
+            <Link
+              href="/clients/new"
               className="flex items-center gap-2 px-6 py-3 text-white rounded-lg transition font-medium hover:opacity-90"
               style={{ backgroundColor: '#6045E2' }}
             >
               <Plus size={20} />
               Nuevo Cliente
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -92,14 +61,14 @@ export default function ClientsPage() {
         {clients.length === 0 ? (
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
             <p className="text-gray-600 text-lg mb-4">No hay clientes aún</p>
-            <button
-              onClick={() => setShowModal(true)}
+            <Link
+              href="/clients/new"
               className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg transition font-medium hover:opacity-90"
               style={{ backgroundColor: '#6045E2' }}
             >
               <Plus size={20} />
               Crear primer cliente
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
