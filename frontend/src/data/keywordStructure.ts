@@ -138,4 +138,30 @@ export const KEYWORD_STRUCTURE: KeywordCategory[] = [
       },
     ],
   },
+  {
+    id: 'level-6-exclude',
+    icon: '🚫',
+    level: 'Nivel 6: Exclusiones y Restricciones',
+    title: 'Palabras y Tonos a Evitar',
+    items: [
+      {
+        id: 'banned-words',
+        name: 'Palabras Prohibidas',
+        description: 'Términos y frases que NO deben aparecer en el contenido. Evita clichés, palabras gastadas o spam.',
+        keywords: ['En conclusión', 'Es crucial', 'Sumérgete', 'imprescindible', 'revolucionario', 'no te pierdas'],
+      },
+      {
+        id: 'banned-tones',
+        name: 'Tonos Prohibidos',
+        description: 'Estilos de escritura que NO encajan con la marca. Evita inconsistencia de voz.',
+        keywords: ['clickbait', 'sensacionalista', 'spam', 'robótico', 'demasiado técnico', 'demasiado casual'],
+      },
+      {
+        id: 'competing-keywords',
+        name: 'Keywords de Competencia a Evitar',
+        description: 'Búsquedas donde nuestros competidores dominan. Enfocarse en oportunidades propias.',
+        keywords: ['Amazon barbacoa', 'Leroy Merlin parrilla', 'Carrefour accesorios', 'Decathlon exterior'],
+      },
+    ],
+  },
 ];
