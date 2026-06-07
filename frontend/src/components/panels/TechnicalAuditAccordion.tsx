@@ -74,13 +74,12 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [urlTone, setUrlTone] = useState<string>('professional');
   const [expandedKeywordLevel, setExpandedKeywordLevel] = useState<string | null>(null);
   const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(new Set());
+  const [h2Title, setH2Title] = useState<string>('');
+  const [urlInterno2, setUrlInterno2] = useState<string>('');
   const [semanticElements, setSemanticElements] = useState<Record<string, boolean>>({
-    headings: false,
     lists: false,
     tables: false,
     blockquotes: false,
-    emphasis: false,
-    images: false,
   });
 
   const toggleCategory = (categoryId: string) => {
@@ -146,92 +145,116 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
             </div>
           </button>
 
-          {/* Level 1 Content: Semantic Elements (For Semantic Definition) */}
+          {/* Level 1 Content: 6 Blocks (For Semantic Definition) */}
           {expandedCategory === category.id && category.showSimpleFields && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-              <h4 className="text-sm font-semibold text-gray-800 mb-4">Estructura semántica y definición de conceptos clave</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Element 1: Headings H2 y H3 */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                {/* Block 1: H1 Title */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Título H1:</label>
                   <input
-                    type="checkbox"
-                    checked={semanticElements.headings}
-                    onChange={() => toggleSemanticElement('headings')}
-                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                    type="text"
+                    value={h1Title}
+                    onChange={(e) => setH1Title(e.target.value)}
+                    placeholder="Ej: 5 trucos para encender carbón"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
                   />
-                  <div>
-                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Headings H2 y H3</label>
-                    <p className="text-xs text-gray-600 mt-1">Estructura jerárquica de títulos secundarios y terciarios.</p>
-                  </div>
                 </div>
 
-                {/* Element 2: Lists */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                {/* Block 2: H2 Title */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Título H2:</label>
                   <input
-                    type="checkbox"
-                    checked={semanticElements.lists}
-                    onChange={() => toggleSemanticElement('lists')}
-                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                    type="text"
+                    value={h2Title}
+                    onChange={(e) => setH2Title(e.target.value)}
+                    placeholder="Ej: Preparación inicial"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
                   />
-                  <div>
-                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Listas con viñetas (&lt;ul&gt;, &lt;li&gt;)</label>
-                    <p className="text-xs text-gray-600 mt-1">Enumeraciones de puntos para facilitar lectura.</p>
-                  </div>
                 </div>
 
-                {/* Element 3: Tables */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                {/* Block 3: Slug */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Slug de la URL:</label>
                   <input
-                    type="checkbox"
-                    checked={semanticElements.tables}
-                    onChange={() => toggleSemanticElement('tables')}
-                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                    type="text"
+                    value={urlSlug}
+                    onChange={(e) => setUrlSlug(e.target.value)}
+                    placeholder="Ej: /barbacoas-jardin-terraza/"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
                   />
-                  <div>
-                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Tablas comparativas (&lt;table&gt;)</label>
-                    <p className="text-xs text-gray-600 mt-1">Comparaciones de características y precios.</p>
-                  </div>
                 </div>
 
-                {/* Element 4: Blockquotes */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                {/* Block 4: Enlace Interno 1 */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 1:</label>
                   <input
-                    type="checkbox"
-                    checked={semanticElements.blockquotes}
-                    onChange={() => toggleSemanticElement('blockquotes')}
-                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                    type="text"
+                    value={urlInterno1}
+                    onChange={(e) => setUrlInterno1(e.target.value)}
+                    placeholder="Ej: /blog/como-elegir-barbacoa/"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
                   />
-                  <div>
-                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Bloques de cita / Notas destacadas (&lt;blockquote&gt;)</label>
-                    <p className="text-xs text-gray-600 mt-1">Citas, testimonios y notas importantes.</p>
-                  </div>
                 </div>
 
-                {/* Element 5: Emphasis */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
+                {/* Block 5: Enlace Interno 2 */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 2:</label>
                   <input
-                    type="checkbox"
-                    checked={semanticElements.emphasis}
-                    onChange={() => toggleSemanticElement('emphasis')}
-                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
+                    type="text"
+                    value={urlInterno2}
+                    onChange={(e) => setUrlInterno2(e.target.value)}
+                    placeholder="Ej: /tienda/accesorios-barbacoa/"
+                    className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                    style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
                   />
-                  <div>
-                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Énfasis (&lt;strong&gt;, &lt;em&gt;)</label>
-                    <p className="text-xs text-gray-600 mt-1">Palabras en negrita o cursiva para destacar.</p>
-                  </div>
                 </div>
 
-                {/* Element 6: Images */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    checked={semanticElements.images}
-                    onChange={() => toggleSemanticElement('images')}
-                    className="w-4 h-4 mt-1 cursor-pointer accent-gray-800"
-                  />
-                  <div>
-                    <label className="text-xs font-semibold text-gray-800 cursor-pointer">Imágenes con alt text (&lt;img&gt;)</label>
-                    <p className="text-xs text-gray-600 mt-1">Optimización SEO de imágenes con texto alternativo.</p>
+                {/* Block 6: Semantic Elements Checklist */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex flex-col gap-3">
+                  <label className="text-xs font-semibold text-gray-700">Elementos Semánticos:</label>
+
+                  <div className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      id="lists-check"
+                      checked={semanticElements.lists}
+                      onChange={() => toggleSemanticElement('lists')}
+                      className="w-4 h-4 mt-0.5 cursor-pointer accent-gray-800"
+                    />
+                    <label htmlFor="lists-check" className="text-xs text-gray-700 cursor-pointer flex-1">
+                      Listas con viñetas (&lt;ul&gt;, &lt;li&gt;)
+                    </label>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      id="tables-check"
+                      checked={semanticElements.tables}
+                      onChange={() => toggleSemanticElement('tables')}
+                      className="w-4 h-4 mt-0.5 cursor-pointer accent-gray-800"
+                    />
+                    <label htmlFor="tables-check" className="text-xs text-gray-700 cursor-pointer flex-1">
+                      Tablas comparativas (&lt;table&gt;)
+                    </label>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      id="blockquotes-check"
+                      checked={semanticElements.blockquotes}
+                      onChange={() => toggleSemanticElement('blockquotes')}
+                      className="w-4 h-4 mt-0.5 cursor-pointer accent-gray-800"
+                    />
+                    <label htmlFor="blockquotes-check" className="text-xs text-gray-700 cursor-pointer flex-1">
+                      Bloques de cita / notas (&lt;blockquote&gt;)
+                    </label>
                   </div>
                 </div>
               </div>
