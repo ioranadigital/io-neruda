@@ -163,75 +163,92 @@ export default function GeneratorPanel() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="flex-1 overflow-hidden px-6 py-6">
-          <div className="grid grid-cols-2 gap-6 h-full overflow-y-auto pr-2">
-            {/* COLUMN 1 - Configuración Principal */}
-            <div className="flex flex-col gap-4">
-              {/* Tone */}
-              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <ToneSelector
-                  selectedTone={formData.tone}
-                  onChange={(tone) => setFormData({ ...formData, tone })}
-                />
-              </div>
-
-              {/* Content Definition */}
-              <ContentDefinition
-                insightOrigin={formData.insightOrigin}
-                contentIntent={formData.contentIntent}
-                localGeoEnabled={formData.localGeoEnabled}
-                localGeoValue={formData.localGeoValue}
-                onInsightOriginChange={(origin) => setFormData({ ...formData, insightOrigin: origin })}
-                onContentIntentChange={(intent) => setFormData({ ...formData, contentIntent: intent })}
-                onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
-                onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
+        <div className="flex-1 overflow-hidden px-6 py-6 flex flex-col gap-6">
+          {/* ROW 1: 3x Tone Selector */}
+          <div className="grid grid-cols-3 gap-6">
+            {/* Tone 1 */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm overflow-y-auto max-h-[500px]">
+              <ToneSelector
+                selectedTone={formData.tone}
+                onChange={(tone) => setFormData({ ...formData, tone })}
               />
+            </div>
 
-              {/* Formats */}
+            {/* Tone 2 (Duplicado) */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm overflow-y-auto max-h-[500px]">
+              <ToneSelector
+                selectedTone={formData.tone}
+                onChange={(tone) => setFormData({ ...formData, tone })}
+              />
+            </div>
+
+            {/* Tone 3 (Duplicado) */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm overflow-y-auto max-h-[500px]">
+              <ToneSelector
+                selectedTone={formData.tone}
+                onChange={(tone) => setFormData({ ...formData, tone })}
+              />
+            </div>
+          </div>
+
+          {/* ROW 2: Other Controls */}
+          <div className="flex flex-col gap-4 overflow-y-auto flex-1">
+            {/* Content Definition */}
+            <ContentDefinition
+              insightOrigin={formData.insightOrigin}
+              contentIntent={formData.contentIntent}
+              localGeoEnabled={formData.localGeoEnabled}
+              localGeoValue={formData.localGeoValue}
+              onInsightOriginChange={(origin) => setFormData({ ...formData, insightOrigin: origin })}
+              onContentIntentChange={(intent) => setFormData({ ...formData, contentIntent: intent })}
+              onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
+              onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
+            />
+
+            {/* Formats */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <label className="block text-sm font-bold text-gray-800 mb-3">🎯 Formatos de Salida</label>
+              <FormatSelector
+                selectedFormats={formData.enabledFormats}
+                onChange={(formats) => setFormData({ ...formData, enabledFormats: formats })}
+              />
+            </div>
+
+            {/* Blog Length Selector (Conditional) */}
+            {formData.enabledFormats.blog && (
+              <BlogLengthSelector
+                value={formData.blogLength}
+                onChange={(length) => setFormData({ ...formData, blogLength: length })}
+              />
+            )}
+
+            {/* Formats Summary */}
+            {Object.values(formData.enabledFormats).some(v => v) && (
               <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <label className="block text-sm font-bold text-gray-800 mb-3">🎯 Formatos de Salida</label>
-                <FormatSelector
-                  selectedFormats={formData.enabledFormats}
-                  onChange={(formats) => setFormData({ ...formData, enabledFormats: formats })}
-                />
-              </div>
-
-              {/* Blog Length Selector (Conditional) */}
-              {formData.enabledFormats.blog && (
-                <BlogLengthSelector
-                  value={formData.blogLength}
-                  onChange={(length) => setFormData({ ...formData, blogLength: length })}
-                />
-              )}
-            </div>
-
-            {/* COLUMN 2 - Resumen & Acciones */}
-            <div className="flex flex-col gap-4">
-              {/* Formats Summary */}
-              {Object.values(formData.enabledFormats).some(v => v) && (
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <h3 className="text-sm font-bold text-gray-800 mb-2">📤 Formatos Seleccionados</h3>
-                  <div className="flex flex-wrap gap-1">
-                    {Object.entries(formData.enabledFormats)
-                      .filter(([, enabled]) => enabled)
-                      .map(([format]) => (
-                        <span key={format} className="px-2 py-1 rounded text-xs font-medium text-white" style={{ backgroundColor: '#7BF1A8', color: '#000' }}>
-                          {format.replace('social_', '').toUpperCase()}
-                        </span>
-                      ))}
-                  </div>
+                <h3 className="text-sm font-bold text-gray-800 mb-2">📤 Formatos Seleccionados</h3>
+                <div className="flex flex-wrap gap-1">
+                  {Object.entries(formData.enabledFormats)
+                    .filter(([, enabled]) => enabled)
+                    .map(([format]) => (
+                      <span key={format} className="px-2 py-1 rounded text-xs font-medium text-white" style={{ backgroundColor: '#7BF1A8', color: '#000' }}>
+                        {format.replace('social_', '').toUpperCase()}
+                      </span>
+                    ))}
                 </div>
-              )}
+              </div>
+            )}
+          </div>
 
-              {/* Preview Button - Fixed at bottom */}
-              <button
-                onClick={() => setShowPreviewModal(true)}
-                className="w-full px-4 py-3 rounded-lg font-medium text-white transition flex items-center justify-center gap-2"
-                style={{ backgroundColor: '#7BF1A8', color: '#000' }}
-              >
-                👁️ Ver Preview & Generar
-              </button>
-            </div>
+          {/* ROW 3: Preview Button - Bottom Left (Final Step) */}
+          <div className="w-full">
+            <button
+              onClick={() => setShowPreviewModal(true)}
+              className="w-full px-4 py-3 rounded-lg font-medium text-white transition flex items-center justify-center gap-2 border-2"
+              style={{ backgroundColor: '#7BF1A8', color: '#000', borderColor: '#7BF1A8' }}
+            >
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#000' }}>6</span>
+              👁️ Ver Preview & Generar
+            </button>
           </div>
         </div>
       </div>
