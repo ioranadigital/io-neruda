@@ -73,7 +73,21 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [urlInterno2, setUrlInterno2] = useState<string>('');
   const [urlTone, setUrlTone] = useState<string>('professional');
   const [expandedKeywordLevel, setExpandedKeywordLevel] = useState<string | null>(null);
-  const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(new Set());
+
+  // Initialize Level 6 (Exclusiones) keywords as pre-selected
+  const initializeExcludedKeywords = () => {
+    const level6 = KEYWORD_STRUCTURE.find((level) => level.id === 'level-6-exclude');
+    if (level6) {
+      const keywords = new Set<string>();
+      level6.items.forEach((item) => {
+        item.keywords.forEach((kw) => keywords.add(kw));
+      });
+      return keywords;
+    }
+    return new Set<string>();
+  };
+
+  const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(initializeExcludedKeywords());
   const [h2Title, setH2Title] = useState<string>('');
   const [semanticElements, setSemanticElements] = useState<Record<string, boolean>>({
     lists: false,
