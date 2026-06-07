@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, X, Shield, FileText, CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
+import ToneSelector from '../selectors/ToneSelector';
 
 interface AuditCheck {
   id: string;
@@ -66,6 +67,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
   const [h1Title, setH1Title] = useState<string>('');
   const [urlSlug, setUrlSlug] = useState<string>('');
   const [urlInterno, setUrlInterno] = useState<string>('');
+  const [urlTone, setUrlTone] = useState<string>('professional');
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
@@ -157,28 +159,61 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
                   {/* Level 3: URL Configuration Inputs (URL Config only) */}
                   {expandedSubcategory === subcategory.id && subcategory.id === 'url-config' && (
-                    <div className="px-8 py-4 border-t" style={{ borderColor: webColors.primary, backgroundColor: '#f3f4f6' }}>
-                      <div className="mb-4">
-                        <label className="block text-sm font-semibold text-gray-800 mb-2">Slug:</label>
-                        <input
-                          type="text"
-                          value={urlSlug}
-                          onChange={(e) => setUrlSlug(e.target.value)}
-                          placeholder="Ej: trucos-encender-carbon"
-                          className="w-full px-4 py-2 border-2 rounded-lg text-sm focus:outline-none transition"
-                          style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
-                        />
+                    <div className="border-t" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+                      {/* Inputs Section */}
+                      <div className="px-8 py-4" style={{ backgroundColor: '#f3f4f6' }}>
+                        <div className="mb-4">
+                          <label className="block text-sm font-semibold text-gray-800 mb-2">Slug:</label>
+                          <input
+                            type="text"
+                            value={urlSlug}
+                            onChange={(e) => setUrlSlug(e.target.value)}
+                            placeholder="Ej: trucos-encender-carbon"
+                            className="w-full px-4 py-2 border-2 rounded-lg text-sm focus:outline-none transition"
+                            style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label className="block text-sm font-semibold text-gray-800 mb-2">Enlace Interno:</label>
+                          <input
+                            type="text"
+                            value={urlInterno}
+                            onChange={(e) => setUrlInterno(e.target.value)}
+                            placeholder="Ej: /blog/trucos-encender-carbon"
+                            className="w-full px-4 py-2 border-2 rounded-lg text-sm focus:outline-none transition"
+                            style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                          />
+                        </div>
                       </div>
-                      <div className="mb-4">
-                        <label className="block text-sm font-semibold text-gray-800 mb-2">Enlace Interno:</label>
-                        <input
-                          type="text"
-                          value={urlInterno}
-                          onChange={(e) => setUrlInterno(e.target.value)}
-                          placeholder="Ej: /blog/trucos-encender-carbon"
-                          className="w-full px-4 py-2 border-2 rounded-lg text-sm focus:outline-none transition"
-                          style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
-                        />
+
+                      {/* 3-Column Tone Selector Grid */}
+                      <div className="px-8 py-4 border-t" style={{ borderColor: webColors.primary }}>
+                        <label className="block text-sm font-semibold text-gray-800 mb-4">Tono de Contenido:</label>
+                        <div className="grid grid-cols-3 gap-4">
+                          {/* Tone 1 */}
+                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm max-h-[400px] overflow-hidden">
+                            <ToneSelector
+                              selectedTone={urlTone}
+                              onChange={(tone) => setUrlTone(tone)}
+                            />
+                          </div>
+
+                          {/* Tone 2 */}
+                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm max-h-[400px] overflow-hidden">
+                            <ToneSelector
+                              selectedTone={urlTone}
+                              onChange={(tone) => setUrlTone(tone)}
+                            />
+                          </div>
+
+                          {/* Tone 3 */}
+                          <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm max-h-[400px] overflow-hidden">
+                            <ToneSelector
+                              selectedTone={urlTone}
+                              onChange={(tone) => setUrlTone(tone)}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
