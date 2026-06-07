@@ -120,7 +120,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
           {/* Level 1 Content: Tone Selectors (For Semantic Definition) */}
           {expandedCategory === category.id && category.showToneSelectors && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {/* Block 1 - Left: Content & URL Configuration */}
                 <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex flex-col gap-4">
                   <h4 className="text-sm font-semibold text-gray-800 border-b pb-2" style={{ borderColor: webColors.primary }}>Tono de Contenido</h4>
@@ -176,15 +176,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                   </div>
                 </div>
 
-                {/* Tone 2 */}
-                <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <ToneSelector
-                    selectedTone={urlTone}
-                    onChange={(tone) => setUrlTone(tone)}
-                  />
-                </div>
-
-                {/* Tone 3 */}
+                {/* Tone 2 - Right: Expanded */}
                 <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                   <ToneSelector
                     selectedTone={urlTone}
