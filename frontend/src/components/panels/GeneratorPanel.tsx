@@ -12,6 +12,7 @@ import ClientSelector from '../selectors/ClientSelector';
 import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
+import ClientBriefingHeader from './ClientBriefingHeader';
 import { showToast } from '../shared/Toast';
 import { X, Edit } from 'lucide-react';
 import Link from 'next/link';
@@ -114,6 +115,7 @@ export default function GeneratorPanel() {
   return (
     <div className="w-full h-full flex flex-col" style={{ background: '#f5f5f5' }}>
       <div className="flex-1 w-full flex flex-col overflow-hidden">
+        {/* Error Message */}
         {error && (
           <div className="px-6 pt-6 pb-0">
             <div className="p-4 rounded-lg w-full" style={{ backgroundColor: '#fee2e2', borderColor: '#fca5a5', color: '#991b1b', border: '1px solid' }}>
@@ -122,6 +124,14 @@ export default function GeneratorPanel() {
           </div>
         )}
 
+        {/* Client Briefing Header */}
+        <ClientBriefingHeader
+          selectedClient={selectedClient}
+          clients={clients}
+          onSelectClient={selectClient}
+        />
+
+        {/* Main Content Grid */}
         <div className="flex-1 overflow-hidden px-6 py-6">
           <div className="grid grid-cols-3 gap-6 h-full overflow-y-auto pr-2">
             {/* COLUMN 1 - Cliente & Configuración Básica */}
