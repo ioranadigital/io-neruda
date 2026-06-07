@@ -99,7 +99,8 @@ export default function GeneratorPanel() {
     <div className="w-full h-full flex flex-col" style={{ background: '#f5f5f5' }}>
       <div className="flex-1 w-full flex flex-col overflow-hidden">
         <div className="px-6 py-6">
-          <h1 className="text-3xl font-bold mb-6" style={{ color: '#333333' }}>Content Generation Workspace</h1>
+          <h1 className="text-3xl font-bold" style={{ color: '#333333' }}>Generador de Contenido</h1>
+          <p className="text-sm mt-2 mb-6" style={{ color: '#727272' }}>Crea contenido profesional en pocos clics</p>
 
           {error && (
             <div className="mb-4 p-4 rounded-lg w-full" style={{ backgroundColor: '#fee2e2', borderColor: '#fca5a5', color: '#991b1b', border: '1px solid' }}>
