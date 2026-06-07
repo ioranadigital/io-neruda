@@ -209,7 +209,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
                     {/* Level Content */}
                     {expandedKeywordLevel === level.id && (
-                      <div className="px-4 py-4 border-t-2 space-y-3" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+                      <div className="px-4 py-4 border-t-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
                         {level.items.map((item) => (
                           <div key={item.id} className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
                             <div className="mb-2">
