@@ -17,33 +17,7 @@ export const TECHNICAL_AUDIT_DATA = [
         title: 'Configuración de URL',
         icon: 'alert-circle',
         color: 'yellow' as const,
-        checks: [
-          {
-            id: 'url-structure',
-            title: 'Estructura Limpia',
-            status: 'pass' as const,
-          },
-          {
-            id: 'url-keyword',
-            title: 'Keyword en URL',
-            status: 'pass' as const,
-          },
-          {
-            id: 'url-length',
-            title: 'Longitud Óptima',
-            status: 'pass' as const,
-          },
-          {
-            id: 'url-hyphens',
-            title: 'Separadores Correctos',
-            status: 'pass' as const,
-          },
-          {
-            id: 'url-trailing-slash',
-            title: 'Trailing Slash Consistente',
-            status: 'warning' as const,
-          },
-        ],
+        checks: [],
       },
       {
         id: 'keyword-types',
