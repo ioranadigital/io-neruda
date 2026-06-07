@@ -7,7 +7,6 @@ import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
 import FormatSelector from '../selectors/FormatSelector';
 import ToneSelector from '../selectors/ToneSelector';
-import KeywordInput from '../selectors/KeywordInput';
 import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
@@ -74,8 +73,8 @@ export default function GeneratorPanel() {
   };
 
   const handleGenerate = async () => {
-    if (!selectedClient || !formData.name || formData.keywordsNiche.length === 0) {
-      setError('Completa: cliente, nombre y al menos 1 keyword');
+    if (!selectedClient) {
+      setError('Selecciona un cliente para continuar');
       return;
     }
 
@@ -165,39 +164,8 @@ export default function GeneratorPanel() {
 
         {/* Main Content Grid */}
         <div className="flex-1 overflow-hidden px-6 py-6">
-          <div className="grid grid-cols-3 gap-6 h-full overflow-y-auto pr-2">
-            {/* COLUMN 1 - Configuración Básica */}
-            <div className="flex flex-col gap-4">
-              {/* Configuration Name */}
-              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#7BF1A8', color: '#000' }}>1</span>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Nombre de configuración
-                  </label>
-                </div>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Blog Posts Professional"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Keywords */}
-              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <KeywordInput
-                  niche={formData.keywordsNiche}
-                  longtail={formData.keywordsLongtail}
-                  onChange={(niche, longtail) =>
-                    setFormData({ ...formData, keywordsNiche: niche, keywordsLongtail: longtail })
-                  }
-                />
-              </div>
-            </div>
-
-            {/* COLUMN 2 - Configuración Avanzada */}
+          <div className="grid grid-cols-2 gap-6 h-full overflow-y-auto pr-2">
+            {/* COLUMN 1 - Configuración Principal */}
             <div className="flex flex-col gap-4">
               {/* Tone */}
               <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
@@ -237,47 +205,8 @@ export default function GeneratorPanel() {
               )}
             </div>
 
-            {/* COLUMN 3 - Resumen & Acciones */}
+            {/* COLUMN 2 - Resumen & Acciones */}
             <div className="flex flex-col gap-4">
-              {/* Configuration Summary */}
-              {formData.name && (
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <h3 className="text-sm font-bold text-gray-800 mb-2">⚙️ Configuración</h3>
-                  <p className="text-sm font-medium text-gray-700">{formData.name}</p>
-                </div>
-              )}
-
-              {/* Keywords Summary */}
-              {(formData.keywordsNiche.length > 0 || formData.keywordsLongtail.length > 0) && (
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                  <h3 className="text-sm font-bold text-gray-800 mb-2">🔑 Keywords</h3>
-                  {formData.keywordsNiche.length > 0 && (
-                    <div className="mb-2">
-                      <p className="text-xs font-semibold text-gray-600 mb-1">Niche:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {formData.keywordsNiche.map((kw, i) => (
-                          <span key={i} className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
-                            {kw}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {formData.keywordsLongtail.length > 0 && (
-                    <div>
-                      <p className="text-xs font-semibold text-gray-600 mb-1">Long-tail:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {formData.keywordsLongtail.map((kw, i) => (
-                          <span key={i} className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
-                            {kw}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
               {/* Formats Summary */}
               {Object.values(formData.enabledFormats).some(v => v) && (
                 <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
