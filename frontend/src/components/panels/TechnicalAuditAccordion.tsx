@@ -125,17 +125,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                 <p className="text-sm text-gray-600">{category.description}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Deselect all handler
-                }}
-                className="px-3 py-1 text-xs font-medium text-gray-700 hover:text-gray-900 transition"
-              >
-                Desmarcar todo
-              </button>
-              <ChevronDown
+            <ChevronDown
                 className={`w-5 h-5 transition-transform duration-200 ${
                   expandedCategory === category.id ? 'rotate-180' : ''
                 }`}
