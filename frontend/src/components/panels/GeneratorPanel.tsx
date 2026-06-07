@@ -14,11 +14,13 @@ import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector'
 import ClientCard from '../shared/ClientCard';
 import PreviewPanel from './PreviewPanel';
 import { showToast } from '../shared/Toast';
+import { X } from 'lucide-react';
 
 export default function GeneratorPanel() {
   const { clients, selectedClient, setError, error, selectClient } = useGenerator();
   const { createConfig } = useCreateConfiguration();
   const { generateContent, isGenerating } = useGenerateContent();
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -81,6 +83,9 @@ export default function GeneratorPanel() {
 
       showToast.success('✅ Ecosistema de contenido generado exitosamente');
 
+      // Close modal after successful generation
+      setTimeout(() => setShowPreviewModal(false), 500);
+
       setFormData({
         name: '',
         keywordsNiche: [],
@@ -122,10 +127,11 @@ export default function GeneratorPanel() {
           )}
         </div>
 
-        {/* Split-Screen Layout */}
-        <div className="flex-1 flex overflow-hidden px-6 pb-6 gap-6">
-          {/* LEFT PANEL (40%) */}
-          <div className="w-2/5 flex flex-col gap-4 overflow-y-auto pr-2">
+        {/* Two-Column Grid Layout */}
+        <div className="flex-1 overflow-hidden px-6 pb-6">
+          <div className="grid grid-cols-2 gap-6 h-full overflow-y-auto pr-2">
+            {/* LEFT COLUMN */}
+            <div className="flex flex-col gap-4">
             {/* Client Selection */}
             <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
               <p className="text-sm font-medium text-gray-700 mb-3">Selecciona cliente</p>
@@ -207,8 +213,139 @@ export default function GeneratorPanel() {
             )}
           </div>
 
-          {/* RIGHT PANEL (60%) */}
-          <div className="w-3/5 flex-1 overflow-hidden">
+          {/* RIGHT COLUMN - Configuration Summary */}
+          <div className="flex flex-col gap-4">
+            {/* Cliente Summary */}
+            {selectedClient && (
+              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                <h3 className="text-sm font-bold text-gray-800 mb-2">👤 Cliente Seleccionado</h3>
+                <p className="text-lg font-semibold" style={{ color: '#7BF1A8' }}>{selectedClient.name}</p>
+                {selectedClient.description && (
+                  <p className="text-xs text-gray-600 mt-1">{selectedClient.description}</p>
+                )}
+              </div>
+            )}
+
+            {/* Configuration Summary */}
+            {formData.name && (
+              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                <h3 className="text-sm font-bold text-gray-800 mb-2">⚙️ Configuración</h3>
+                <p className="text-sm font-medium text-gray-700">{formData.name}</p>
+              </div>
+            )}
+
+            {/* Keywords Summary */}
+            {(formData.keywordsNiche.length > 0 || formData.keywordsLongtail.length > 0) && (
+              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                <h3 className="text-sm font-bold text-gray-800 mb-2">🔑 Keywords</h3>
+                {formData.keywordsNiche.length > 0 && (
+                  <div className="mb-2">
+                    <p className="text-xs font-semibold text-gray-600 mb-1">Niche:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {formData.keywordsNiche.map((kw, i) => (
+                        <span key={i} className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                          {kw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {formData.keywordsLongtail.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">Long-tail:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {formData.keywordsLongtail.map((kw, i) => (
+                        <span key={i} className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
+                          {kw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Content Settings Summary */}
+            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+              <h3 className="text-sm font-bold text-gray-800 mb-3">📋 Configuración de Contenido</h3>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Tono:</span>
+                  <span className="font-medium text-gray-800 capitalize">{formData.tone}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Origen:</span>
+                  <span className="font-medium text-gray-800 capitalize">{formData.insightOrigin.replace('_', ' ')}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Intención:</span>
+                  <span className="font-medium text-gray-800 capitalize">{formData.contentIntent.replace('_', ' ')}</span>
+                </div>
+                {formData.localGeoEnabled && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Localización:</span>
+                    <span className="font-medium text-gray-800">{formData.localGeoValue}</span>
+                  </div>
+                )}
+                {formData.enabledFormats.blog && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Blog Length:</span>
+                    <span className="font-medium text-gray-800 capitalize">{formData.blogLength}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Formats Summary */}
+            {Object.values(formData.enabledFormats).some(v => v) && (
+              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                <h3 className="text-sm font-bold text-gray-800 mb-2">📤 Formatos Seleccionados</h3>
+                <div className="flex flex-wrap gap-1">
+                  {Object.entries(formData.enabledFormats)
+                    .filter(([, enabled]) => enabled)
+                    .map(([format]) => (
+                      <span key={format} className="px-2 py-1 rounded text-xs font-medium text-white" style={{ backgroundColor: '#7BF1A8', color: '#000' }}>
+                        {format.replace('social_', '').toUpperCase()}
+                      </span>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* Preview Button - Fixed at bottom */}
+            <button
+              onClick={() => setShowPreviewModal(true)}
+              className="w-full px-4 py-3 rounded-lg font-medium text-white transition flex items-center justify-center gap-2"
+              style={{ backgroundColor: '#7BF1A8', color: '#000' }}
+            >
+              👁️ Ver Preview & Generar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Preview Modal - Slide from Right */}
+      {showPreviewModal && (
+        <div className="fixed inset-0 z-50">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowPreviewModal(false)}
+          />
+
+          {/* Modal Panel */}
+          <div
+            className="absolute top-0 right-0 h-full w-1/2 bg-white shadow-2xl overflow-hidden animate-in slide-in-from-right-0 duration-300"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPreviewModal(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition z-10"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Preview Panel */}
             <PreviewPanel
               selectedClient={selectedClient}
               formData={formData}
@@ -217,7 +354,7 @@ export default function GeneratorPanel() {
             />
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
