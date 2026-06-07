@@ -144,20 +144,24 @@ export default function GeneratorPanel() {
         )}
 
         {/* Client Briefing Header */}
-        <ClientBriefingHeader
-          selectedClient={selectedClient}
-          clients={clients}
-          onSelectClient={selectClient}
-        />
+        <div className="px-4 py-3">
+          <ClientBriefingHeader
+            selectedClient={selectedClient}
+            clients={clients}
+            onSelectClient={selectClient}
+          />
+        </div>
 
         {/* Separator */}
-        <div className="h-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300"></div>
+        <div className="h-1 mx-4" style={{ backgroundColor: '#f5f5f5' }}></div>
 
         {/* SEO Configuration Header */}
-        <SEOConfigHeader
-          config={seoConfig}
-          onChange={handleSEOChange}
-        />
+        <div className="px-4 py-3">
+          <SEOConfigHeader
+            config={seoConfig}
+            onChange={handleSEOChange}
+          />
+        </div>
 
         {/* Main Content Grid */}
         <div className="flex-1 overflow-hidden px-6 py-6">

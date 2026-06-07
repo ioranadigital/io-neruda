@@ -61,7 +61,7 @@ export default function SEOConfigHeader({ config, onChange }: SEOConfigHeaderPro
   };
 
   return (
-    <div className="px-6 py-4 bg-white border-b-2 border-gray-300 shadow-sm">
+    <div className="px-6 py-4 bg-white border border-gray-200 shadow-sm rounded-lg">
       <div className="grid grid-cols-4 gap-4">
         {/* BLOQUE 1: Arquitectura SEO On-Page */}
         <div className="border-l-4 border-blue-500 pl-3">

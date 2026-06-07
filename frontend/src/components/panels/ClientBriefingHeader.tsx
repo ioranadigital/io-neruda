@@ -29,7 +29,7 @@ export default function ClientBriefingHeader({
   };
 
   return (
-    <div className="px-6 py-4 bg-white border-b border-gray-200 shadow-sm">
+    <div className="px-6 py-4 bg-white border border-gray-200 shadow-sm rounded-lg">
       <div className="grid grid-cols-5 gap-4">
         {/* 1. Selector de Cliente */}
         <div className="flex flex-col">
