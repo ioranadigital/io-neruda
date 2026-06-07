@@ -241,37 +241,6 @@ export default function GeneratorPanel() {
                 </div>
               )}
 
-              {/* Content Settings Summary */}
-              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <h3 className="text-sm font-bold text-gray-800 mb-3">📋 Configuración de Contenido</h3>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Tono:</span>
-                    <span className="font-medium text-gray-800 capitalize">{formData.tone}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Origen:</span>
-                    <span className="font-medium text-gray-800 capitalize">{formData.insightOrigin.replace('_', ' ')}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Intención:</span>
-                    <span className="font-medium text-gray-800 capitalize">{formData.contentIntent.replace('_', ' ')}</span>
-                  </div>
-                  {formData.localGeoEnabled && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Localización:</span>
-                      <span className="font-medium text-gray-800">{formData.localGeoValue}</span>
-                    </div>
-                  )}
-                  {formData.enabledFormats.blog && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Blog Length:</span>
-                      <span className="font-medium text-gray-800 capitalize">{formData.blogLength}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
               {/* Formats Summary */}
               {Object.values(formData.enabledFormats).some(v => v) && (
                 <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
