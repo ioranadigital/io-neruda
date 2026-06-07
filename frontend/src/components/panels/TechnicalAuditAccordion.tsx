@@ -131,7 +131,6 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                 }`}
                 style={{ color: webColors.primary }}
               />
-            </div>
           </button>
 
           {/* Level 1 Content: 6 Blocks (For Semantic Definition) */}
