@@ -71,6 +71,77 @@ export const TECHNICAL_AUDIT_DATA = [
     ],
   },
   {
+    id: 'strategy-tone-approach',
+    icon: 'shield',
+    title: 'Estrategia, Tono y Enfoque (Personalidad)',
+    description: 'Definición de estrategia y personalidad de contenido',
+    subcategories: [
+      {
+        id: 'content-title-strategy',
+        title: 'Título del Contenido',
+        icon: 'check-circle',
+        color: 'red' as const,
+        checks: [],
+      },
+      {
+        id: 'url-config-strategy',
+        title: 'Configuración de URL',
+        icon: 'alert-circle',
+        color: 'yellow' as const,
+        checks: [
+          {
+            id: 'url-structure-strategy',
+            title: 'Estructura Limpia',
+            status: 'pass' as const,
+          },
+          {
+            id: 'url-keyword-strategy',
+            title: 'Keyword en URL',
+            status: 'pass' as const,
+          },
+          {
+            id: 'url-length-strategy',
+            title: 'Longitud Óptima',
+            status: 'pass' as const,
+          },
+        ],
+      },
+      {
+        id: 'keyword-types-strategy',
+        title: 'Tipos de Keywords',
+        icon: 'check-circle',
+        color: 'green' as const,
+        checks: [
+          {
+            id: 'primary-keyword-strategy',
+            title: 'Keyword Primaria',
+            status: 'pass' as const,
+          },
+          {
+            id: 'lsi-keywords-strategy',
+            title: 'LSI Keywords',
+            status: 'pass' as const,
+          },
+          {
+            id: 'longtail-keywords-strategy',
+            title: 'Longtail Keywords',
+            status: 'pass' as const,
+          },
+          {
+            id: 'semantic-keywords-strategy',
+            title: 'Palabras Semánticas',
+            status: 'pass' as const,
+          },
+          {
+            id: 'keyword-variations-strategy',
+            title: 'Variaciones de Keyword',
+            status: 'warning' as const,
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: 'content-quality',
     icon: 'file-text',
     title: 'Calidad del Contenido',
