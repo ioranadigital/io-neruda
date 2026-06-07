@@ -170,8 +170,6 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
               <div className="grid grid-cols-2 gap-4">
                 {/* Block 1 - URL Configuration Only */}
                 <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex flex-col gap-4">
-                  <h4 className="text-sm font-semibold text-gray-800 border-b pb-2" style={{ borderColor: webColors.primary }}>Configuración de URLs</h4>
-
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-2">Slug de la URL:</label>
                     <input
