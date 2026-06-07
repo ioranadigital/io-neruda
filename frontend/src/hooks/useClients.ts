@@ -59,7 +59,7 @@ export function useClients() {
           channel_email: input.channel_email || false,
           channel_linkedin: input.channel_linkedin || false,
           channel_instagram: input.channel_instagram || false,
-          color_primary: input.color_primary || '#6045E2',
+          color_primary: input.color_primary || '#7BF1A8',
           color_secondary: input.color_secondary || '#8280FD',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

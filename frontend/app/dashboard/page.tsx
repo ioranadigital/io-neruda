@@ -93,7 +93,7 @@ export default function DashboardPage() {
               <Link
                 href="/generators"
                 className="block w-full px-4 py-3 rounded-lg font-medium text-white transition"
-                style={{ backgroundColor: '#6045E2' }}
+                style={{ backgroundColor: '#7BF1A8' }}
               >
                 ⚡ Generar Contenido
               </Link>
@@ -118,7 +118,7 @@ export default function DashboardPage() {
         {/* Featured Sections */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { title: 'Generador', desc: 'Crea contenido con IA', href: '/generators', color: '#6045E2' },
+            { title: 'Generador', desc: 'Crea contenido con IA', href: '/generators', color: '#7BF1A8' },
             { title: 'Clientes', desc: 'Gestiona tus clientes', href: '/clients', color: '#8280FD' },
             { title: 'Analítica', desc: 'Visualiza tus datos', href: '/analytics', color: '#67CF94' },
           ].map((section, idx) => (

@@ -11,8 +11,8 @@ export function DashminHeader() {
       <div className="h-full px-6 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded" style={{ backgroundColor: '#6045E2' }}>
-            <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">D</div>
+          <div className="w-8 h-8 rounded border-2" style={{ backgroundColor: '#7BF1A8', borderColor: '#000000' }}>
+            <div className="w-full h-full flex items-center justify-center text-black font-bold text-lg">D</div>
           </div>
           <h1 className="text-xl font-bold" style={{ color: '#333333' }}>Dashmin</h1>
         </div>

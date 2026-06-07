@@ -48,8 +48,8 @@ export default function ClientsPage() {
             </div>
             <Link
               href="/clients/new"
-              className="flex items-center gap-2 px-6 py-3 text-white rounded-lg transition font-medium hover:opacity-90"
-              style={{ backgroundColor: '#6045E2' }}
+              className="flex items-center gap-2 px-6 py-3 text-black rounded-lg transition font-medium hover:opacity-90"
+              style={{ backgroundColor: '#7BF1A8' }}
             >
               <Plus size={20} />
               Nuevo Cliente
@@ -64,7 +64,7 @@ export default function ClientsPage() {
             <Link
               href="/clients/new"
               className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg transition font-medium hover:opacity-90"
-              style={{ backgroundColor: '#6045E2' }}
+              style={{ backgroundColor: '#7BF1A8' }}
             >
               <Plus size={20} />
               Crear primer cliente
@@ -163,8 +163,8 @@ export default function ClientsPage() {
                 <div className="p-6 flex gap-2 bg-gray-50">
                   <Link
                     href={`/clients/${client.id}/edit`}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-white rounded-lg transition text-sm font-medium hover:opacity-90"
-                    style={{ backgroundColor: '#6045E2' }}
+                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-black rounded-lg transition text-sm font-medium hover:opacity-90"
+                    style={{ backgroundColor: '#7BF1A8' }}
                   >
                     <Edit2 size={16} />
                     Editar

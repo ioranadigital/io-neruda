@@ -104,8 +104,8 @@ export default function EditClientPage() {
                 }
               }}
               disabled={isSaving}
-              className="flex items-center gap-2 px-6 py-3 text-white rounded-lg transition font-medium hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#6045E2' }}
+              className="flex items-center gap-2 px-6 py-3 text-black rounded-lg transition font-medium hover:opacity-90 disabled:opacity-50"
+              style={{ backgroundColor: '#7BF1A8' }}
             >
               <Save size={20} />
               {isSaving ? 'Guardando...' : 'Guardar Cambios'}

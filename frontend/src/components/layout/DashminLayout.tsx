@@ -15,7 +15,7 @@ export function DashminLayout({ children }: { children: React.ReactNode }) {
         position="top-right"
         toastOptions={{
           style: {
-            background: '#6045E2',
+            background: '#7BF1A8',
             color: '#ffffff',
             border: '1px solid #8280FD'
           }

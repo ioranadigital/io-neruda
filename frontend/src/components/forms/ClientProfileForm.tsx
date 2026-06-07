@@ -103,7 +103,7 @@ export default function ClientProfileForm({ client: initialClient, onSubmit, isL
                   ? 'text-blue-600 border-blue-600 bg-white'
                   : 'text-gray-600 border-transparent hover:text-gray-800'
               }`}
-              style={activeTab === tab.key ? { color: '#6045E2', borderColor: '#6045E2' } : {}}
+              style={activeTab === tab.key ? { color: '#7BF1A8', borderColor: '#7BF1A8' } : {}}
             >
               {tab.icon}
               {tab.label}
@@ -140,7 +140,8 @@ export default function ClientProfileForm({ client: initialClient, onSubmit, isL
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 font-medium flex items-center gap-2"
+            className="px-6 py-2 text-black rounded-lg hover:opacity-90 transition disabled:opacity-50 font-medium flex items-center gap-2"
+            style={{ backgroundColor: '#7BF1A8' }}
           >
             <Save size={18} />
             {isSaving ? 'Guardando...' : 'Guardar Cambios'}

@@ -50,8 +50,8 @@ export function DashminSidebar() {
       {/* Mobile Toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-40 p-2 rounded lg:hidden"
-        style={{ backgroundColor: '#6045E2', color: 'white' }}
+        className="fixed top-4 left-4 z-40 p-2 rounded lg:hidden border-2"
+        style={{ backgroundColor: '#7BF1A8', color: 'black', borderColor: '#000000' }}
       >
         <MenuIcon size={20} />
       </button>
@@ -78,10 +78,10 @@ export function DashminSidebar() {
                       href={href}
                       className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                         isActive
-                          ? 'text-white'
+                          ? 'text-black'
                           : 'text-gray-700 hover:bg-gray-100'
                       }`}
-                      style={isActive ? { backgroundColor: '#6045E2' } : {}}
+                      style={isActive ? { backgroundColor: '#7BF1A8' } : {}}
                     >
                       <Icon size={18} />
                       <span>{label}</span>

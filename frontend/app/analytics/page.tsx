@@ -104,7 +104,7 @@ export default function AnalyticsPage() {
                       className="h-full rounded transition-all"
                       style={{
                         width: `${step.pct}%`,
-                        backgroundColor: '#6045E2',
+                        backgroundColor: '#7BF1A8',
                       }}
                     />
                   </div>

@@ -13,7 +13,7 @@ export const MOCK_CLIENTS: Client[] = [
     channel_email: true,
     channel_linkedin: true,
     channel_instagram: false,
-    color_primary: '#6045E2',
+    color_primary: '#7BF1A8',
     color_secondary: '#8280FD',
     default_tone: 'professional',
     forbidden_keywords: ['cheap', 'spam'],
