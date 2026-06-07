@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ChevronDown, X, Shield, FileText, CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
 import ToneSelector from '../selectors/ToneSelector';
 import { KEYWORD_STRUCTURE } from '../../data/keywordStructure';
+import FormatOutputSelector from './FormatOutputSelector';
 
 interface AuditCheck {
   id: string;
@@ -448,23 +449,28 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                     </div>
                   )}
 
-                  {/* Level 3: Checks Grid */}
+                  {/* Level 3: Checks Grid or Format Output Selector */}
                   {expandedSubcategory === subcategory.id && (
                     <div className="px-8 py-4 border-t" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                        {subcategory.checks.map((check) => (
-                          <div
-                            key={check.id}
-                            className={`p-3 rounded-lg border-2 flex items-center justify-center cursor-pointer transition ${statusBadgeColor[check.status]}`}
-                            style={{
-                              backgroundColor: check.status === 'pass' ? '#f0fdf4' : check.status === 'fail' ? '#fef2f2' : '#fffbeb',
-                              borderColor: check.status === 'pass' ? webColors.primary : undefined,
-                            }}
-                          >
-                            <span className="text-xs font-medium truncate text-gray-800 text-center">{check.title}</span>
-                          </div>
-                        ))}
-                      </div>
+                      {/* Special handling for content-quality (Formato de Salida) */}
+                      {category.id === 'content-quality' ? (
+                        <FormatOutputSelector />
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                          {subcategory.checks.map((check) => (
+                            <div
+                              key={check.id}
+                              className={`p-3 rounded-lg border-2 flex items-center justify-center cursor-pointer transition ${statusBadgeColor[check.status]}`}
+                              style={{
+                                backgroundColor: check.status === 'pass' ? '#f0fdf4' : check.status === 'fail' ? '#fef2f2' : '#fffbeb',
+                                borderColor: check.status === 'pass' ? webColors.primary : undefined,
+                              }}
+                            >
+                              <span className="text-xs font-medium truncate text-gray-800 text-center">{check.title}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
