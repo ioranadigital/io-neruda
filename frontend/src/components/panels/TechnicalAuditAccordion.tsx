@@ -119,10 +119,21 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
           {/* Level 1 Content: Tone Selectors (For Semantic Definition) */}
           {expandedCategory === category.id && category.showToneSelectors && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-              <label className="block text-sm font-semibold text-gray-800 mb-4">Tono de Contenido:</label>
               <div className="grid grid-cols-3 gap-4">
-                {/* Tone 1 */}
-                <div className="p-3 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                {/* Tone 1 - Left Block */}
+                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                  <label className="block text-sm font-semibold text-gray-800 mb-3">Tono de Contenido</label>
+                  <div className="mb-4">
+                    <label className="block text-xs font-semibold text-gray-700 mb-2">Título del Contenido (&lt;h1&gt;):</label>
+                    <input
+                      type="text"
+                      value={h1Title}
+                      onChange={(e) => setH1Title(e.target.value)}
+                      placeholder="Ej: 5 trucos para encender carbón"
+                      className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
+                      style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                    />
+                  </div>
                   <ToneSelector
                     selectedTone={urlTone}
                     onChange={(tone) => setUrlTone(tone)}
