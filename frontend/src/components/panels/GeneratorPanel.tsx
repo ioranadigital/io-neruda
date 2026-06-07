@@ -150,6 +150,9 @@ export default function GeneratorPanel() {
           onSelectClient={selectClient}
         />
 
+        {/* Separator */}
+        <div className="h-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300"></div>
+
         {/* SEO Configuration Header */}
         <SEOConfigHeader
           config={seoConfig}
