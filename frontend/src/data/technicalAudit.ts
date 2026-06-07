@@ -8,6 +8,14 @@ export const TECHNICAL_AUDIT_DATA = [
     showToneSelectors: true,
   },
   {
+    id: 'kw-definition-mapping',
+    icon: 'shield',
+    title: 'KW - Definición y Mapeo Semántico',
+    description: 'Investigación y mapeo de palabras clave',
+    subcategories: [],
+    showToneSelectors: true,
+  },
+  {
     id: 'strategy-tone-approach',
     icon: 'shield',
     title: 'Estrategia, Tono y Enfoque (Personalidad)',
