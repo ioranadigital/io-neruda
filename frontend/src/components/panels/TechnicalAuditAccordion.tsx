@@ -147,7 +147,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
                           onChange={(e) => setH1Title(e.target.value)}
                           placeholder="Ej: 5 trucos para encender carbón"
                           className="w-full px-4 py-2 border-2 rounded-lg text-sm focus:outline-none transition"
-                          style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
+                          style={{ borderColor: webColors.primary, backgroundColor: '#f3f4f6' }}
                         />
                       </div>
                     </div>
