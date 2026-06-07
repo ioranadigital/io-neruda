@@ -55,6 +55,9 @@ const webColors = {
   primary: '#7BF1A8',
   primaryDark: '#333333',
   background: '#f5f5f5',
+  // Verde muy suave para fondos de secciones
+  greenLight: '#f0fdf7',
+  greenLighter: '#f8fffc',
 };
 
 export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAccordionProps) {
@@ -109,14 +112,14 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
           {/* Level 1 Content: Subcategories */}
           {expandedCategory === category.id && (
-            <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: '#f9fafb' }}>
+            <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
               {category.subcategories.map((subcategory) => (
                 <div key={subcategory.id} className="border-b last:border-b-0" style={{ borderColor: webColors.background }}>
                   {/* Level 2: Subcategory Header */}
                   <button
                     onClick={() => toggleSubcategory(subcategory.id)}
-                    className="w-full px-8 py-3 flex items-center justify-between transition hover:bg-gray-50"
-                    style={{ backgroundColor: '#ffffff' }}
+                    className="w-full px-8 py-3 flex items-center justify-between transition hover:opacity-80"
+                    style={{ backgroundColor: webColors.greenLight }}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${categoryColorDot[subcategory.color]}`}></div>
@@ -134,7 +137,7 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
 
                   {/* Level 3: Checks Grid */}
                   {expandedSubcategory === subcategory.id && (
-                    <div className="px-8 py-4 border-t" style={{ borderColor: '#e5e7eb', backgroundColor: '#ffffff' }}>
+                    <div className="px-8 py-4 border-t" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
                       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
                         {subcategory.checks.map((check) => (
                           <div
