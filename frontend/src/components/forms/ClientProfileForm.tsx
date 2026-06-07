@@ -100,10 +100,10 @@ export default function ClientProfileForm({ client: initialClient, onSubmit, isL
               onClick={() => setActiveTab(tab.key)}
               className={`px-4 py-4 font-medium transition flex items-center gap-2 whitespace-nowrap border-b-2 ${
                 activeTab === tab.key
-                  ? 'text-blue-600 border-blue-600 bg-white'
+                  ? 'text-black border-b-2'
                   : 'text-gray-600 border-transparent hover:text-gray-800'
               }`}
-              style={activeTab === tab.key ? { color: '#7BF1A8', borderColor: '#7BF1A8' } : {}}
+              style={activeTab === tab.key ? { backgroundColor: '#7BF1A8', borderColor: '#7BF1A8', color: 'black' } : {}}
             >
               {tab.icon}
               {tab.label}
