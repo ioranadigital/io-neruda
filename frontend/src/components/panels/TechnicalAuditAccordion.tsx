@@ -168,47 +168,10 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
           {expandedCategory === category.id && category.showToneSelectors && (
             <div className="px-8 py-4 border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
               <div className="grid grid-cols-2 gap-4">
-                {/* Block 1 - URL Configuration Only */}
-                <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm flex flex-col gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-2">Slug de la URL:</label>
-                    <input
-                      type="text"
-                      value={urlSlug}
-                      onChange={(e) => setUrlSlug(e.target.value)}
-                      placeholder="Ej: /barbacoas-jardin-terraza/"
-                      className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
-                      style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
-                    />
-                  </div>
+                {/* Block 1 - Empty (Reserved) */}
+                <div></div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 1:</label>
-                    <input
-                      type="text"
-                      value={urlInterno1}
-                      onChange={(e) => setUrlInterno1(e.target.value)}
-                      placeholder="Ej: /blog/como-elegir-barbacoa/"
-                      className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
-                      style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-2">Enlace Interno 2:</label>
-                    <input
-                      type="text"
-                      value={urlInterno2}
-                      onChange={(e) => setUrlInterno2(e.target.value)}
-                      placeholder="Ej: /tienda/accesorios-barbacoa/"
-                      className="w-full px-3 py-2 border-2 rounded-lg text-xs focus:outline-none transition"
-                      style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}
-                    />
-                  </div>
-                </div>
-
-                {/* Block 2 - Tone Selector (Removed) */}
-                {/* Space reserved for future content */}
+                {/* Block 2 - Empty (Reserved) */}
                 <div></div>
               </div>
             </div>
