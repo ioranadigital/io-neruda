@@ -11,7 +11,6 @@ import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/Co
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
-import SEOConfigHeader from './SEOConfigHeader';
 import TechnicalAuditAccordion from './TechnicalAuditAccordion';
 import { TECHNICAL_AUDIT_DATA } from '../../data/technicalAudit';
 import { showToast } from '../shared/Toast';
@@ -54,25 +53,6 @@ export default function GeneratorPanel() {
     blogLength: 'standard',
   });
 
-  const [seoConfig, setSeoConfig] = useState({
-    h1Title: '',
-    primaryKeyword: '',
-    secondaryKeywords: [] as string[],
-    urlSlug: '',
-    searchIntent: '',
-    funnelStage: '',
-    mainTone: '',
-    subTone: '',
-    wordCount: '',
-    headingStructure: '',
-    visualElements: { lists: false, tables: false, alerts: false },
-    bannedWords: ['En conclusión', 'Es crucial', 'Sumérgete'],
-    styleFilters: { noObviousIntro: true, directStart: true, noBoldWords: true },
-  });
-
-  const handleSEOChange = (field: string, value: any) => {
-    setSeoConfig((prev) => ({ ...prev, [field]: value }));
-  };
 
   const handleGenerate = async () => {
     if (!selectedClient) {
@@ -150,17 +130,6 @@ export default function GeneratorPanel() {
             selectedClient={selectedClient}
             clients={clients}
             onSelectClient={selectClient}
-          />
-        </div>
-
-        {/* Separator */}
-        <div className="h-1 mx-4" style={{ backgroundColor: '#f5f5f5' }}></div>
-
-        {/* SEO Configuration Header */}
-        <div className="px-4 py-3">
-          <SEOConfigHeader
-            config={seoConfig}
-            onChange={handleSEOChange}
           />
         </div>
 
