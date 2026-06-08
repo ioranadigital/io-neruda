@@ -10,8 +10,6 @@ import type { ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
-import TechnicalAuditAccordion from './TechnicalAuditAccordion';
-import { TECHNICAL_AUDIT_DATA } from '../../data/technicalAudit';
 import { showToast } from '../shared/Toast';
 import { X } from 'lucide-react';
 
@@ -150,16 +148,6 @@ export default function GeneratorPanel() {
               onChange={(length) => setFormData({ ...formData, blogLength: length })}
             />
           )}
-
-          {/* Scroll Area for Audit Section */}
-          <div className="flex-1 overflow-y-auto">
-            <TechnicalAuditAccordion
-              categories={TECHNICAL_AUDIT_DATA}
-              contentIntent={formData.contentIntent}
-              onContentIntentChange={(intent) => setFormData({ ...formData, contentIntent: intent })}
-              localGeoValue={formData.localGeoValue}
-            />
-          </div>
         </div>
       </div>
 
