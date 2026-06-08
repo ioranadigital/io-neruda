@@ -383,13 +383,17 @@ export default function PlanGeneratorInteligente({
 
               {/* 3. Tono de Contenido */}
               <div>
-                <label className="text-sm font-semibold text-gray-800 mb-2">🎨 Tono de Contenido</label>
+                <label className="text-sm font-semibold text-gray-800 mb-2">🎤 Tono de Contenido</label>
                 <div className="space-y-2">
                   {[
-                    { value: 'professional', label: '💼 Professional', desc: 'Formal y estructurado' },
-                    { value: 'casual', label: '😊 Casual', desc: 'Relajado y conversacional' },
-                    { value: 'technical', label: '🔧 Technical', desc: 'Especializado y preciso' },
-                  ].map(({ value, label, desc }) => (
+                    { value: 'professional', icon: '🏢', label: 'Professional', desc: 'Páginas corporativas, comunicados de marca, servicios de alto valor', tags: ['Tono corporativo', 'ejecutivo', 'institucional', 'alta dirección'] },
+                    { value: 'corporate', icon: '🏢', label: 'Corporate / Executive', desc: 'Lenguaje formal, estructuras complejas, autoridad institucional', tags: ['Tono académico', 'analítico', 'imperativo', 'basado en datos'] },
+                    { value: 'authoritative', icon: '🎓', label: 'Authoritative / Academic', desc: 'Rigor absoluto, basado en datos, normativas vigentes', tags: ['Tono académico', 'analítico', 'imperativo', 'basado en datos'] },
+                    { value: 'commercial', icon: '💼', label: 'Commercial / Sales-driven', desc: 'Persuasión y beneficios (B2B/B2C), enfoque en ROI', tags: ['Tono persuasivo', 'comercial', 'B2B', 'propuesta de valor'] },
+                    { value: 'friendly', icon: '🤝', label: 'Friendly', desc: 'Artículos de blog, newsletters, redes sociales, guías iniciales', tags: [] },
+                    { value: 'technical', icon: '🛠️', label: 'Technical', desc: 'Fichas de producto, manuales, FAQs técnicas, comparativas', tags: [] },
+                    { value: 'hybrid', icon: '🎛️', label: 'Custom / Hybrid', desc: 'Tonos personalizados cruzando múltiples estilos', tags: [] },
+                  ].map(({ value, icon, label, desc, tags }) => (
                     <button
                       key={value}
                       onClick={() => setSelectedTone(value)}
@@ -399,20 +403,45 @@ export default function PlanGeneratorInteligente({
                           : 'border-gray-200 bg-white hover:border-indigo-300'
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
+                      <div className="flex items-start gap-2">
+                        <div className={`w-4 h-4 rounded-full border-2 mt-1 flex-shrink-0 ${
                           selectedTone === value
                             ? 'border-indigo-500 bg-indigo-500'
                             : 'border-gray-300'
                         }`} />
-                        <div>
-                          <p className="font-semibold text-sm text-gray-800">{label}</p>
-                          <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm text-gray-800">{icon} {label}</p>
+                          <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                          {tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {tags.map((tag, idx) => (
+                                <span key={idx} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded">
+                                  💬 {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </button>
                   ))}
                 </div>
+                {selectedTone && (
+                  <div className="mt-3 p-3 bg-indigo-50 rounded-lg border-2 border-indigo-200">
+                    <p className="text-xs font-semibold text-gray-600">Tono seleccionado:</p>
+                    <p className="text-sm font-bold text-indigo-700 mt-1">
+                      {[
+                        { value: 'professional', label: 'Professional' },
+                        { value: 'corporate', label: 'Corporate / Executive' },
+                        { value: 'authoritative', label: 'Authoritative / Academic' },
+                        { value: 'commercial', label: 'Commercial / Sales-driven' },
+                        { value: 'friendly', label: 'Friendly' },
+                        { value: 'technical', label: 'Technical' },
+                        { value: 'hybrid', label: 'Custom / Hybrid' },
+                      ].find(t => t.value === selectedTone)?.label}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}
