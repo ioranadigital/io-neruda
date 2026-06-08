@@ -1,28 +1,5 @@
 export const TECHNICAL_AUDIT_DATA = [
   {
-    id: 'semantic-definition',
-    icon: 'shield',
-    title: 'Definición y Mapeo Semántico',
-    description: 'Estructura semántica y definición de conceptos clave',
-    subcategories: [],
-    showSimpleFields: true,
-  },
-  {
-    id: 'kw-definition-mapping',
-    icon: 'shield',
-    title: 'KW - Definición y Mapeo Semántico',
-    description: 'Investigación y mapeo de palabras clave',
-    subcategories: [],
-    showToneSelectors: true,
-  },
-  {
-    id: 'strategy-tone-approach',
-    icon: 'shield',
-    title: 'Estrategia, Tono y Enfoque (Personalidad)',
-    description: 'Definición de estrategia y personalidad de contenido',
-    subcategories: [],
-  },
-  {
     id: 'content-quality',
     icon: 'file-text',
     title: 'Formato de Salida',
@@ -62,5 +39,28 @@ export const TECHNICAL_AUDIT_DATA = [
         ],
       },
     ],
+  },
+  {
+    id: 'semantic-definition',
+    icon: 'shield',
+    title: 'Definición y Mapeo Semántico',
+    description: 'Estructura semántica y definición de conceptos clave',
+    subcategories: [],
+    showSimpleFields: true,
+  },
+  {
+    id: 'kw-definition-mapping',
+    icon: 'shield',
+    title: 'KW - Definición y Mapeo Semántico',
+    description: 'Investigación y mapeo de palabras clave',
+    subcategories: [],
+    showToneSelectors: true,
+  },
+  {
+    id: 'strategy-tone-approach',
+    icon: 'shield',
+    title: 'Estrategia, Tono y Enfoque (Personalidad)',
+    description: 'Definición de estrategia y personalidad de contenido',
+    subcategories: [],
   },
 ];

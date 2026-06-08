@@ -9,11 +9,6 @@ export default function GeneratorsPage() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Generador de Contenido</h1>
-        <p className="text-zinc-400">Crea contenido profesional en pocos clics ⚡</p>
-      </div>
-
       {isLoading && (
         <div className="text-center mb-8">
           <div className="inline-block">

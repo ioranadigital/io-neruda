@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Client } from '@/src/types/client';
-import { Globe, Globe2, Zap, Languages, Radio } from 'lucide-react';
+import { Globe, Zap, Languages, Radio, Building2, ChevronDown, ChevronUp, Users } from 'lucide-react';
 
 interface ClientBriefingHeaderProps {
   selectedClient: Client | null;
@@ -15,138 +15,168 @@ export default function ClientBriefingHeader({
   clients,
   onSelectClient,
 }: ClientBriefingHeaderProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   const getEnabledChannels = () => {
     if (!selectedClient) return [];
     const channels = [];
-    if (selectedClient.channel_blog) channels.push('Blog');
-    if (selectedClient.channel_email) channels.push('Email');
-    if (selectedClient.channel_linkedin) channels.push('LinkedIn');
-    if (selectedClient.channel_instagram) channels.push('Instagram');
-    if (selectedClient.channel_twitter) channels.push('Twitter');
-    if (selectedClient.channel_tiktok) channels.push('TikTok');
-    if (selectedClient.channel_youtube) channels.push('YouTube');
+    if (selectedClient.channel_blog) channels.push('📝 Blog');
+    if (selectedClient.channel_email) channels.push('📧 Email');
+    if (selectedClient.channel_linkedin) channels.push('💼 LinkedIn');
+    if (selectedClient.channel_instagram) channels.push('📸 Instagram');
+    if (selectedClient.channel_twitter) channels.push('𝕏 Twitter');
+    if (selectedClient.channel_tiktok) channels.push('🎬 TikTok');
+    if (selectedClient.channel_youtube) channels.push('▶️ YouTube');
     return channels;
   };
 
+  const webColors = {
+    primary: '#7BF1A8',
+    primaryDark: '#333333',
+    greenLight: '#f0fdf7',
+    greenLighter: '#f8fffc',
+  };
+
   return (
-    <div className="px-6 py-4 bg-white border border-gray-200 shadow-sm rounded-lg">
-      <div className="grid grid-cols-5 gap-4">
-        {/* 1. Selector de Cliente */}
-        <div className="flex flex-col">
-          <label className="text-xs font-semibold text-gray-600 mb-2">Seleccionar Cliente</label>
+    <div className="border-2 rounded-lg overflow-hidden" style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}>
+      {/* Header - Same style as ContentDefinition */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full px-6 py-4 flex items-center justify-between transition hover:bg-gray-50"
+        style={{ backgroundColor: '#ffffff' }}
+      >
+        <div className="flex items-center gap-4">
+          <div style={{ color: webColors.primary }}>
+            <Users size={24} />
+          </div>
+          <div className="text-left">
+            <h3 className="font-bold text-gray-900 text-lg">Seleccionar Cliente</h3>
+            <p className="text-sm text-gray-600">Datos e información del cliente</p>
+          </div>
+        </div>
+        {isExpanded ? (
+          <ChevronUp size={20} style={{ color: webColors.primary }} />
+        ) : (
+          <ChevronDown size={20} style={{ color: webColors.primary }} />
+        )}
+      </button>
+
+      {/* SELECTOR DE CLIENTE - CON TOGGLE */}
+      {isExpanded && (
+        <div className="px-8 py-4 border-t-2 space-y-4" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+          <div className="flex-1 max-w-2xl relative">
           <select
             value={selectedClient?.id || ''}
             onChange={(e) => {
               const client = clients.find((c) => c.id === e.target.value);
               if (client) onSelectClient(client);
             }}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:outline-none bg-white cursor-pointer appearance-none pr-10"
+            style={{ borderColor: webColors.primary, color: webColors.primaryDark }}
           >
             <option value="">-- Selecciona cliente --</option>
             {clients.map((client) => (
               <option key={client.id} value={client.id}>
                 {client.name}
+                {client.description ? ` | ${client.description}` : ''}
               </option>
             ))}
           </select>
+          <ChevronDown size={16} className="absolute right-3 top-4 pointer-events-none" style={{ color: webColors.primary }} />
         </div>
 
-        {/* 2. Información del Cliente */}
+        {/* INFORMACIÓN DEL CLIENTE - COLAPSABLE */}
         {selectedClient && (
-          <>
+          <div className="space-y-4 animate-in fade-in duration-300">
+          {/* FILA 1: Grid de 4 columnas con datos del cliente */}
+          <div className="grid grid-cols-4 gap-3">
             {/* Tipo de Negocio */}
-            <div className="flex flex-col">
-              <label className="text-xs font-semibold text-gray-600 mb-2">Tipo de Negocio</label>
-              <div className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-sm font-medium text-gray-800">
-                  {selectedClient.business_type || 'No especificado'}
-                </p>
-              </div>
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1">
+                <Building2 size={14} style={{ color: webColors.primary }} />
+                Tipo de Negocio
+              </p>
+              <p className="text-sm font-bold text-gray-800">
+                {selectedClient.business_type || 'No especificado'}
+              </p>
             </div>
 
-            {/* URL Sitio Web */}
-            <div className="flex flex-col">
-              <label className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
-                <Globe size={14} />
+            {/* Sitio Web */}
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1">
+                <Globe size={14} style={{ color: webColors.primary }} />
                 Sitio Web
-              </label>
+              </p>
               {selectedClient.website_url ? (
                 <a
                   href={selectedClient.website_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-2 bg-blue-50 rounded-lg border border-blue-200 text-blue-700 text-xs font-medium hover:bg-blue-100 transition truncate"
+                  className="text-xs font-medium hover:underline truncate block"
+                  style={{ color: webColors.primary }}
                 >
                   {selectedClient.website_url.replace(/^https?:\/\/(www\.)?/, '')}
                 </a>
               ) : (
-                <div className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
-                  <p className="text-xs text-gray-500">No configurado</p>
-                </div>
+                <p className="text-xs text-gray-500">No configurado</p>
               )}
             </div>
 
             {/* Tono por Defecto */}
-            <div className="flex flex-col">
-              <label className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
-                <Zap size={14} />
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1">
+                <Zap size={14} style={{ color: webColors.primary }} />
                 Tono Defecto
-              </label>
-              <div className="px-3 py-2 bg-purple-50 rounded-lg border border-purple-200">
-                <p className="text-sm font-medium text-purple-900 capitalize">
-                  {selectedClient.default_tone || 'professional'}
-                </p>
-              </div>
+              </p>
+              <p className="text-sm font-bold text-gray-800 capitalize">
+                {selectedClient.default_tone || 'professional'}
+              </p>
             </div>
 
-            {/* Idioma Configurado */}
-            <div className="flex flex-col">
-              <label className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
-                <Languages size={14} />
+            {/* Idioma */}
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1">
+                <Languages size={14} style={{ color: webColors.primary }} />
                 Idioma
-              </label>
-              <div className="px-3 py-2 bg-green-50 rounded-lg border border-green-200">
-                <p className="text-sm font-medium text-green-900">
-                  {selectedClient.supported_languages?.[0] || 'Español'}
-                </p>
-              </div>
+              </p>
+              <p className="text-sm font-bold text-gray-800">
+                {selectedClient.supported_languages?.[0] || 'Español'}
+              </p>
             </div>
+          </div>
 
-            {/* Canales Habilitados */}
-            <div className="flex flex-col">
-              <label className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
-                <Radio size={14} />
-                Canales
-              </label>
-              <div className="flex flex-wrap gap-1">
-                {getEnabledChannels().length > 0 ? (
-                  getEnabledChannels().slice(0, 3).map((channel) => (
-                    <span
-                      key={channel}
-                      className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium"
-                    >
-                      {channel}
-                    </span>
-                  ))
-                ) : (
-                  <span className="px-2 py-1 text-gray-500 text-xs">Sin canales</span>
-                )}
-                {getEnabledChannels().length > 3 && (
-                  <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
-                    +{getEnabledChannels().length - 3}
+          {/* FILA 3: Canales Habilitados */}
+          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
+              <Radio size={14} style={{ color: webColors.primary }} />
+              Canales Activos
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {getEnabledChannels().length > 0 ? (
+                getEnabledChannels().map((channel) => (
+                  <span
+                    key={channel}
+                    className="px-3 py-1 rounded-full text-xs font-semibold text-white"
+                    style={{ backgroundColor: webColors.primary, color: webColors.primaryDark }}
+                  >
+                    {channel}
                   </span>
-                )}
-              </div>
+                ))
+              ) : (
+                <span className="text-xs text-gray-500">Sin canales configurados</span>
+              )}
             </div>
-          </>
-        )}
-
-        {!selectedClient && (
-          <div className="col-span-4 flex items-center justify-center">
-            <p className="text-sm text-gray-500">Selecciona un cliente para ver sus datos</p>
+          </div>
           </div>
         )}
-      </div>
+        </div>
+      )}
+
+      {!selectedClient && isExpanded && (
+        <div className="px-8 py-6 border-t-2 flex items-center justify-center" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+          <p className="text-sm text-gray-500">Selecciona un cliente para ver sus datos</p>
+        </div>
+      )}
     </div>
   );
 }

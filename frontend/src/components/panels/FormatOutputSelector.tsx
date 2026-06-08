@@ -27,6 +27,12 @@ const CATEGORIES = [
     icon: '📧',
     color: '#f59e0b',
   },
+  {
+    id: 'reputation',
+    name: '⭐ REPUTACIÓN & COMUNIDAD (LOCAL & TIKTOK)',
+    icon: '⭐',
+    color: '#8b5cf6',
+  },
 ];
 
 const FORMATS = {
@@ -92,7 +98,7 @@ const FORMATS = {
       icon: '💌',
       description: '250-350 palabras, variables personalizables, Asunto agresivo',
       hasSub: true,
-      subType: 'tone-selector',
+      subType: 'email-personalization',
     },
     {
       id: 'newsletter',
@@ -100,7 +106,7 @@ const FORMATS = {
       icon: '📰',
       description: '600-800 palabras, formato Substack, liderazgo intelectual',
       hasSub: true,
-      subType: 'tone-selector',
+      subType: 'newsletter-structure',
     },
     {
       id: 'pdf-leadmagnet',
@@ -108,7 +114,23 @@ const FORMATS = {
       icon: '📄',
       description: '2-3 páginas descargables con estructura formal',
       hasSub: true,
-      subType: 'tone-selector',
+      subType: 'pdf-report-types',
+    },
+  ],
+  reputation: [
+    {
+      id: 'local-seo-reviews',
+      name: 'Reseñas Local SEO (GBP)',
+      icon: '📍',
+      description: 'Respuestas optimizadas con keywords locales para Google Maps o plantillas de petición de reseña con enfoque SEO',
+      hasSub: false,
+    },
+    {
+      id: 'tiktok-ugc',
+      name: 'TikTok Community & UGC',
+      icon: '🎬',
+      description: 'Guiones de vídeo estilo UGC basados en reseñas de producto o guiones de respuesta a comentarios/objeciones de usuarios',
+      hasSub: false,
     },
   ],
 };
@@ -143,6 +165,90 @@ const INSTAGRAM_CAROUSEL = [
     name: 'Carrusel de 4 Láminas',
     description: 'Estructura visual optimizada para engagement',
     icon: '🎬',
+  },
+];
+
+const EMAIL_PERSONALIZATION = [
+  {
+    id: 'email-vars-basic',
+    name: 'Variables Básicas',
+    description: '{{nombre}}, {{empresa}}, {{producto}}',
+    icon: '📝',
+  },
+  {
+    id: 'email-vars-advanced',
+    name: 'Variables Avanzadas',
+    description: '{{ciudad}}, {{sector}}, {{presupuesto}}, {{fecha_compra}}',
+    icon: '🔧',
+  },
+];
+
+const EMAIL_SUBJECT_TYPES = [
+  {
+    id: 'subject-urgency',
+    name: 'Urgencia / FOMO',
+    description: 'Limpiado, ofertas por tiempo limitado',
+    icon: '⏰',
+  },
+  {
+    id: 'subject-curiosity',
+    name: 'Curiosidad / Intriga',
+    description: 'Preguntas, números, datos sorprendentes',
+    icon: '❓',
+  },
+  {
+    id: 'subject-benefit',
+    name: 'Beneficio Directo',
+    description: 'Promesas claras de valor (Ahorro, Crecimiento)',
+    icon: '✨',
+  },
+];
+
+const NEWSLETTER_STRUCTURE = [
+  {
+    id: 'newsletter-intro-main-close',
+    name: 'Intro + Contenido + Conclusión',
+    description: 'Estructura clásica: gancho, artículo, llamada a acción',
+    icon: '📄',
+  },
+  {
+    id: 'newsletter-curated',
+    name: 'Curación Semanal (Top 5)',
+    description: '5 artículos seleccionados con comentarios personales',
+    icon: '⭐',
+  },
+  {
+    id: 'newsletter-deep-dive',
+    name: 'Deep Dive Temático',
+    description: 'Análisis profundo de 1-2 temas con secciones numeradas',
+    icon: '🔍',
+  },
+];
+
+const PDF_REPORT_TYPES = [
+  {
+    id: 'pdf-case-study',
+    name: 'Case Study',
+    description: 'Problema → Solución → Resultados con métricas reales',
+    icon: '📊',
+  },
+  {
+    id: 'pdf-whitepaper',
+    name: 'Whitepaper',
+    description: 'Investigación formal, datos, bibliografía, conclusiones técnicas',
+    icon: '📑',
+  },
+  {
+    id: 'pdf-guide',
+    name: 'Guía Práctica',
+    description: 'Paso a paso, checklist, ejemplos aplicables',
+    icon: '📘',
+  },
+  {
+    id: 'pdf-industry-report',
+    name: 'Reporte de Industria',
+    description: 'Análisis de tendencias, benchmark, pronósticos',
+    icon: '📈',
   },
 ];
 
@@ -207,8 +313,8 @@ export default function FormatOutputSelector({
 
   return (
     <div className="w-full space-y-6">
-      {/* Categories Grid - 3 Columns */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Categories Grid - 4 Columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {CATEGORIES.map((category) => (
           <div key={category.id} className="space-y-3">
           {/* Category Header */}
@@ -337,15 +443,129 @@ export default function FormatOutputSelector({
                     </div>
                   )}
 
-                  {/* Tone Selector */}
-                  {isSelected && hasSub && format.subType === 'tone-selector' && (
-                    <div className="ml-4 p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm overflow-hidden transition-all duration-300">
-                      <ToneSelector
-                        selectedTone={
-                          selectedFormats[key]?.tone || 'professional'
-                        }
-                        onChange={(tone) => handleToneChange(key, tone)}
-                      />
+                  {/* Email Personalization Variables */}
+                  {isSelected && hasSub && format.subType === 'email-personalization' && (
+                    <div className="ml-4 space-y-2">
+                      <div className="text-xs font-semibold text-gray-700 mb-2">
+                        📝 Variables de Personalización
+                      </div>
+                      {EMAIL_PERSONALIZATION.map((var_type) => (
+                        <label
+                          key={var_type.id}
+                          className={`flex items-start p-3 rounded-lg border-2 cursor-pointer transition ${
+                            subSelectorValues[key] === var_type.id
+                              ? 'bg-yellow-50 border-yellow-500'
+                              : 'bg-white border-gray-200 hover:border-yellow-300'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name={`email-vars-${key}`}
+                            value={var_type.id}
+                            checked={subSelectorValues[key] === var_type.id}
+                            onChange={(e) => handleSubSelectorChange(key, e.target.value)}
+                            className="w-4 h-4 mt-0.5 cursor-pointer"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="ml-3 flex-1">
+                            <p className="text-xs font-bold text-gray-800">{var_type.icon} {var_type.name}</p>
+                            <p className="text-xs text-gray-600 mt-1">{var_type.description}</p>
+                          </div>
+                        </label>
+                      ))}
+                      <div className="text-xs font-semibold text-gray-700 mt-4 mb-2">
+                        ⏰ Tipo de Asunto
+                      </div>
+                      {EMAIL_SUBJECT_TYPES.map((subject_type) => (
+                        <label
+                          key={subject_type.id}
+                          className={`flex items-start p-3 rounded-lg border-2 cursor-pointer transition ${
+                            subSelectorValues[`${key}-subject`] === subject_type.id
+                              ? 'bg-yellow-50 border-yellow-500'
+                              : 'bg-white border-gray-200 hover:border-yellow-300'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name={`email-subject-${key}`}
+                            value={subject_type.id}
+                            checked={subSelectorValues[`${key}-subject`] === subject_type.id}
+                            onChange={(e) => handleSubSelectorChange(`${key}-subject`, e.target.value)}
+                            className="w-4 h-4 mt-0.5 cursor-pointer"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="ml-3 flex-1">
+                            <p className="text-xs font-bold text-gray-800">{subject_type.icon} {subject_type.name}</p>
+                            <p className="text-xs text-gray-600 mt-1">{subject_type.description}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Newsletter Structure */}
+                  {isSelected && hasSub && format.subType === 'newsletter-structure' && (
+                    <div className="ml-4 space-y-2">
+                      <div className="text-xs font-semibold text-gray-700 mb-2">
+                        📋 Estructura Substack
+                      </div>
+                      {NEWSLETTER_STRUCTURE.map((structure) => (
+                        <label
+                          key={structure.id}
+                          className={`flex items-start p-3 rounded-lg border-2 cursor-pointer transition ${
+                            subSelectorValues[key] === structure.id
+                              ? 'bg-orange-50 border-orange-500'
+                              : 'bg-white border-gray-200 hover:border-orange-300'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name={`newsletter-${key}`}
+                            value={structure.id}
+                            checked={subSelectorValues[key] === structure.id}
+                            onChange={(e) => handleSubSelectorChange(key, e.target.value)}
+                            className="w-4 h-4 mt-0.5 cursor-pointer"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="ml-3 flex-1">
+                            <p className="text-xs font-bold text-gray-800">{structure.icon} {structure.name}</p>
+                            <p className="text-xs text-gray-600 mt-1">{structure.description}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* PDF Report Type */}
+                  {isSelected && hasSub && format.subType === 'pdf-report-types' && (
+                    <div className="ml-4 space-y-2">
+                      <div className="text-xs font-semibold text-gray-700 mb-2">
+                        📊 Tipo de Reporte
+                      </div>
+                      {PDF_REPORT_TYPES.map((report_type) => (
+                        <label
+                          key={report_type.id}
+                          className={`flex items-start p-3 rounded-lg border-2 cursor-pointer transition ${
+                            subSelectorValues[key] === report_type.id
+                              ? 'bg-purple-50 border-purple-500'
+                              : 'bg-white border-gray-200 hover:border-purple-300'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name={`pdf-${key}`}
+                            value={report_type.id}
+                            checked={subSelectorValues[key] === report_type.id}
+                            onChange={(e) => handleSubSelectorChange(key, e.target.value)}
+                            className="w-4 h-4 mt-0.5 cursor-pointer"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="ml-3 flex-1">
+                            <p className="text-xs font-bold text-gray-800">{report_type.icon} {report_type.name}</p>
+                            <p className="text-xs text-gray-600 mt-1">{report_type.description}</p>
+                          </div>
+                        </label>
+                      ))}
                     </div>
                   )}
                 </div>

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useGenerator } from '../../src/context/GeneratorContext';
-import PlanGeneratorPanel from '../../src/components/panels/PlanGeneratorPanel';
+import { useGenerator } from '../../../src/context/GeneratorContext';
+import PlanGeneratorPanel from '../../../src/components/panels/PlanGeneratorPanel';
 
 export default function PlanGeneratorPage() {
   const { clients, selectedClient, selectClient } = useGenerator();
