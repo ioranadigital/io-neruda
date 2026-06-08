@@ -97,7 +97,12 @@ export default function PlanGeneratorInteligente({
   const [selectedTone, setSelectedTone] = useState<string | null>(null);
   const [targetAudience, setTargetAudience] = useState('');
   const [expandedSemantic, setExpandedSemantic] = useState(true);
-  const [semanticStructure, setSemanticStructure] = useState<string>('');
+  const [h1Title, setH1Title] = useState('');
+  const [h2Title, setH2Title] = useState('');
+  const [urlSlug, setUrlSlug] = useState('');
+  const [internalLink1, setInternalLink1] = useState('');
+  const [internalLink2, setInternalLink2] = useState('');
+  const [semanticElements, setSemanticElements] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setMounted(true);
@@ -728,18 +733,102 @@ export default function PlanGeneratorInteligente({
           {/* Contenido del Acordeón */}
           {expandedSemantic && (
             <div className="px-6 py-4 space-y-4">
-              <p className="text-sm text-gray-600 mb-4">Define la estructura semántica y conceptos clave basados en la propuesta de contenido seleccionada. La IA puede sugerir opciones basadas en PASO 3.</p>
+              <p className="text-sm text-gray-600 mb-4">Define la estructura y metadatos del contenido. Los campos pueden ser rellenados automáticamente por la IA basado en PASO 3.</p>
 
-              {/* Estructura Semántica - Textarea Editable */}
+              {/* Grid 2 columnas para campos */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Título H1 */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Título H1</label>
+                  <input
+                    type="text"
+                    value={h1Title}
+                    onChange={(e) => setH1Title(e.target.value)}
+                    placeholder="Ej: 5 trucos para encender carbón"
+                    className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                {/* Título H2 */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Título H2</label>
+                  <input
+                    type="text"
+                    value={h2Title}
+                    onChange={(e) => setH2Title(e.target.value)}
+                    placeholder="Ej: Preparación inicial"
+                    className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                {/* Slug de la URL */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Slug de la URL</label>
+                  <input
+                    type="text"
+                    value={urlSlug}
+                    onChange={(e) => setUrlSlug(e.target.value)}
+                    placeholder="Ej: /barbacoas-jardin-terraza/"
+                    className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                {/* Enlace Interno 1 */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Enlace Interno 1</label>
+                  <input
+                    type="text"
+                    value={internalLink1}
+                    onChange={(e) => setInternalLink1(e.target.value)}
+                    placeholder="Ej: /blog/como-elegir-barbacoa/"
+                    className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                {/* Enlace Interno 2 */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Enlace Interno 2</label>
+                  <input
+                    type="text"
+                    value={internalLink2}
+                    onChange={(e) => setInternalLink2(e.target.value)}
+                    placeholder="Ej: /tienda/accesorios-barbacoa/"
+                    className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Elementos Semánticos */}
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-2">Estructura Semántica</label>
-                <textarea
-                  value={semanticStructure}
-                  onChange={(e) => setSemanticStructure(e.target.value)}
-                  placeholder="Define la estructura semántica aquí. Ejemplo: Conceptos clave, relaciones semánticas, entidades nombradas, etc."
-                  className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:outline-none resize-none"
-                  rows={4}
-                />
+                <label className="block text-sm font-semibold text-gray-800 mb-3">Elementos Semánticos</label>
+                <div className="space-y-2">
+                  {[
+                    { value: 'ul-li', label: '📋 Listas con viñetas', code: '(<ul>, <li>)' },
+                    { value: 'table', label: '📊 Tablas comparativas', code: '(<table>)' },
+                    { value: 'blockquote', label: '💬 Bloques de cita / notas', code: '(<blockquote>)' },
+                  ].map(({ value, label, code }) => (
+                    <label key={value} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={semanticElements.has(value)}
+                        onChange={(e) => {
+                          const newElements = new Set(semanticElements);
+                          if (e.target.checked) {
+                            newElements.add(value);
+                          } else {
+                            newElements.delete(value);
+                          }
+                          setSemanticElements(newElements);
+                        }}
+                        className="w-4 h-4 rounded border-2 border-gray-300 cursor-pointer accent-blue-500"
+                      />
+                      <div>
+                        <p className="text-sm font-semibold text-gray-800">{label}</p>
+                        <p className="text-xs text-gray-600">{code}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               {/* Sugerencias basadas en propuesta seleccionada */}
