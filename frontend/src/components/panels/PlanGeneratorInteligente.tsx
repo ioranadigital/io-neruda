@@ -383,62 +383,233 @@ export default function PlanGeneratorInteligente({
 
               {/* 3. Tono de Contenido */}
               <div>
-                <label className="text-sm font-semibold text-gray-800 mb-2">🎤 Tono de Contenido</label>
-                <div className="space-y-2">
-                  {[
-                    { value: 'professional', icon: '🏢', label: 'Professional', desc: 'Páginas corporativas, comunicados de marca, servicios de alto valor', tags: ['Tono corporativo', 'ejecutivo', 'institucional', 'alta dirección'] },
-                    { value: 'corporate', icon: '🏢', label: 'Corporate / Executive', desc: 'Lenguaje formal, estructuras complejas, autoridad institucional', tags: ['Tono académico', 'analítico', 'imperativo', 'basado en datos'] },
-                    { value: 'authoritative', icon: '🎓', label: 'Authoritative / Academic', desc: 'Rigor absoluto, basado en datos, normativas vigentes', tags: ['Tono académico', 'analítico', 'imperativo', 'basado en datos'] },
-                    { value: 'commercial', icon: '💼', label: 'Commercial / Sales-driven', desc: 'Persuasión y beneficios (B2B/B2C), enfoque en ROI', tags: ['Tono persuasivo', 'comercial', 'B2B', 'propuesta de valor'] },
-                    { value: 'friendly', icon: '🤝', label: 'Friendly', desc: 'Artículos de blog, newsletters, redes sociales, guías iniciales', tags: [] },
-                    { value: 'technical', icon: '🛠️', label: 'Technical', desc: 'Fichas de producto, manuales, FAQs técnicas, comparativas', tags: [] },
-                    { value: 'hybrid', icon: '🎛️', label: 'Custom / Hybrid', desc: 'Tonos personalizados cruzando múltiples estilos', tags: [] },
-                  ].map(({ value, icon, label, desc, tags }) => (
-                    <button
-                      key={value}
-                      onClick={() => setSelectedTone(value)}
-                      className={`w-full text-left p-3 rounded-lg border-2 transition ${
-                        selectedTone === value
-                          ? 'border-indigo-500 bg-indigo-50'
-                          : 'border-gray-200 bg-white hover:border-indigo-300'
-                      }`}
-                    >
-                      <div className="flex items-start gap-2">
-                        <div className={`w-4 h-4 rounded-full border-2 mt-1 flex-shrink-0 ${
-                          selectedTone === value
-                            ? 'border-indigo-500 bg-indigo-500'
-                            : 'border-gray-300'
-                        }`} />
-                        <div className="flex-1">
-                          <p className="font-semibold text-sm text-gray-800">{icon} {label}</p>
-                          <p className="text-xs text-gray-600 mt-1">{desc}</p>
-                          {tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {tags.map((tag, idx) => (
-                                <span key={idx} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded">
-                                  💬 {tag}
-                                </span>
-                              ))}
-                            </div>
-                          )}
+                <label className="text-sm font-semibold text-gray-800 mb-3">🎤 Tono de Contenido</label>
+
+                {/* Grid 2 columnas: Tonos principales (izq) + Sub-selecciones (der) */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Columna Izquierda: Tonos Principales */}
+                  <div className="space-y-2">
+                    {[
+                      { value: 'professional', icon: '🏢', label: 'Professional', desc: 'Corporativo, formal, autoridad institucional' },
+                      { value: 'friendly', icon: '🤝', label: 'Friendly', desc: 'Blog, newsletters, redes sociales' },
+                      { value: 'technical', icon: '🛠️', label: 'Technical', desc: 'Fichas técnicas, manuales, FAQs' },
+                      { value: 'hybrid', icon: '🎛️', label: 'Custom / Hybrid', desc: 'Tonos personalizados cruzados' },
+                    ].map(({ value, icon, label, desc }) => (
+                      <button
+                        key={value}
+                        onClick={() => setSelectedTone(null)}
+                        className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                          [selectedTone?.split('-')[0]].includes(value)
+                            ? 'border-indigo-500 bg-indigo-50'
+                            : 'border-gray-200 bg-white hover:border-indigo-300'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          <div className={`w-4 h-4 rounded-full border-2 mt-1 flex-shrink-0 ${
+                            [selectedTone?.split('-')[0]].includes(value)
+                              ? 'border-indigo-500 bg-indigo-500'
+                              : 'border-gray-300'
+                          }`} />
+                          <div className="flex-1">
+                            <p className="font-semibold text-sm text-gray-800">{icon} {label}</p>
+                            <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                          </div>
                         </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Columna Derecha: Sub-selecciones */}
+                  <div className="space-y-2">
+                    {selectedTone === 'professional' && (
+                      <>
+                        {[
+                          { value: 'professional-corporate', icon: '🏢', label: 'Corporate / Executive', desc: 'Lenguaje formal, estructuras complejas, autoridad institucional', tags: ['Tono corporativo', 'ejecutivo', 'institucional', 'alta dirección'] },
+                          { value: 'professional-authoritative', icon: '🎓', label: 'Authoritative / Academic', desc: 'Rigor absoluto, basado en datos, normativas vigentes', tags: ['Tono académico', 'analítico', 'imperativo', 'basado en datos'] },
+                          { value: 'professional-commercial', icon: '💼', label: 'Commercial / Sales-driven', desc: 'Persuasión y beneficios (B2B/B2C), enfoque en ROI', tags: ['Tono persuasivo', 'comercial', 'B2B', 'propuesta de valor'] },
+                        ].map(({ value, icon, label, desc, tags }) => (
+                          <button
+                            key={value}
+                            onClick={() => setSelectedTone(value)}
+                            className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                              selectedTone === value
+                                ? 'border-indigo-500 bg-indigo-50'
+                                : 'border-gray-200 bg-white hover:border-indigo-300'
+                            }`}
+                          >
+                            <div className="flex items-start gap-2">
+                              <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex-shrink-0 ${
+                                selectedTone === value
+                                  ? 'border-indigo-500 bg-indigo-500'
+                                  : 'border-gray-300'
+                              }`} />
+                              <div className="flex-1">
+                                <p className="font-semibold text-sm text-gray-800">{icon} {label}</p>
+                                <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                                {tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-2">
+                                    {tags.map((tag, idx) => (
+                                      <span key={idx} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded">
+                                        💬 {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </>
+                    )}
+
+                    {selectedTone === 'friendly' && (
+                      <>
+                        {[
+                          { value: 'friendly-casual', icon: '🤝', label: 'Casual & Approachable', desc: 'Tono conversacional, accesible y cercano', tags: ['Tono amigable', 'conversacional', 'accesible'] },
+                          { value: 'friendly-inspirational', icon: '✨', label: 'Inspirational & Motivating', desc: 'Energizante, positivo, empoderante', tags: ['Tono inspirador', 'motivador', 'positivo'] },
+                          { value: 'friendly-educational', icon: '📚', label: 'Educational & Helpful', desc: 'Educativo pero accesible, guía paso a paso', tags: ['Tono educativo', 'ayuda', 'guía práctica'] },
+                        ].map(({ value, icon, label, desc, tags }) => (
+                          <button
+                            key={value}
+                            onClick={() => setSelectedTone(value)}
+                            className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                              selectedTone === value
+                                ? 'border-indigo-500 bg-indigo-50'
+                                : 'border-gray-200 bg-white hover:border-indigo-300'
+                            }`}
+                          >
+                            <div className="flex items-start gap-2">
+                              <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex-shrink-0 ${
+                                selectedTone === value
+                                  ? 'border-indigo-500 bg-indigo-500'
+                                  : 'border-gray-300'
+                              }`} />
+                              <div className="flex-1">
+                                <p className="font-semibold text-sm text-gray-800">{icon} {label}</p>
+                                <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                                {tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-2">
+                                    {tags.map((tag, idx) => (
+                                      <span key={idx} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded">
+                                        💬 {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </>
+                    )}
+
+                    {selectedTone === 'technical' && (
+                      <>
+                        {[
+                          { value: 'technical-detailed', icon: '🛠️', label: 'Detailed & Precise', desc: 'Especificaciones exactas, terminología técnica', tags: ['Tono preciso', 'especificaciones', 'técnico'] },
+                          { value: 'technical-developer', icon: '💻', label: 'Developer-Focused', desc: 'Para desarrolladores, código y APIs', tags: ['Tono developer', 'código', 'APIs'] },
+                          { value: 'technical-explanatory', icon: '📖', label: 'Explanatory & Clear', desc: 'Técnico pero explicado de forma clara', tags: ['Tono explicativo', 'claridad', 'detallado'] },
+                        ].map(({ value, icon, label, desc, tags }) => (
+                          <button
+                            key={value}
+                            onClick={() => setSelectedTone(value)}
+                            className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                              selectedTone === value
+                                ? 'border-indigo-500 bg-indigo-50'
+                                : 'border-gray-200 bg-white hover:border-indigo-300'
+                            }`}
+                          >
+                            <div className="flex items-start gap-2">
+                              <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex-shrink-0 ${
+                                selectedTone === value
+                                  ? 'border-indigo-500 bg-indigo-500'
+                                  : 'border-gray-300'
+                              }`} />
+                              <div className="flex-1">
+                                <p className="font-semibold text-sm text-gray-800">{icon} {label}</p>
+                                <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                                {tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-2">
+                                    {tags.map((tag, idx) => (
+                                      <span key={idx} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded">
+                                        💬 {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </>
+                    )}
+
+                    {selectedTone === 'hybrid' && (
+                      <>
+                        {[
+                          { value: 'hybrid-balanced', icon: '⚖️', label: 'Balanced Mix', desc: 'Combinación equilibrada de profesional y amigable', tags: ['Tono balanceado', 'profesional+amigable'] },
+                          { value: 'hybrid-technical-friendly', icon: '🔧', label: 'Technical + Friendly', desc: 'Técnico pero accesible para no expertos', tags: ['Tono técnico-amigable', 'accesible'] },
+                          { value: 'hybrid-custom', icon: '✏️', label: 'Custom Blend', desc: 'Define tu propia combinación única', tags: ['Tono personalizado', 'único'] },
+                        ].map(({ value, icon, label, desc, tags }) => (
+                          <button
+                            key={value}
+                            onClick={() => setSelectedTone(value)}
+                            className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                              selectedTone === value
+                                ? 'border-indigo-500 bg-indigo-50'
+                                : 'border-gray-200 bg-white hover:border-indigo-300'
+                            }`}
+                          >
+                            <div className="flex items-start gap-2">
+                              <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex-shrink-0 ${
+                                selectedTone === value
+                                  ? 'border-indigo-500 bg-indigo-500'
+                                  : 'border-gray-300'
+                              }`} />
+                              <div className="flex-1">
+                                <p className="font-semibold text-sm text-gray-800">{icon} {label}</p>
+                                <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                                {tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-2">
+                                    {tags.map((tag, idx) => (
+                                      <span key={idx} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded">
+                                        💬 {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </>
+                    )}
+
+                    {!selectedTone && (
+                      <div className="p-4 rounded-lg border-2 border-dashed border-gray-300 text-center text-gray-500 text-sm">
+                        Selecciona un tono principal para ver sub-opciones
                       </div>
-                    </button>
-                  ))}
+                    )}
+                  </div>
                 </div>
+
+                {/* Display block para tono seleccionado */}
                 {selectedTone && (
-                  <div className="mt-3 p-3 bg-indigo-50 rounded-lg border-2 border-indigo-200">
+                  <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-2 border-indigo-200">
                     <p className="text-xs font-semibold text-gray-600">Tono seleccionado:</p>
                     <p className="text-sm font-bold text-indigo-700 mt-1">
-                      {[
-                        { value: 'professional', label: 'Professional' },
-                        { value: 'corporate', label: 'Corporate / Executive' },
-                        { value: 'authoritative', label: 'Authoritative / Academic' },
-                        { value: 'commercial', label: 'Commercial / Sales-driven' },
-                        { value: 'friendly', label: 'Friendly' },
-                        { value: 'technical', label: 'Technical' },
-                        { value: 'hybrid', label: 'Custom / Hybrid' },
-                      ].find(t => t.value === selectedTone)?.label}
+                      {selectedTone === 'professional-corporate' && 'Professional > Corporate / Executive'}
+                      {selectedTone === 'professional-authoritative' && 'Professional > Authoritative / Academic'}
+                      {selectedTone === 'professional-commercial' && 'Professional > Commercial / Sales-driven'}
+                      {selectedTone === 'friendly-casual' && 'Friendly > Casual & Approachable'}
+                      {selectedTone === 'friendly-inspirational' && 'Friendly > Inspirational & Motivating'}
+                      {selectedTone === 'friendly-educational' && 'Friendly > Educational & Helpful'}
+                      {selectedTone === 'technical-detailed' && 'Technical > Detailed & Precise'}
+                      {selectedTone === 'technical-developer' && 'Technical > Developer-Focused'}
+                      {selectedTone === 'technical-explanatory' && 'Technical > Explanatory & Clear'}
+                      {selectedTone === 'hybrid-balanced' && 'Custom / Hybrid > Balanced Mix'}
+                      {selectedTone === 'hybrid-technical-friendly' && 'Custom / Hybrid > Technical + Friendly'}
+                      {selectedTone === 'hybrid-custom' && 'Custom / Hybrid > Custom Blend'}
                     </p>
                   </div>
                 )}
