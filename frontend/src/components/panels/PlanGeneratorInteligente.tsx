@@ -167,7 +167,6 @@ export default function PlanGeneratorInteligente({
     semanticElements,
     selectedFormats,
     subSelectorValues,
-    onFormDataChange,
     mounted,
   ]);
 
