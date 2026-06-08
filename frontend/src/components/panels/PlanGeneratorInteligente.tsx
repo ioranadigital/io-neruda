@@ -93,6 +93,7 @@ export default function PlanGeneratorInteligente({
   const [expandedProposals, setExpandedProposals] = useState(true);
   const [expandedStrategy, setExpandedStrategy] = useState(true);
   const [selectedContentIntent, setSelectedContentIntent] = useState<string | null>(null);
+  const [selectedMainTone, setSelectedMainTone] = useState<string | null>(null);
   const [selectedTone, setSelectedTone] = useState<string | null>(null);
   const [targetAudience, setTargetAudience] = useState('');
 
@@ -397,9 +398,9 @@ export default function PlanGeneratorInteligente({
                     ].map(({ value, icon, label, desc }) => (
                       <button
                         key={value}
-                        onClick={() => setSelectedTone(null)}
+                        onClick={() => setSelectedMainTone(value)}
                         className={`w-full text-left p-3 rounded-lg border-2 transition ${
-                          [selectedTone?.split('-')[0]].includes(value)
+                          selectedMainTone === value
                             ? 'border-indigo-500 bg-indigo-50'
                             : 'border-gray-200 bg-white hover:border-indigo-300'
                         }`}
@@ -421,7 +422,7 @@ export default function PlanGeneratorInteligente({
 
                   {/* Columna Derecha: Sub-selecciones */}
                   <div className="space-y-2">
-                    {selectedTone === 'professional' && (
+                    {selectedMainTone === 'professional' && (
                       <>
                         {[
                           { value: 'professional-corporate', icon: '🏢', label: 'Corporate / Executive', desc: 'Lenguaje formal, estructuras complejas, autoridad institucional', tags: ['Tono corporativo', 'ejecutivo', 'institucional', 'alta dirección'] },
@@ -462,7 +463,7 @@ export default function PlanGeneratorInteligente({
                       </>
                     )}
 
-                    {selectedTone === 'friendly' && (
+                    {selectedMainTone === 'friendly' && (
                       <>
                         {[
                           { value: 'friendly-casual', icon: '🤝', label: 'Casual & Approachable', desc: 'Tono conversacional, accesible y cercano', tags: ['Tono amigable', 'conversacional', 'accesible'] },
@@ -503,7 +504,7 @@ export default function PlanGeneratorInteligente({
                       </>
                     )}
 
-                    {selectedTone === 'technical' && (
+                    {selectedMainTone === 'technical' && (
                       <>
                         {[
                           { value: 'technical-detailed', icon: '🛠️', label: 'Detailed & Precise', desc: 'Especificaciones exactas, terminología técnica', tags: ['Tono preciso', 'especificaciones', 'técnico'] },
@@ -544,7 +545,7 @@ export default function PlanGeneratorInteligente({
                       </>
                     )}
 
-                    {selectedTone === 'hybrid' && (
+                    {selectedMainTone === 'hybrid' && (
                       <>
                         {[
                           { value: 'hybrid-balanced', icon: '⚖️', label: 'Balanced Mix', desc: 'Combinación equilibrada de profesional y amigable', tags: ['Tono balanceado', 'profesional+amigable'] },
@@ -585,7 +586,7 @@ export default function PlanGeneratorInteligente({
                       </>
                     )}
 
-                    {!selectedTone && (
+                    {!selectedMainTone && (
                       <div className="p-4 rounded-lg border-2 border-dashed border-gray-300 text-center text-gray-500 text-sm">
                         Selecciona un tono principal para ver sub-opciones
                       </div>
