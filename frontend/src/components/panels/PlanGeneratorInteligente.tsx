@@ -216,68 +216,69 @@ export default function PlanGeneratorInteligente({
               )}
             </div>
 
-            {/* Columna 2: Vacío de momento */}
-            <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center min-h-96">
-              <div className="text-center">
-                <p className="text-gray-400 text-sm font-medium">Espacio reservado</p>
-                <p className="text-gray-300 text-xs mt-1">para futuras opciones</p>
-              </div>
+            {/* Columna 2: Refina Manualmente */}
+            <div className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 space-y-4 max-h-96 overflow-y-auto">
+              {selectedClient && selectedKeywordsArray.length > 0 ? (
+                <>
+                  <div className="flex items-center gap-2 sticky top-0 bg-gradient-to-r from-amber-50 to-amber-100 pb-2">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold">2</span>
+                    <label className="text-sm font-bold text-gray-800">🔄 Refina Manualmente</label>
+                  </div>
+
+                  {/* Keywords Display */}
+                  <div className="flex flex-wrap gap-2">
+                    {selectedKeywordsArray.map((kw) => (
+                      <div
+                        key={kw}
+                        className="flex items-center gap-2 px-3 py-1 bg-white border border-amber-300 rounded-full text-sm"
+                      >
+                        <span className="text-gray-800">{kw}</span>
+                        <button
+                          onClick={() => handleRemoveKeyword(kw)}
+                          className="text-red-500 hover:text-red-700 text-xs font-bold"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Input Nueva Keyword */}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={keywordInput}
+                      onChange={(e) => setKeywordInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddCustomKeyword()}
+                      placeholder="Agrega un keyword..."
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500"
+                    />
+                    <button
+                      onClick={handleAddCustomKeyword}
+                      className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition text-sm font-medium flex items-center gap-2"
+                    >
+                      <RefreshCw size={14} /> Agregar
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center min-h-96">
+                  <div className="text-center">
+                    <p className="text-gray-400 text-sm font-medium">Selecciona keywords</p>
+                    <p className="text-gray-300 text-xs mt-1">en la columna izquierda</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {/* PASO 2: Cambiar Keywords Manualmente (Fuera del acordeón) */}
-      {selectedClient && selectedKeywordsArray.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold">2</span>
-            <label className="text-sm font-bold text-gray-800">🔄 Refina Manualmente (Opcional)</label>
-          </div>
-
-          {/* Keywords Display */}
-          <div className="flex flex-wrap gap-2">
-            {selectedKeywordsArray.map((kw) => (
-              <div
-                key={kw}
-                className="flex items-center gap-2 px-3 py-1 bg-white border border-amber-300 rounded-full text-sm"
-              >
-                <span className="text-gray-800">{kw}</span>
-                <button
-                  onClick={() => handleRemoveKeyword(kw)}
-                  className="text-red-500 hover:text-red-700 text-xs font-bold"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Input Nueva Keyword */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={keywordInput}
-              onChange={(e) => setKeywordInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAddCustomKeyword()}
-              placeholder="Agrega un keyword custom..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500"
-            />
-            <button
-              onClick={handleAddCustomKeyword}
-              className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition text-sm font-medium flex items-center gap-2"
-            >
-              <RefreshCw size={14} /> Agregar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* PASO 3: 5 Insights Sugeridos */}
+      {/* PASO 2: 5 Insights Sugeridos */}
       {selectedClient && insights.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">3</span>
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">2</span>
             <label className="text-sm font-bold text-gray-800">💡 5 Propuestas de Contenido</label>
           </div>
           <div className="grid grid-cols-1 gap-2">
@@ -299,11 +300,11 @@ export default function PlanGeneratorInteligente({
         </div>
       )}
 
-      {/* PASO 4: Origen del Insight + SEO Local */}
+      {/* PASO 3: Origen del Insight + SEO Local */}
       {selectedClient && selectedKeywordsArray.length > 0 && (
         <div className="space-y-4 pt-2 border-t border-gray-200">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">4</span>
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">3</span>
             <label className="text-sm font-bold text-gray-800">⚙️ Configuración Final</label>
           </div>
 
