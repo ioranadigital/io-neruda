@@ -104,7 +104,8 @@ export default function PlanGeneratorInteligente({
   const [internalLink2, setInternalLink2] = useState('');
   const [semanticElements, setSemanticElements] = useState<Set<string>>(new Set());
   const [expandedFormatOutput, setExpandedFormatOutput] = useState(true);
-  const [selectedFormats, setSelectedFormats] = useState<Record<string, { selected: boolean; subType?: string }>>({})
+  const [selectedFormats, setSelectedFormats] = useState<Record<string, { selected: boolean; subType?: string }>({});
+  const [subSelectorValues, setSubSelectorValues] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setMounted(true);
@@ -924,29 +925,58 @@ export default function PlanGeneratorInteligente({
                   </div>
                   <div className="space-y-2">
                     {[
-                      { id: 'blog', name: 'Blog Post', icon: '📝', desc: 'Artículos y posts para el blog' },
+                      { id: 'blog', name: 'Blog Post', icon: '📝', desc: 'Artículos y posts para el blog', hasSub: true },
                       { id: 'landing', name: 'Landing de Servicio', icon: '🎯', desc: '600-900 palabras, frameworks PAS/AIDA' },
                       { id: 'faq-schema', name: 'Bloque FAQ + Schema', icon: '❓', desc: '5-7 preguntas + código JSON-LD' },
-                    ].map((format) => (
-                      <label key={format.id} className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedFormats[`web-seo-${format.id}`]?.selected || false}
-                          onChange={(e) => {
-                            const key = `web-seo-${format.id}`;
-                            setSelectedFormats({
-                              ...selectedFormats,
-                              [key]: { ...selectedFormats[key], selected: e.target.checked }
-                            });
-                          }}
-                          className="w-4 h-4 mt-0.5 cursor-pointer accent-blue-500"
-                        />
-                        <div className="flex-1">
-                          <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
-                          <p className="text-xs text-gray-600">{format.desc}</p>
+                    ].map((format) => {
+                      const key = `web-seo-${format.id}`;
+                      const isSelected = selectedFormats[key]?.selected || false;
+                      return (
+                        <div key={format.id}>
+                          <label className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={(e) => {
+                                setSelectedFormats({
+                                  ...selectedFormats,
+                                  [key]: { ...selectedFormats[key], selected: e.target.checked }
+                                });
+                              }}
+                              className="w-4 h-4 mt-0.5 cursor-pointer accent-blue-500"
+                            />
+                            <div className="flex-1">
+                              <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
+                              <p className="text-xs text-gray-600">{format.desc}</p>
+                            </div>
+                          </label>
+                          {/* Blog Type Sub-selector */}
+                          {isSelected && format.hasSub && (
+                            <div className="ml-6 mt-2 space-y-1 text-xs">
+                              {[
+                                { id: 'short', name: 'Post Corto / Actualización', range: '500-800 palabras', icon: '⚡' },
+                                { id: 'standard', name: 'Post Estándar', range: '1000-1200 palabras', icon: '🎯' },
+                                { id: 'ultimate', name: 'Guía Definitiva / Pilar', range: '1500-2500 palabras', icon: '🏆' },
+                              ].map((type) => (
+                                <label key={type.id} className="flex items-center gap-2 p-1 rounded hover:bg-white cursor-pointer border border-blue-200">
+                                  <input
+                                    type="radio"
+                                    name={key}
+                                    value={type.id}
+                                    checked={subSelectorValues[key] === type.id}
+                                    onChange={(e) => setSubSelectorValues({ ...subSelectorValues, [key]: e.target.value })}
+                                    className="w-3 h-3 cursor-pointer"
+                                    style={{ accentColor: '#3b82f6' }}
+                                  />
+                                  <span className="text-gray-700 font-medium">{type.icon} {type.name}</span>
+                                  <span className="text-gray-500">({type.range})</span>
+                                </label>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      </label>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -958,29 +988,52 @@ export default function PlanGeneratorInteligente({
                   <div className="space-y-2">
                     {[
                       { id: 'linkedin', name: 'LinkedIn Post', icon: '💼', desc: '150-250 palabras, ganchos potentes' },
-                      { id: 'instagram', name: 'Instagram Post', icon: '📸', desc: '100-150 palabras + carrusel' },
+                      { id: 'instagram', name: 'Instagram Post', icon: '📸', desc: '100-150 palabras + carrusel', hasSub: true },
                       { id: 'facebook', name: 'Facebook Post', icon: '👥', desc: '200-300 palabras, storytelling' },
                       { id: 'twitter', name: 'Hilo X (Twitter)', icon: '𝕏', desc: '5-8 tweets con gancho numérico' },
-                    ].map((format) => (
-                      <label key={format.id} className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedFormats[`social-${format.id}`]?.selected || false}
-                          onChange={(e) => {
-                            const key = `social-${format.id}`;
-                            setSelectedFormats({
-                              ...selectedFormats,
-                              [key]: { ...selectedFormats[key], selected: e.target.checked }
-                            });
-                          }}
-                          className="w-4 h-4 mt-0.5 cursor-pointer accent-pink-500"
-                        />
-                        <div className="flex-1">
-                          <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
-                          <p className="text-xs text-gray-600">{format.desc}</p>
+                    ].map((format) => {
+                      const key = `social-${format.id}`;
+                      const isSelected = selectedFormats[key]?.selected || false;
+                      return (
+                        <div key={format.id}>
+                          <label className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={(e) => {
+                                setSelectedFormats({
+                                  ...selectedFormats,
+                                  [key]: { ...selectedFormats[key], selected: e.target.checked }
+                                });
+                              }}
+                              className="w-4 h-4 mt-0.5 cursor-pointer accent-pink-500"
+                            />
+                            <div className="flex-1">
+                              <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
+                              <p className="text-xs text-gray-600">{format.desc}</p>
+                            </div>
+                          </label>
+                          {/* Instagram Carousel Sub-selector */}
+                          {isSelected && format.hasSub && (
+                            <div className="ml-6 mt-2 space-y-1 text-xs">
+                              <label className="flex items-center gap-2 p-1 rounded hover:bg-white cursor-pointer border border-pink-200">
+                                <input
+                                  type="radio"
+                                  name={key}
+                                  value="carousel-4"
+                                  checked={subSelectorValues[key] === 'carousel-4'}
+                                  onChange={(e) => setSubSelectorValues({ ...subSelectorValues, [key]: e.target.value })}
+                                  className="w-3 h-3 cursor-pointer"
+                                  style={{ accentColor: '#ec4899' }}
+                                />
+                                <span className="text-gray-700 font-medium">🎬 Carrusel de 4 Láminas</span>
+                                <span className="text-gray-500">(Optimizado para engagement)</span>
+                              </label>
+                            </div>
+                          )}
                         </div>
-                      </label>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -991,29 +1044,105 @@ export default function PlanGeneratorInteligente({
                   </div>
                   <div className="space-y-2">
                     {[
-                      { id: 'email-sales', name: 'Email de Venta', icon: '💌', desc: '250-350 palabras, variables' },
-                      { id: 'newsletter', name: 'Newsletter Editorial', icon: '📰', desc: '600-800 palabras, Substack' },
-                      { id: 'pdf-leadmagnet', name: 'PDF Report', icon: '📄', desc: '2-3 páginas descargables' },
-                    ].map((format) => (
-                      <label key={format.id} className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedFormats[`email-${format.id}`]?.selected || false}
-                          onChange={(e) => {
-                            const key = `email-${format.id}`;
-                            setSelectedFormats({
-                              ...selectedFormats,
-                              [key]: { ...selectedFormats[key], selected: e.target.checked }
-                            });
-                          }}
-                          className="w-4 h-4 mt-0.5 cursor-pointer accent-amber-500"
-                        />
-                        <div className="flex-1">
-                          <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
-                          <p className="text-xs text-gray-600">{format.desc}</p>
+                      { id: 'email-sales', name: 'Email de Venta', icon: '💌', desc: '250-350 palabras, variables', hasSub: true },
+                      { id: 'newsletter', name: 'Newsletter Editorial', icon: '📰', desc: '600-800 palabras, Substack', hasSub: true },
+                      { id: 'pdf-leadmagnet', name: 'PDF Report', icon: '📄', desc: '2-3 páginas descargables', hasSub: true },
+                    ].map((format) => {
+                      const key = `email-${format.id}`;
+                      const isSelected = selectedFormats[key]?.selected || false;
+                      return (
+                        <div key={format.id}>
+                          <label className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={(e) => {
+                                setSelectedFormats({
+                                  ...selectedFormats,
+                                  [key]: { ...selectedFormats[key], selected: e.target.checked }
+                                });
+                              }}
+                              className="w-4 h-4 mt-0.5 cursor-pointer accent-amber-500"
+                            />
+                            <div className="flex-1">
+                              <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
+                              <p className="text-xs text-gray-600">{format.desc}</p>
+                            </div>
+                          </label>
+                          {/* Email Sales Sub-selector */}
+                          {isSelected && format.id === 'email-sales' && (
+                            <div className="ml-6 mt-2 space-y-1 text-xs">
+                              {[
+                                { id: 'email-vars-basic', name: 'Variables Básicas', desc: '{{nombre}}, {{empresa}}, {{producto}}', icon: '📝' },
+                                { id: 'email-vars-advanced', name: 'Variables Avanzadas', desc: '{{ciudad}}, {{sector}}, {{presupuesto}}', icon: '🔧' },
+                              ].map((type) => (
+                                <label key={type.id} className="flex items-center gap-2 p-1 rounded hover:bg-white cursor-pointer border border-amber-200">
+                                  <input
+                                    type="radio"
+                                    name={key}
+                                    value={type.id}
+                                    checked={subSelectorValues[key] === type.id}
+                                    onChange={(e) => setSubSelectorValues({ ...subSelectorValues, [key]: e.target.value })}
+                                    className="w-3 h-3 cursor-pointer"
+                                    style={{ accentColor: '#f59e0b' }}
+                                  />
+                                  <span className="text-gray-700 font-medium">{type.icon} {type.name}</span>
+                                  <span className="text-gray-500 text-xs">({type.desc})</span>
+                                </label>
+                              ))}
+                            </div>
+                          )}
+                          {/* Newsletter Sub-selector */}
+                          {isSelected && format.id === 'newsletter' && (
+                            <div className="ml-6 mt-2 space-y-1 text-xs">
+                              {[
+                                { id: 'newsletter-intro-main-close', name: 'Intro + Contenido + Conclusión', icon: '📄' },
+                                { id: 'newsletter-curated', name: 'Curación Semanal (Top 5)', icon: '⭐' },
+                                { id: 'newsletter-deep-dive', name: 'Deep Dive Temático', icon: '🔍' },
+                              ].map((type) => (
+                                <label key={type.id} className="flex items-center gap-2 p-1 rounded hover:bg-white cursor-pointer border border-amber-200">
+                                  <input
+                                    type="radio"
+                                    name={key}
+                                    value={type.id}
+                                    checked={subSelectorValues[key] === type.id}
+                                    onChange={(e) => setSubSelectorValues({ ...subSelectorValues, [key]: e.target.value })}
+                                    className="w-3 h-3 cursor-pointer"
+                                    style={{ accentColor: '#f59e0b' }}
+                                  />
+                                  <span className="text-gray-700 font-medium">{type.icon} {type.name}</span>
+                                </label>
+                              ))}
+                            </div>
+                          )}
+                          {/* PDF Report Sub-selector */}
+                          {isSelected && format.id === 'pdf-leadmagnet' && (
+                            <div className="ml-6 mt-2 space-y-1 text-xs">
+                              {[
+                                { id: 'pdf-case-study', name: 'Case Study', desc: 'Problema → Solución → Resultados', icon: '📊' },
+                                { id: 'pdf-whitepaper', name: 'Whitepaper', desc: 'Investigación formal, datos', icon: '📑' },
+                                { id: 'pdf-guide', name: 'Guía Práctica', desc: 'Paso a paso, checklist', icon: '📘' },
+                                { id: 'pdf-industry-report', name: 'Reporte de Industria', desc: 'Análisis de tendencias', icon: '📈' },
+                              ].map((type) => (
+                                <label key={type.id} className="flex items-center gap-2 p-1 rounded hover:bg-white cursor-pointer border border-amber-200">
+                                  <input
+                                    type="radio"
+                                    name={key}
+                                    value={type.id}
+                                    checked={subSelectorValues[key] === type.id}
+                                    onChange={(e) => setSubSelectorValues({ ...subSelectorValues, [key]: e.target.value })}
+                                    className="w-3 h-3 cursor-pointer"
+                                    style={{ accentColor: '#f59e0b' }}
+                                  />
+                                  <span className="text-gray-700 font-medium">{type.icon} {type.name}</span>
+                                  <span className="text-gray-500 text-xs">({type.desc})</span>
+                                </label>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      </label>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
