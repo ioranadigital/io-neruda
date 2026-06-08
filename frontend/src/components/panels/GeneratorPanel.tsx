@@ -5,19 +5,28 @@ import { useGenerator } from '../../context/GeneratorContext';
 import { Configuration, EnabledFormats } from '../../types/generator';
 import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
+import { useClaudeGeneration } from '@/src/hooks/useClaudeGeneration';
+import { GenerationResponse, GenerationStep } from '@/src/types/aiGeneration';
 import PlanGeneratorInteligente, { InsightOrigin } from './PlanGeneratorInteligente';
 import type { ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
+import ContentGenerationStep from './ContentGenerationStep';
 import { showToast } from '../shared/Toast';
+import { renderPrompt, getPromptTemplate } from '@/src/services/promptRenderer';
+import { buildPromptData, validatePromptData } from '@/src/utils/promptDataBuilder';
 import { X } from 'lucide-react';
 
 export default function GeneratorPanel() {
   const { clients, selectedClient, setError, error, selectClient, addContentResult, addCustomKeywordToClient } = useGenerator();
   const { createConfig } = useCreateConfiguration();
   const { generateContent, isGenerating } = useGenerateContent();
+  const { generateContent: generateAIContent, isGenerating: isAIGenerating, step: aiStep, qualityScore, error: aiError } = useClaudeGeneration();
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showGenerationStep, setShowGenerationStep] = useState(false);
+  const [generatedContent, setGeneratedContent] = useState<GenerationResponse | null>(null);
+  const [selectedKeyword, setSelectedKeyword] = useState<string>('');
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -80,6 +89,97 @@ export default function GeneratorPanel() {
     subSelectorValues: {},
   });
 
+
+  const handleStartAIGeneration = async () => {
+    if (!selectedClient) {
+      setError('Selecciona un cliente para continuar');
+      return;
+    }
+
+    if (!selectedKeyword) {
+      setError('Selecciona una keyword para generar contenido');
+      return;
+    }
+
+    try {
+      const promptData = buildPromptData(
+        formData,
+        selectedClient,
+        selectedKeyword
+      );
+
+      const validation = validatePromptData(promptData);
+      if (!validation.valid) {
+        setError(`Campos faltantes: ${validation.errors.join(', ')}`);
+        return;
+      }
+
+      const template = getPromptTemplate();
+      const renderedPrompt = renderPrompt(template, promptData);
+
+      setShowGenerationStep(true);
+      const result = await generateAIContent(renderedPrompt);
+      setGeneratedContent(result);
+      showToast.success('✅ Contenido generado exitosamente');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error generating content';
+      setError(message);
+      showToast.error(`❌ ${message}`);
+    }
+  };
+
+  const handleRegenerateContent = async () => {
+    if (!selectedClient || !selectedKeyword) return;
+
+    try {
+      const promptData = buildPromptData(formData, selectedClient, selectedKeyword);
+      const template = getPromptTemplate();
+      const renderedPrompt = renderPrompt(template, promptData);
+
+      // Add regeneration context
+      const enhancedPrompt = `${renderedPrompt}\n\nNOTA: Este es un intento de regeneración. Mejora los aspectos donde la puntuación anterior fue baja. Mantén la estructura pero aumenta la calidad general.`;
+
+      const result = await generateAIContent(enhancedPrompt);
+      setGeneratedContent(result);
+      showToast.success('✅ Contenido regenerado');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error regenerating';
+      setError(message);
+      showToast.error(`❌ ${message}`);
+    }
+  };
+
+  const handleSaveGeneratedContent = (type: 'draft' | 'version') => {
+    if (!generatedContent || !selectedClient) return;
+
+    const selectedFormat = formData.selectedFormats
+      ? (Object.keys(formData.selectedFormats).find(
+          (k) => formData.selectedFormats[k].selected
+        ) as any)
+      : 'blog';
+
+    addContentResult({
+      id: generatedContent.metadata.id,
+      clientId: selectedClient.id,
+      clientName: selectedClient.name,
+      postTitle: generatedContent.metadata.title,
+      outputFormat: selectedFormat || 'blog',
+      keywordsUsed: [selectedKeyword, ...(formData.keywordsNiche || [])],
+      generatedDate: new Date().toISOString(),
+      targetAudience: formData.targetAudience || '',
+      contentIntent: formData.selectedContentIntent || 'No especificado',
+      status: type === 'draft' ? 'draft' : 'published',
+    });
+
+    showToast.success(
+      `✅ Contenido guardado como ${type === 'draft' ? 'Borrador' : 'Versión'}`
+    );
+  };
+
+  const handleCloseGeneration = () => {
+    setShowGenerationStep(false);
+    setGeneratedContent(null);
+  };
 
   const handleGenerate = async () => {
     if (!selectedClient) {
@@ -211,7 +311,13 @@ export default function GeneratorPanel() {
             onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
             onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
             onAddCustomKeyword={addCustomKeywordToClient}
-            onFormDataChange={(data) => setFormData({ ...formData, ...data })}
+            onFormDataChange={(data) => {
+              setFormData({ ...formData, ...data });
+              // Auto-select first keyword if available
+              if (data.keywordsNiche && data.keywordsNiche.length > 0) {
+                setSelectedKeyword(data.keywordsNiche[0]);
+              }
+            }}
           />
 
           {/* Blog Length Selector (Conditional) */}
@@ -219,6 +325,20 @@ export default function GeneratorPanel() {
             <BlogLengthSelector
               value={formData.blogLength}
               onChange={(length) => setFormData({ ...formData, blogLength: length })}
+            />
+          )}
+
+          {/* PASO 7: AI Content Generation */}
+          {showGenerationStep && (
+            <ContentGenerationStep
+              isGenerating={isAIGenerating}
+              step={aiStep}
+              qualityScore={qualityScore}
+              content={generatedContent}
+              error={aiError}
+              onRegenerate={handleRegenerateContent}
+              onSave={handleSaveGeneratedContent}
+              onClose={handleCloseGeneration}
             />
           )}
         </div>
@@ -253,8 +373,8 @@ export default function GeneratorPanel() {
         </div>
       )}
 
-      {/* Final Button - Preview & Generate */}
-      <div className="px-6 pb-6">
+      {/* Final Buttons - Preview, Generate & AI Generation */}
+      <div className="px-6 pb-6 space-y-3">
         <button
           onClick={() => setShowPreviewModal(true)}
           className="w-full px-4 py-3 rounded-lg font-medium text-white transition flex items-center justify-center gap-2 border-2"
@@ -262,6 +382,20 @@ export default function GeneratorPanel() {
         >
           <span className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#000' }}>6</span>
           👁️ Ver Preview & Generar
+        </button>
+
+        <button
+          onClick={handleStartAIGeneration}
+          disabled={!selectedClient || !selectedKeyword || isAIGenerating}
+          className="w-full px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2 border-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{
+            backgroundColor: isAIGenerating ? '#94a3b8' : '#3b82f6',
+            color: '#fff',
+            borderColor: isAIGenerating ? '#94a3b8' : '#3b82f6',
+          }}
+        >
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#1e3a8a' }}>7</span>
+          {isAIGenerating ? '⏳ Generando con IA...' : '✨ Generar con Claude AI'}
         </button>
       </div>
     </div>
