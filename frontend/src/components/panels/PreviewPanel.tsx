@@ -20,6 +20,21 @@ interface PreviewPanelProps {
     localGeoEnabled?: boolean;
     localGeoValue?: string;
     blogLength?: string;
+    // PASO 2: Strategy
+    targetAudience?: string;
+    selectedContentIntent?: string | null;
+    selectedMainTone?: string | null;
+    selectedTone?: string | null;
+    // PASO 4: Semantic Definition
+    h1Title?: string;
+    h2Title?: string;
+    urlSlug?: string;
+    internalLink1?: string;
+    internalLink2?: string;
+    semanticElements?: Set<string>;
+    // PASO 5: Format Output
+    selectedFormats?: { [key: string]: { selected: boolean; subType?: string } };
+    subSelectorValues?: { [key: string]: string };
   };
   isGenerating?: boolean;
   onGenerate?: () => Promise<void>;
@@ -38,16 +53,53 @@ export default function PreviewPanel({
   const { exportToVault, downloadAsJSON, isExporting } = useVaultExport();
 
   const generationPreview = {
-    client: selectedClient?.name || 'Sin cliente',
-    configuration: formData.name || 'Sin nombre',
+    // PASO 1: Keywords
     keywords: {
       niche: formData.keywordsNiche,
       longtail: formData.keywordsLongtail,
     },
-    tone: formData.tone,
-    formats: Object.entries(formData.enabledFormats)
-      .filter(([, enabled]) => enabled)
-      .map(([format]) => format),
+    // PASO 2: Strategy
+    strategy: {
+      targetAudience: formData.targetAudience || 'No especificado',
+      contentIntent: formData.selectedContentIntent || 'No especificado',
+      mainTone: formData.selectedMainTone || 'No especificado',
+      selectedTone: formData.selectedTone || 'No especificado',
+    },
+    // PASO 4: Semantic Definition
+    semanticDefinition: {
+      h1Title: formData.h1Title || 'No especificado',
+      h2Title: formData.h2Title || 'No especificado',
+      urlSlug: formData.urlSlug || 'No especificado',
+      internalLinks: {
+        link1: formData.internalLink1 || 'No especificado',
+        link2: formData.internalLink2 || 'No especificado',
+      },
+      semanticElements: formData.semanticElements ? Array.from(formData.semanticElements) : [],
+    },
+    // PASO 5: Format Output
+    formatOutput: {
+      selectedFormats: formData.selectedFormats
+        ? Object.entries(formData.selectedFormats)
+            .filter(([, format]) => format.selected)
+            .map(([key, format]) => ({
+              format: key,
+              subType: format.subType || 'default',
+            }))
+        : [],
+      subSelectorValues: formData.subSelectorValues || {},
+    },
+    // PASO 6: Configuration
+    configuration: {
+      client: selectedClient?.name || 'Sin cliente',
+      configName: formData.name || 'Sin nombre',
+      tone: formData.tone,
+      blogLength: formData.blogLength || 'standard',
+      insightOrigin: formData.insightOrigin || 'direct_idea',
+      localGeo: {
+        enabled: formData.localGeoEnabled || false,
+        value: formData.localGeoValue || 'No especificado',
+      },
+    },
     timestamp: new Date().toISOString(),
   };
 

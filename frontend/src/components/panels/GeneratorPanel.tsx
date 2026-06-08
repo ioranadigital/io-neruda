@@ -30,6 +30,21 @@ export default function GeneratorPanel() {
     localGeoEnabled: boolean;
     localGeoValue: string;
     blogLength: BlogLength;
+    // PASO 2: Strategy
+    targetAudience: string;
+    selectedContentIntent: string | null;
+    selectedMainTone: string | null;
+    selectedTone: string | null;
+    // PASO 4: Semantic Definition
+    h1Title: string;
+    h2Title: string;
+    urlSlug: string;
+    internalLink1: string;
+    internalLink2: string;
+    semanticElements: Set<string>;
+    // PASO 5: Format Output
+    selectedFormats: { [key: string]: { selected: boolean; subType?: string } };
+    subSelectorValues: { [key: string]: string };
   }>({
     name: '',
     keywordsNiche: [],
@@ -48,6 +63,21 @@ export default function GeneratorPanel() {
     localGeoEnabled: false,
     localGeoValue: '',
     blogLength: 'standard',
+    // PASO 2
+    targetAudience: '',
+    selectedContentIntent: null,
+    selectedMainTone: null,
+    selectedTone: null,
+    // PASO 4
+    h1Title: '',
+    h2Title: '',
+    urlSlug: '',
+    internalLink1: '',
+    internalLink2: '',
+    semanticElements: new Set(),
+    // PASO 5
+    selectedFormats: {},
+    subSelectorValues: {},
   });
 
 
