@@ -169,6 +169,7 @@ export default function GeneratorPanel() {
             onInsightOriginChange={(origin) => setFormData({ ...formData, insightOrigin: origin })}
             onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
             onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
+            onFormDataChange={(data) => setFormData({ ...formData, ...data })}
           />
 
           {/* Blog Length Selector (Conditional) */}

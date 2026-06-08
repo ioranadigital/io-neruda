@@ -29,6 +29,20 @@ interface PlanGeneratorInteligenteProps {
   onLocalGeoToggle: (enabled: boolean) => void;
   onLocalGeoValueChange: (value: string) => void;
   onInsightSelect?: (insight: InsightSuggestion) => void;
+  onFormDataChange?: (data: {
+    targetAudience: string;
+    selectedContentIntent: string | null;
+    selectedMainTone: string | null;
+    selectedTone: string | null;
+    h1Title: string;
+    h2Title: string;
+    urlSlug: string;
+    internalLink1: string;
+    internalLink2: string;
+    semanticElements: Set<string>;
+    selectedFormats: { [key: string]: { selected: boolean; subType?: string } };
+    subSelectorValues: { [key: string]: string };
+  }) => void;
 }
 
 const generateInsights = (keywords: string[], client: Client | null): InsightSuggestion[] => {
@@ -122,6 +136,40 @@ export default function PlanGeneratorInteligente({
       setUrlSlug(`/${slug}/`);
     }
   }, [h1Title]);
+
+  useEffect(() => {
+    if (onFormDataChange && mounted) {
+      onFormDataChange({
+        targetAudience,
+        selectedContentIntent,
+        selectedMainTone,
+        selectedTone,
+        h1Title,
+        h2Title,
+        urlSlug,
+        internalLink1,
+        internalLink2,
+        semanticElements,
+        selectedFormats,
+        subSelectorValues,
+      });
+    }
+  }, [
+    targetAudience,
+    selectedContentIntent,
+    selectedMainTone,
+    selectedTone,
+    h1Title,
+    h2Title,
+    urlSlug,
+    internalLink1,
+    internalLink2,
+    semanticElements,
+    selectedFormats,
+    subSelectorValues,
+    onFormDataChange,
+    mounted,
+  ]);
 
   const handleToggleKeyword = (keyword: string) => {
     const newSelected = new Set(selectedKeywords);
