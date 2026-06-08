@@ -101,6 +101,7 @@ export default function PlanGeneratorInteligente({
   onLocalGeoToggle,
   onLocalGeoValueChange,
   onInsightSelect,
+  onFormDataChange,
 }: PlanGeneratorInteligenteProps) {
   const [mounted, setMounted] = useState(false);
   const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(new Set());
