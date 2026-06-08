@@ -218,8 +218,9 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     const storedClients = localStorage.getItem('io-neruda-clients');
     const clientsToLoad = storedClients ? JSON.parse(storedClients) : [];
 
-    // Only load MOCK_CLIENTS if there are no stored clients AND no real clients
+    // Auto-load MOCK_CLIENTS if no stored clients (development/demo mode)
     if (clientsToLoad.length === 0) {
+      localStorage.setItem('io-neruda-clients', JSON.stringify(MOCK_CLIENTS));
       dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
       // Auto-select first client from mocks
       if (MOCK_CLIENTS.length > 0) {
