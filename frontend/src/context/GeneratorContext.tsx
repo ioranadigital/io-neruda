@@ -113,9 +113,9 @@ const initialState: GeneratorState = {
   emailTemplates: [],
   isLoading: false,
   error: null,
-  clients: [],
-  currentClientId: null,
-  selectedClient: null,
+  clients: MOCK_CLIENTS,
+  currentClientId: MOCK_CLIENTS[0]?.id || null,
+  selectedClient: MOCK_CLIENTS[0] || null,
   contentResults: mockContentResults as any,
 };
 
@@ -212,47 +212,13 @@ const GeneratorContext = createContext<GeneratorContextType | undefined>(undefin
 
 export function GeneratorProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(generatorReducer, initialState);
-  const [isMounted, setIsMounted] = React.useState(false);
 
-  // Initialize clients - First check if we have them already in state
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Load clients from localStorage after mount
+  // Save clients to localStorage on mount (for persistence)
   useEffect(() => {
-    if (!isMounted || typeof window === 'undefined') return;
-
-    try {
-      const storedClients = localStorage.getItem('io-neruda-clients');
-      let clientsToLoad: Client[] = [];
-
-      if (storedClients) {
-        clientsToLoad = JSON.parse(storedClients);
-      }
-
-      // Auto-load MOCK_CLIENTS if no stored clients (development/demo mode)
-      if (clientsToLoad.length === 0) {
-        console.log('No stored clients, loading MOCK_CLIENTS...');
-        localStorage.setItem('io-neruda-clients', JSON.stringify(MOCK_CLIENTS));
-        clientsToLoad = MOCK_CLIENTS;
-      }
-
-      console.log('Loaded clients:', clientsToLoad.length);
-      dispatch({ type: 'SET_CLIENTS', payload: clientsToLoad });
-      // Auto-select first client
-      if (clientsToLoad.length > 0) {
-        console.log('Selecting first client:', clientsToLoad[0].name);
-        dispatch({ type: 'SELECT_CLIENT', payload: clientsToLoad[0] });
-      }
-    } catch (error) {
-      console.error('Error loading clients:', error);
-      dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
-      if (MOCK_CLIENTS.length > 0) {
-        dispatch({ type: 'SELECT_CLIENT', payload: MOCK_CLIENTS[0] });
-      }
+    if (typeof window !== 'undefined' && state.clients.length > 0) {
+      localStorage.setItem('io-neruda-clients', JSON.stringify(state.clients));
     }
-  }, [isMounted]);
+  }, [state.clients]);
 
   const setLoading = useCallback((loading: boolean) => {
     dispatch({ type: 'SET_LOADING', payload: loading });
