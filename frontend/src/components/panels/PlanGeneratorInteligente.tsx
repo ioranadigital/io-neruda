@@ -328,50 +328,59 @@ export default function PlanGeneratorInteligente({
             />
           </button>
 
-          {/* Contenido del Acordeón - Grid 2 Columnas */}
+          {/* Contenido del Acordeón */}
           {expandedStrategy && (
-            <div className="grid grid-cols-2 gap-0">
-              {/* Columna 1: Tarjeta de Tono de Contenido */}
-              <div className="p-6 bg-white border-r border-gray-300 flex flex-col justify-center">
-                <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg border-2 border-indigo-200 p-4 space-y-3">
-                  <h4 className="text-sm font-bold text-gray-800">🎨 Tono de Contenido</h4>
-                  <p className="text-xs text-gray-700 leading-relaxed">
-                    Define la personalidad y voz con la que se comunica tu marca. El tono impacta cómo el contenido es percibido por tu audiencia.
-                  </p>
-                  <div className="pt-2 border-t border-indigo-200">
-                    <p className="text-xs font-semibold text-indigo-700">Opciones disponibles:</p>
-                    <ul className="text-xs text-gray-600 mt-1 space-y-1">
-                      <li>• <strong>Professional</strong>: Formal, estructurado</li>
-                      <li>• <strong>Casual</strong>: Relajado, conversacional</li>
-                      <li>• <strong>Technical</strong>: Especializado, preciso</li>
-                    </ul>
-                  </div>
+            <div className="p-6 bg-white space-y-4">
+              {/* 1. Público Objetivo */}
+              <div>
+                <label className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  👥 Público Objetivo
+                </label>
+                <input
+                  type="text"
+                  placeholder="Define el público objetivo (Crear)"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                />
+              </div>
+
+              {/* 2. Intención de Contenidos */}
+              <div>
+                <label className="text-sm font-semibold text-gray-800 mb-2">📍 Intención de Contenidos</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { value: 'educational', label: 'Educativo', desc: 'Informativo' },
+                    { value: 'transactional', label: 'Transaccional', desc: 'Venta' },
+                    { value: 'social_proof', label: 'Prueba Social', desc: 'Caso de Éxito' },
+                    { value: 'thought_leadership', label: 'Liderazgo', desc: 'Opinión' },
+                  ].map(({ value, label, desc }) => (
+                    <button
+                      key={value}
+                      className="text-left p-3 rounded-lg border-2 border-gray-200 bg-white hover:border-indigo-300 transition"
+                    >
+                      <p className="font-semibold text-xs text-gray-800">{label}</p>
+                      <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Columna 2: Selector de Tono (Intacto) */}
-              <div className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-3">Selecciona el Tono</label>
-                  <div className="space-y-2">
-                    {[
-                      { value: 'professional', label: '💼 Professional', desc: 'Formal y estructurado' },
-                      { value: 'casual', label: '😊 Casual', desc: 'Relajado y conversacional' },
-                      { value: 'technical', label: '🔧 Technical', desc: 'Especializado y preciso' },
-                    ].map(({ value, label, desc }) => (
-                      <button
-                        key={value}
-                        className="w-full text-left p-3 rounded-lg border-2 transition"
-                        style={{
-                          borderColor: '#818cf8',
-                          backgroundColor: '#f0f4ff',
-                        }}
-                      >
-                        <p className="font-semibold text-sm text-gray-800">{label}</p>
-                        <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
-                      </button>
-                    ))}
-                  </div>
+              {/* 3. Tono de Contenido */}
+              <div>
+                <label className="text-sm font-semibold text-gray-800 mb-2">🎨 Tono de Contenido</label>
+                <div className="space-y-2">
+                  {[
+                    { value: 'professional', label: '💼 Professional', desc: 'Formal y estructurado' },
+                    { value: 'casual', label: '😊 Casual', desc: 'Relajado y conversacional' },
+                    { value: 'technical', label: '🔧 Technical', desc: 'Especializado y preciso' },
+                  ].map(({ value, label, desc }) => (
+                    <button
+                      key={value}
+                      className="w-full text-left p-3 rounded-lg border-2 border-gray-200 bg-white hover:border-indigo-300 transition"
+                    >
+                      <p className="font-semibold text-sm text-gray-800">{label}</p>
+                      <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
