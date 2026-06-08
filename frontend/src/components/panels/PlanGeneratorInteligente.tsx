@@ -157,11 +157,11 @@ export default function PlanGeneratorInteligente({
           />
         </button>
 
-        {/* Contenido del Acordeón - Grid 2 Columnas */}
+        {/* Contenido del Acordeón - Grid 3 Columnas (2:1 ratio) */}
         {expandedPlan && (
-          <div className="grid grid-cols-2 gap-0">
-            {/* Columna 1: Investigación Semántica */}
-            <div className="border-r border-gray-200 p-6 space-y-3 bg-white max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-3 gap-0">
+            {/* Columna 1-2: Investigación Semántica (2/3 del ancho) */}
+            <div className="col-span-2 p-6 space-y-3 bg-white max-h-96 overflow-y-auto">
               <div className="flex items-center gap-2 sticky top-0 bg-white pb-2 border-b border-gray-200">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold">1</span>
                 <label className="text-sm font-bold text-gray-800">🗝️ Investigación Semántica</label>
@@ -216,26 +216,26 @@ export default function PlanGeneratorInteligente({
               )}
             </div>
 
-            {/* Columna 2: Refina Manualmente */}
-            <div className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 space-y-4 max-h-96 overflow-y-auto">
+            {/* Columna 3: Refina Manualmente (1/3 del ancho) */}
+            <div className="border-l-2 border-gray-300 p-4 bg-gradient-to-br from-amber-50 to-amber-100 space-y-3 max-h-96 overflow-y-auto">
               {selectedClient && selectedKeywordsArray.length > 0 ? (
                 <>
-                  <div className="flex items-center gap-2 sticky top-0 bg-gradient-to-r from-amber-50 to-amber-100 pb-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold">2</span>
-                    <label className="text-sm font-bold text-gray-800">🔄 Refina Manualmente</label>
+                  <div className="flex items-center gap-1 sticky top-0 bg-gradient-to-r from-amber-50 to-amber-100 pb-2 border-b border-amber-200">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex-shrink-0">2</span>
+                    <label className="text-xs font-bold text-gray-800">Refina</label>
                   </div>
 
                   {/* Keywords Display */}
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1">
                     {selectedKeywordsArray.map((kw) => (
                       <div
                         key={kw}
-                        className="flex items-center gap-2 px-3 py-1 bg-white border border-amber-300 rounded-full text-sm"
+                        className="flex items-center gap-1 px-2 py-0.5 bg-white border border-amber-300 rounded-full text-xs"
                       >
-                        <span className="text-gray-800">{kw}</span>
+                        <span className="text-gray-800 line-clamp-1">{kw}</span>
                         <button
                           onClick={() => handleRemoveKeyword(kw)}
-                          className="text-red-500 hover:text-red-700 text-xs font-bold"
+                          className="text-red-500 hover:text-red-700 text-xs font-bold flex-shrink-0"
                         >
                           ✕
                         </button>
@@ -244,20 +244,20 @@ export default function PlanGeneratorInteligente({
                   </div>
 
                   {/* Input Nueva Keyword */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-1 flex-col">
                     <input
                       type="text"
                       value={keywordInput}
                       onChange={(e) => setKeywordInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleAddCustomKeyword()}
-                      placeholder="Agrega un keyword..."
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500"
+                      placeholder="Agregar..."
+                      className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-amber-500"
                     />
                     <button
                       onClick={handleAddCustomKeyword}
-                      className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition text-sm font-medium flex items-center gap-2"
+                      className="px-2 py-1 bg-amber-500 text-white rounded hover:bg-amber-600 transition text-xs font-medium"
                     >
-                      <RefreshCw size={14} /> Agregar
+                      Agregar
                     </button>
                   </div>
                 </>
