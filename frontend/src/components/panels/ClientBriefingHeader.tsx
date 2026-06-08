@@ -39,53 +39,56 @@ export default function ClientBriefingHeader({
 
   return (
     <div className="border-2 rounded-lg overflow-hidden" style={{ borderColor: webColors.primary, backgroundColor: '#ffffff' }}>
-      {/* Header - Same style as ContentDefinition */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-6 py-4 flex items-center justify-between transition hover:bg-gray-50"
-        style={{ backgroundColor: '#ffffff' }}
-      >
-        <div className="flex items-center gap-4">
+      {/* Header with Client Selector */}
+      <div className="px-6 py-4 flex items-center justify-between gap-4" style={{ backgroundColor: '#ffffff' }}>
+        <div className="flex items-center gap-4 flex-1">
           <div style={{ color: webColors.primary }}>
             <Users size={24} />
           </div>
-          <div className="text-left">
+          <div className="text-left min-w-0">
             <h3 className="font-bold text-gray-900 text-lg">Seleccionar Cliente</h3>
             <p className="text-sm text-gray-600">Datos e información del cliente</p>
           </div>
         </div>
-        {isExpanded ? (
-          <ChevronUp size={20} style={{ color: webColors.primary }} />
-        ) : (
-          <ChevronDown size={20} style={{ color: webColors.primary }} />
-        )}
-      </button>
 
-      {/* SELECTOR DE CLIENTE - CON TOGGLE */}
-      {isExpanded && (
-        <div className="px-8 py-4 border-t-2 space-y-4" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-          <div className="flex-1 max-w-2xl relative">
+        {/* Client Selector - Always Visible */}
+        <div className="w-64 relative flex-shrink-0">
           <select
             value={selectedClient?.id || ''}
             onChange={(e) => {
               const client = clients.find((c) => c.id === e.target.value);
               if (client) onSelectClient(client);
             }}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:outline-none bg-white cursor-pointer appearance-none pr-10"
+            className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:outline-none bg-white cursor-pointer appearance-none pr-8"
             style={{ borderColor: webColors.primary, color: webColors.primaryDark }}
           >
             <option value="">-- Selecciona cliente --</option>
             {clients.map((client) => (
               <option key={client.id} value={client.id}>
                 {client.name}
-                {client.description ? ` | ${client.description}` : ''}
               </option>
             ))}
           </select>
-          <ChevronDown size={16} className="absolute right-3 top-4 pointer-events-none" style={{ color: webColors.primary }} />
+          <ChevronDown size={14} className="absolute right-2 top-3 pointer-events-none" style={{ color: webColors.primary }} />
         </div>
 
-        {/* INFORMACIÓN DEL CLIENTE - COLAPSABLE */}
+        {/* Toggle Button */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="p-2 hover:bg-gray-50 rounded transition flex-shrink-0"
+        >
+          {isExpanded ? (
+            <ChevronUp size={20} style={{ color: webColors.primary }} />
+          ) : (
+            <ChevronDown size={20} style={{ color: webColors.primary }} />
+          )}
+        </button>
+      </div>
+
+      {/* INFORMACIÓN DEL CLIENTE - COLAPSABLE */}
+      {isExpanded && (
+        <div className="px-8 py-4 border-t-2 space-y-4" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
+          {/* INFORMACIÓN DEL CLIENTE - COLAPSABLE */}
         {selectedClient && (
           <div className="space-y-4 animate-in fade-in duration-300">
           {/* FILA 1: Grid de 4 columnas con datos del cliente */}
