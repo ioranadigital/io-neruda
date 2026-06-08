@@ -39,8 +39,13 @@ const iconMap: Record<string, React.ReactNode> = {
   'x-circle': <XCircle className="w-5 h-5" />,
 };
 
+export type ContentIntent = 'educational' | 'transactional' | 'social_proof' | 'thought_leadership';
+
 interface TechnicalAuditAccordionProps {
   categories: AuditCategory[];
+  contentIntent?: ContentIntent;
+  onContentIntentChange?: (intent: ContentIntent) => void;
+  localGeoValue?: string;
 }
 
 const statusBadgeColor = {
@@ -65,7 +70,12 @@ const webColors = {
   greenLighter: '#f8fffc',
 };
 
-export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAccordionProps) {
+export default function TechnicalAuditAccordion({
+  categories,
+  contentIntent = 'educational',
+  onContentIntentChange,
+  localGeoValue
+}: TechnicalAuditAccordionProps) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [expandedSubcategory, setExpandedSubcategory] = useState<string | null>(null);
   const [h1Title, setH1Title] = useState<string>('');
@@ -120,6 +130,38 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
       [key]: !prev[key],
     }));
   };
+
+  // Auto-select local geo keywords when localGeoValue changes
+  React.useEffect(() => {
+    if (localGeoValue && localGeoValue.trim().length > 0) {
+      // Find Level 2 (Segmentation) and local-geo item
+      const level2 = KEYWORD_STRUCTURE.find((level) => level.id === 'level-2-segmentation');
+      if (level2) {
+        const localGeoItem = level2.items.find((item) => item.id === 'local-geo');
+        if (localGeoItem) {
+          // Find keywords that contain the localGeoValue
+          const newSelected = new Set(selectedKeywords);
+          const geoValueLower = localGeoValue.toLowerCase();
+
+          localGeoItem.keywords.forEach((keyword) => {
+            if (keyword.toLowerCase().includes(geoValueLower)) {
+              newSelected.add(keyword);
+            } else {
+              // Remove if it doesn't match the current geo value but was previously selected
+              const isOtherGeoKeyword = ['Madrid', 'Barcelona', 'Valencia', 'Bilbao', 'Sevilla', 'Málaga', 'Alicante', 'Zaragoza'].some(
+                city => keyword.toLowerCase().includes(city.toLowerCase()) && !geoValueLower.includes(city.toLowerCase())
+              );
+              if (isOtherGeoKeyword) {
+                newSelected.delete(keyword);
+              }
+            }
+          });
+
+          setSelectedKeywords(newSelected);
+        }
+      }
+    }
+  }, [localGeoValue]);
 
   return (
     <div className="w-full space-y-4">
@@ -343,14 +385,132 @@ export default function TechnicalAuditAccordion({ categories }: TechnicalAuditAc
           {/* Level 1 Content: Tone Selector + Subcategories */}
           {expandedCategory === category.id && !category.showToneSelectors && category.id !== 'content-quality' && (
             <div className="border-t-2" style={{ borderColor: webColors.primary, backgroundColor: webColors.greenLighter }}>
-              {/* Tone Selector Block (Strategy Section) */}
+              {/* Tone & Content Intent Selectors (Strategy Section) */}
               {category.id === 'strategy-tone-approach' && (
-                <div className="px-8 py-4 border-b-2" style={{ borderColor: webColors.primary }}>
-                  <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                    <ToneSelector
-                      selectedTone={urlTone}
-                      onChange={(tone) => setUrlTone(tone)}
-                    />
+                <div className="px-8 py-4 border-b-2 space-y-6" style={{ borderColor: webColors.primary }}>
+
+                  {/* INTENCIÓN DE CONTENIDO - Grid de 2 bloques */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-800 mb-4">📌 Intención de Contenido</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Block 1: Educational */}
+                      <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm cursor-pointer transition hover:shadow-md"
+                        onClick={() => onContentIntentChange?.('educational')}
+                        style={{
+                          borderColor: contentIntent === 'educational' ? webColors.primary : '#e5e7eb',
+                          backgroundColor: contentIntent === 'educational' ? '#f8fffc' : '#ffffff'
+                        }}>
+                        <div className="flex items-start gap-3">
+                          <input
+                            type="radio"
+                            name="contentIntent"
+                            value="educational"
+                            checked={contentIntent === 'educational'}
+                            onChange={() => onContentIntentChange?.('educational')}
+                            className="w-4 h-4 mt-1"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-gray-800">📚 Educativo</p>
+                            <p className="text-xs text-gray-600 mt-1">Informativo</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Block 2: Transactional */}
+                      <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm cursor-pointer transition hover:shadow-md"
+                        onClick={() => onContentIntentChange?.('transactional')}
+                        style={{
+                          borderColor: contentIntent === 'transactional' ? webColors.primary : '#e5e7eb',
+                          backgroundColor: contentIntent === 'transactional' ? '#f8fffc' : '#ffffff'
+                        }}>
+                        <div className="flex items-start gap-3">
+                          <input
+                            type="radio"
+                            name="contentIntent"
+                            value="transactional"
+                            checked={contentIntent === 'transactional'}
+                            onChange={() => onContentIntentChange?.('transactional')}
+                            className="w-4 h-4 mt-1"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-gray-800">🛍️ Transaccional</p>
+                            <p className="text-xs text-gray-600 mt-1">Venta</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Block 3: Social Proof */}
+                      <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm cursor-pointer transition hover:shadow-md"
+                        onClick={() => onContentIntentChange?.('social_proof')}
+                        style={{
+                          borderColor: contentIntent === 'social_proof' ? webColors.primary : '#e5e7eb',
+                          backgroundColor: contentIntent === 'social_proof' ? '#f8fffc' : '#ffffff'
+                        }}>
+                        <div className="flex items-start gap-3">
+                          <input
+                            type="radio"
+                            name="contentIntent"
+                            value="social_proof"
+                            checked={contentIntent === 'social_proof'}
+                            onChange={() => onContentIntentChange?.('social_proof')}
+                            className="w-4 h-4 mt-1"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-gray-800">⭐ Prueba Social</p>
+                            <p className="text-xs text-gray-600 mt-1">Caso de Éxito</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Block 4: Thought Leadership */}
+                      <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm cursor-pointer transition hover:shadow-md"
+                        onClick={() => onContentIntentChange?.('thought_leadership')}
+                        style={{
+                          borderColor: contentIntent === 'thought_leadership' ? webColors.primary : '#e5e7eb',
+                          backgroundColor: contentIntent === 'thought_leadership' ? '#f8fffc' : '#ffffff'
+                        }}>
+                        <div className="flex items-start gap-3">
+                          <input
+                            type="radio"
+                            name="contentIntent"
+                            value="thought_leadership"
+                            checked={contentIntent === 'thought_leadership'}
+                            onChange={() => onContentIntentChange?.('thought_leadership')}
+                            className="w-4 h-4 mt-1"
+                            style={{ accentColor: webColors.primary }}
+                          />
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-gray-800">🎓 Liderazgo</p>
+                            <p className="text-xs text-gray-600 mt-1">Opinión</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* TONO DE CONTENIDO - Grid de 2 bloques */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-800 mb-4">🎨 Tono de Contenido</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Tone Block 1 */}
+                      <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                        <ToneSelector
+                          selectedTone={urlTone}
+                          onChange={(tone) => setUrlTone(tone)}
+                        />
+                      </div>
+
+                      {/* Tone Block 2 */}
+                      <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                        <ToneSelector
+                          selectedTone={urlTone}
+                          onChange={(tone) => setUrlTone(tone)}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

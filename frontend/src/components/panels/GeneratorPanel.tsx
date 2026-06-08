@@ -5,7 +5,6 @@ import { useGenerator } from '../../context/GeneratorContext';
 import { Configuration, EnabledFormats } from '../../types/generator';
 import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
-import FormatSelector from '../selectors/FormatSelector';
 import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
@@ -123,75 +122,41 @@ export default function GeneratorPanel() {
           </div>
         )}
 
-        {/* Client Briefing Header */}
-        <div className="px-4 py-3">
+        {/* Main Content - All blocks aligned with consistent spacing */}
+        <div className="flex-1 overflow-hidden px-6 py-6 flex flex-col gap-6">
+          {/* Client Briefing Header */}
           <ClientBriefingHeader
             selectedClient={selectedClient}
             clients={clients}
             onSelectClient={selectClient}
           />
-        </div>
 
-        {/* Main Content Grid */}
-        <div className="flex-1 overflow-hidden px-6 py-6 flex flex-col gap-6">
-          {/* Content Controls */}
-          <div className="flex flex-col gap-4 overflow-y-auto flex-1">
-            {/* Content Definition */}
-            <ContentDefinition
-              insightOrigin={formData.insightOrigin}
-              contentIntent={formData.contentIntent}
-              localGeoEnabled={formData.localGeoEnabled}
-              localGeoValue={formData.localGeoValue}
-              onInsightOriginChange={(origin) => setFormData({ ...formData, insightOrigin: origin })}
-              onContentIntentChange={(intent) => setFormData({ ...formData, contentIntent: intent })}
-              onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
-              onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
+          {/* Content Definition */}
+          <ContentDefinition
+            insightOrigin={formData.insightOrigin}
+            localGeoEnabled={formData.localGeoEnabled}
+            localGeoValue={formData.localGeoValue}
+            onInsightOriginChange={(origin) => setFormData({ ...formData, insightOrigin: origin })}
+            onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
+            onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
+          />
+
+          {/* Blog Length Selector (Conditional) */}
+          {formData.enabledFormats.blog && (
+            <BlogLengthSelector
+              value={formData.blogLength}
+              onChange={(length) => setFormData({ ...formData, blogLength: length })}
             />
+          )}
 
-            {/* Formats */}
-            <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-              <label className="block text-sm font-bold text-gray-800 mb-3">🎯 Formatos de Salida</label>
-              <FormatSelector
-                selectedFormats={formData.enabledFormats}
-                onChange={(formats) => setFormData({ ...formData, enabledFormats: formats })}
-              />
-            </div>
-
-            {/* Blog Length Selector (Conditional) */}
-            {formData.enabledFormats.blog && (
-              <BlogLengthSelector
-                value={formData.blogLength}
-                onChange={(length) => setFormData({ ...formData, blogLength: length })}
-              />
-            )}
-
-            {/* Formats Summary */}
-            {Object.values(formData.enabledFormats).some(v => v) && (
-              <div className="p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <h3 className="text-sm font-bold text-gray-800 mb-2">📤 Formatos Seleccionados</h3>
-                <div className="flex flex-wrap gap-1">
-                  {Object.entries(formData.enabledFormats)
-                    .filter(([, enabled]) => enabled)
-                    .map(([format]) => (
-                      <span key={format} className="px-2 py-1 rounded text-xs font-medium text-white" style={{ backgroundColor: '#7BF1A8', color: '#000' }}>
-                        {format.replace('social_', '').toUpperCase()}
-                      </span>
-                    ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ROW 3: Preview Button - Bottom Left (Final Step) */}
-          <div className="w-full">
-            <button
-              onClick={() => setShowPreviewModal(true)}
-              className="w-full px-4 py-3 rounded-lg font-medium text-white transition flex items-center justify-center gap-2 border-2"
-              style={{ backgroundColor: '#7BF1A8', color: '#000', borderColor: '#7BF1A8' }}
-            >
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#000' }}>6</span>
-              👁️ Ver Preview & Generar
-            </button>
+          {/* Scroll Area for Audit Section */}
+          <div className="flex-1 overflow-y-auto">
+            <TechnicalAuditAccordion
+              categories={TECHNICAL_AUDIT_DATA}
+              contentIntent={formData.contentIntent}
+              onContentIntentChange={(intent) => setFormData({ ...formData, contentIntent: intent })}
+              localGeoValue={formData.localGeoValue}
+            />
           </div>
         </div>
       </div>
@@ -225,10 +190,16 @@ export default function GeneratorPanel() {
         </div>
       )}
 
-      {/* Technical Audit Section */}
-      <div className="mt-8 px-6 pb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">📋 Auditoría Técnica</h2>
-        <TechnicalAuditAccordion categories={TECHNICAL_AUDIT_DATA} />
+      {/* Final Button - Preview & Generate */}
+      <div className="px-6 pb-6">
+        <button
+          onClick={() => setShowPreviewModal(true)}
+          className="w-full px-4 py-3 rounded-lg font-medium text-white transition flex items-center justify-center gap-2 border-2"
+          style={{ backgroundColor: '#7BF1A8', color: '#000', borderColor: '#7BF1A8' }}
+        >
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-white text-xs" style={{ backgroundColor: '#000' }}>6</span>
+          👁️ Ver Preview & Generar
+        </button>
       </div>
     </div>
   );
