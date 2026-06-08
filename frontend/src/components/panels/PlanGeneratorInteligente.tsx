@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Client } from '../../types/client';
-import { Lightbulb, RefreshCw, RotateCcw } from 'lucide-react';
+import { Lightbulb, RefreshCw, RotateCcw, ChevronDown } from 'lucide-react';
+import { KEYWORD_STRUCTURE } from '../../data/keywordStructure';
 
 export type InsightOrigin = 'direct_idea' | 'keyword_seo' | 'obsidian_drive';
 
@@ -31,9 +32,7 @@ const generateInsights = (keywords: string[], client: Client | null): InsightSug
   const business = client.business_type || '';
   const audience = client.target_audience || '';
   const pillars = client.content_pillars || [];
-  const proposition = client.unique_proposition || '';
   const primaryKeyword = keywords[0];
-  const secondaryKeywords = keywords.slice(1);
 
   return [
     {
@@ -85,7 +84,8 @@ export default function PlanGeneratorInteligente({
   onInsightSelect,
 }: PlanGeneratorInteligenteProps) {
   const [mounted, setMounted] = useState(false);
-  const [customKeywords, setCustomKeywords] = useState<string[]>([]);
+  const [selectedKeywords, setSelectedKeywords] = useState<Set<string>>(new Set());
+  const [expandedLevel, setExpandedLevel] = useState<string | null>(null);
   const [keywordInput, setKeywordInput] = useState('');
   const [insights, setInsights] = useState<InsightSuggestion[]>([]);
   const [selectedInsightId, setSelectedInsightId] = useState<string | null>(null);
@@ -94,39 +94,36 @@ export default function PlanGeneratorInteligente({
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (selectedClient && mounted) {
-      const clientKeywords = selectedClient.keywords_niche || [];
-      setCustomKeywords(clientKeywords);
-      const newInsights = generateInsights(clientKeywords, selectedClient);
-      setInsights(newInsights);
-      setSelectedInsightId(null);
+  const handleToggleKeyword = (keyword: string) => {
+    const newSelected = new Set(selectedKeywords);
+    if (newSelected.has(keyword)) {
+      newSelected.delete(keyword);
+    } else {
+      newSelected.add(keyword);
     }
-  }, [selectedClient, mounted]);
-
-  const handleAddKeyword = () => {
-    if (keywordInput.trim() && !customKeywords.includes(keywordInput.trim())) {
-      const updatedKeywords = [...customKeywords, keywordInput.trim()];
-      setCustomKeywords(updatedKeywords);
-      setKeywordInput('');
-      const newInsights = generateInsights(updatedKeywords, selectedClient);
-      setInsights(newInsights);
-      setSelectedInsightId(null);
-    }
-  };
-
-  const handleRemoveKeyword = (idx: number) => {
-    const updatedKeywords = customKeywords.filter((_, i) => i !== idx);
-    setCustomKeywords(updatedKeywords);
-    const newInsights = generateInsights(updatedKeywords, selectedClient);
+    setSelectedKeywords(newSelected);
+    const newInsights = generateInsights(Array.from(newSelected), selectedClient);
     setInsights(newInsights);
     setSelectedInsightId(null);
   };
 
-  const handleResetKeywords = () => {
-    const clientKeywords = selectedClient?.keywords_niche || [];
-    setCustomKeywords(clientKeywords);
-    const newInsights = generateInsights(clientKeywords, selectedClient);
+  const handleAddCustomKeyword = () => {
+    if (keywordInput.trim() && !selectedKeywords.has(keywordInput.trim())) {
+      const newSelected = new Set(selectedKeywords);
+      newSelected.add(keywordInput.trim());
+      setSelectedKeywords(newSelected);
+      setKeywordInput('');
+      const newInsights = generateInsights(Array.from(newSelected), selectedClient);
+      setInsights(newInsights);
+      setSelectedInsightId(null);
+    }
+  };
+
+  const handleRemoveKeyword = (keyword: string) => {
+    const newSelected = new Set(selectedKeywords);
+    newSelected.delete(keyword);
+    setSelectedKeywords(newSelected);
+    const newInsights = generateInsights(Array.from(newSelected), selectedClient);
     setInsights(newInsights);
     setSelectedInsightId(null);
   };
@@ -138,6 +135,8 @@ export default function PlanGeneratorInteligente({
 
   if (!mounted) return null;
 
+  const selectedKeywordsArray = Array.from(selectedKeywords);
+
   return (
     <div className="w-full space-y-4">
       {/* Header */}
@@ -146,30 +145,80 @@ export default function PlanGeneratorInteligente({
         <h3 className="text-lg font-bold text-gray-800">Plan Generator Inteligente</h3>
       </div>
 
-      {/* Cambiar Keywords */}
+      {/* PASO 1: Acordeón de Keywords */}
       {selectedClient && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-semibold text-gray-800">🔄 Cambiar Keywords para Nuevas Propuestas</label>
-            <button
-              onClick={handleResetKeywords}
-              className="flex items-center gap-1 px-3 py-1 text-xs bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-              title="Restaurar keywords originales del cliente"
-            >
-              <RotateCcw size={12} /> Restaurar
-            </button>
+        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold">1</span>
+            <label className="text-sm font-bold text-gray-800">🗝️ Investigación Semántica: Selecciona Keywords</label>
+          </div>
+
+          {/* Keyword Levels */}
+          <div className="space-y-2">
+            {KEYWORD_STRUCTURE.map((level) => (
+              <div key={level.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <button
+                  onClick={() => setExpandedLevel(expandedLevel === level.id ? null : level.id)}
+                  className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-50 transition"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{level.icon}</span>
+                    <span className="text-sm font-semibold text-gray-800">{level.level}</span>
+                  </div>
+                  <ChevronDown
+                    size={16}
+                    className={`transition ${expandedLevel === level.id ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {expandedLevel === level.id && (
+                  <div className="px-3 py-2 border-t border-gray-200 bg-gray-50 space-y-2 max-h-40 overflow-y-auto">
+                    {level.items.map((item) => (
+                      <div key={item.id} className="space-y-1">
+                        <p className="text-xs font-semibold text-gray-800">{item.name}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {item.keywords.map((kw) => (
+                            <button
+                              key={kw}
+                              onClick={() => handleToggleKeyword(kw)}
+                              className={`px-2 py-1 rounded text-xs transition border ${
+                                selectedKeywords.has(kw)
+                                  ? 'bg-blue-500 text-white border-blue-500'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                              }`}
+                            >
+                              {kw}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* PASO 2: Cambiar Keywords Manualmente */}
+      {selectedClient && selectedKeywordsArray.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold">2</span>
+            <label className="text-sm font-bold text-gray-800">🔄 Refina Manualmente (Opcional)</label>
           </div>
 
           {/* Keywords Display */}
           <div className="flex flex-wrap gap-2">
-            {customKeywords.map((kw, idx) => (
+            {selectedKeywordsArray.map((kw) => (
               <div
-                key={idx}
-                className="flex items-center gap-2 px-3 py-1 bg-white border border-blue-300 rounded-full text-sm"
+                key={kw}
+                className="flex items-center gap-2 px-3 py-1 bg-white border border-amber-300 rounded-full text-sm"
               >
                 <span className="text-gray-800">{kw}</span>
                 <button
-                  onClick={() => handleRemoveKeyword(idx)}
+                  onClick={() => handleRemoveKeyword(kw)}
                   className="text-red-500 hover:text-red-700 text-xs font-bold"
                 >
                   ✕
@@ -184,25 +233,27 @@ export default function PlanGeneratorInteligente({
               type="text"
               value={keywordInput}
               onChange={(e) => setKeywordInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAddKeyword()}
-              placeholder="Ingresa una keyword y presiona Enter"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+              onKeyPress={(e) => e.key === 'Enter' && handleAddCustomKeyword()}
+              placeholder="Agrega un keyword custom..."
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500"
             />
             <button
-              onClick={handleAddKeyword}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm font-medium flex items-center gap-2"
+              onClick={handleAddCustomKeyword}
+              className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition text-sm font-medium flex items-center gap-2"
             >
-              <RefreshCw size={14} /> Regenerar
+              <RefreshCw size={14} /> Agregar
             </button>
           </div>
-          <p className="text-xs text-gray-600">💡 Cambia los keywords para ver 5 nuevas propuestas de contenido</p>
         </div>
       )}
 
-      {/* 5 Insights Sugeridos */}
+      {/* PASO 3: 5 Insights Sugeridos */}
       {selectedClient && insights.length > 0 && (
-        <div className="space-y-2 mb-6">
-          <label className="block text-sm font-semibold text-gray-800">💡 5 Insights Sugeridos</label>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">3</span>
+            <label className="text-sm font-bold text-gray-800">💡 5 Propuestas de Contenido</label>
+          </div>
           <div className="grid grid-cols-1 gap-2">
             {insights.map((insight) => (
               <button
@@ -210,7 +261,7 @@ export default function PlanGeneratorInteligente({
                 onClick={() => handleSelectInsight(insight)}
                 className={`w-full text-left p-3 rounded-lg border-2 transition ${
                   selectedInsightId === insight.id
-                    ? 'border-blue-500 bg-blue-50'
+                    ? 'border-green-500 bg-green-50'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
@@ -222,56 +273,73 @@ export default function PlanGeneratorInteligente({
         </div>
       )}
 
-      {/* Origen del Insight */}
-      <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-2">Origen del Insight</label>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { value: 'direct_idea' as const, label: '💡 Idea Directa', desc: 'Idea del cliente' },
-            { value: 'keyword_seo' as const, label: '🔍 Keyword SEO', desc: 'Research SEO' },
-            { value: 'obsidian_drive' as const, label: '📚 Base de Conocimiento', desc: 'Investigación propia' },
-          ].map(({ value, label, desc }) => (
-            <button
-              key={value}
-              onClick={() => onInsightOriginChange(value)}
-              className={`p-3 rounded-lg border-2 transition text-center ${
-                insightOrigin === value
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
-            >
-              <p className="font-semibold text-sm text-gray-800">{label}</p>
-              <p className="text-xs text-gray-600 mt-1">{desc}</p>
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* PASO 4: Origen del Insight + SEO Local */}
+      {selectedClient && selectedKeywordsArray.length > 0 && (
+        <div className="space-y-4 pt-2 border-t border-gray-200">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">4</span>
+            <label className="text-sm font-bold text-gray-800">⚙️ Configuración Final</label>
+          </div>
 
-      {/* Enfoque Geográfico Local */}
-      <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-800">Enfoque Geográfico Local</label>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => onLocalGeoToggle(!localGeoEnabled)}
-            className={`px-4 py-2 rounded-lg border-2 transition font-medium text-sm ${
-              localGeoEnabled
-                ? 'border-blue-500 bg-blue-50 text-blue-700'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-            }`}
-          >
-            {localGeoEnabled ? '✓ Aplicar SEO Local' : 'SEO Local (Deshabilitado)'}
-          </button>
+          {/* Origen del Insight */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-2">Origen del Insight</label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: 'direct_idea' as const, label: '💡 Idea Directa', desc: 'Idea del cliente' },
+                { value: 'keyword_seo' as const, label: '🔍 Keyword SEO', desc: 'Research SEO' },
+                { value: 'obsidian_drive' as const, label: '📚 Base Conocimiento', desc: 'Investigación propia' },
+              ].map(({ value, label, desc }) => (
+                <button
+                  key={value}
+                  onClick={() => onInsightOriginChange(value)}
+                  className={`p-3 rounded-lg border-2 transition text-center ${
+                    insightOrigin === value
+                      ? 'border-purple-500 bg-purple-50'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                  }`}
+                >
+                  <p className="font-semibold text-sm text-gray-800">{label}</p>
+                  <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Enfoque Geográfico Local */}
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-800">Enfoque Geográfico Local</label>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => onLocalGeoToggle(!localGeoEnabled)}
+                className={`px-4 py-2 rounded-lg border-2 transition font-medium text-sm ${
+                  localGeoEnabled
+                    ? 'border-purple-500 bg-purple-50 text-purple-700'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                {localGeoEnabled ? '✓ Aplicar SEO Local' : 'SEO Local (Deshabilitado)'}
+              </button>
+            </div>
+            {localGeoEnabled && (
+              <input
+                type="text"
+                value={localGeoValue}
+                onChange={(e) => onLocalGeoValueChange(e.target.value)}
+                placeholder="Ej: Madrid, Barcelona, Buenos Aires"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+              />
+            )}
+          </div>
         </div>
-        {localGeoEnabled && (
-          <input
-            type="text"
-            value={localGeoValue}
-            onChange={(e) => onLocalGeoValueChange(e.target.value)}
-            placeholder="Ej: Madrid, Barcelona, Buenos Aires"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-          />
-        )}
-      </div>
+      )}
+
+      {/* Empty State */}
+      {selectedClient && selectedKeywordsArray.length === 0 && (
+        <div className="text-center py-8 text-gray-600">
+          <p className="text-sm">Selecciona al menos un keyword en el paso 1 para ver propuestas de contenido</p>
+        </div>
+      )}
     </div>
   );
 }
