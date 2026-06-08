@@ -103,6 +103,8 @@ export default function PlanGeneratorInteligente({
   const [internalLink1, setInternalLink1] = useState('');
   const [internalLink2, setInternalLink2] = useState('');
   const [semanticElements, setSemanticElements] = useState<Set<string>>(new Set());
+  const [expandedFormatOutput, setExpandedFormatOutput] = useState(true);
+  const [selectedFormats, setSelectedFormats] = useState<Record<string, { selected: boolean; subType?: string }>>({})
 
   useEffect(() => {
     setMounted(true);
@@ -890,11 +892,200 @@ export default function PlanGeneratorInteligente({
         </div>
       )}
 
-      {/* PASO 5: Origen del Insight + SEO Local */}
+      {/* PASO 5: Formato de Salida de Contenido */}
+      {selectedClient && selectedKeywordsArray.length > 0 && insights.length > 0 && (
+        <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
+          {/* Header del Acordeón */}
+          <button
+            onClick={() => setExpandedFormatOutput(!expandedFormatOutput)}
+            className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-green-50 to-teal-50 hover:from-green-100 hover:to-teal-100 transition border-b border-gray-300"
+          >
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">5</span>
+              <h3 className="text-lg font-bold text-gray-800">📝 Formato de Salida de Contenido</h3>
+            </div>
+            <ChevronDown
+              size={20}
+              className={`transition text-gray-600 ${expandedFormatOutput ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {/* Contenido del Acordeón */}
+          {expandedFormatOutput && (
+            <div className="px-6 py-4 space-y-6">
+              <p className="text-sm text-gray-600">Selecciona los formatos en los que deseas generar el contenido. Elige entre 4 categorías principales:</p>
+
+              {/* 4 Categorías de Formatos */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* CATEGORÍA 1: WEB & SEO */}
+                <div className="space-y-3 p-4 rounded-lg bg-blue-50 border-2 border-blue-200">
+                  <div className="px-3 py-2 rounded-lg text-sm font-bold text-white bg-blue-500">
+                    🌐 WEB & SEO
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'blog', name: 'Blog Post', icon: '📝', desc: 'Artículos y posts para el blog' },
+                      { id: 'landing', name: 'Landing de Servicio', icon: '🎯', desc: '600-900 palabras, frameworks PAS/AIDA' },
+                      { id: 'faq-schema', name: 'Bloque FAQ + Schema', icon: '❓', desc: '5-7 preguntas + código JSON-LD' },
+                    ].map((format) => (
+                      <label key={format.id} className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedFormats[`web-seo-${format.id}`]?.selected || false}
+                          onChange={(e) => {
+                            const key = `web-seo-${format.id}`;
+                            setSelectedFormats({
+                              ...selectedFormats,
+                              [key]: { ...selectedFormats[key], selected: e.target.checked }
+                            });
+                          }}
+                          className="w-4 h-4 mt-0.5 cursor-pointer accent-blue-500"
+                        />
+                        <div className="flex-1">
+                          <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
+                          <p className="text-xs text-gray-600">{format.desc}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CATEGORÍA 2: REDES SOCIALES */}
+                <div className="space-y-3 p-4 rounded-lg bg-pink-50 border-2 border-pink-200">
+                  <div className="px-3 py-2 rounded-lg text-sm font-bold text-white bg-pink-500">
+                    📱 REDES SOCIALES
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'linkedin', name: 'LinkedIn Post', icon: '💼', desc: '150-250 palabras, ganchos potentes' },
+                      { id: 'instagram', name: 'Instagram Post', icon: '📸', desc: '100-150 palabras + carrusel' },
+                      { id: 'facebook', name: 'Facebook Post', icon: '👥', desc: '200-300 palabras, storytelling' },
+                      { id: 'twitter', name: 'Hilo X (Twitter)', icon: '𝕏', desc: '5-8 tweets con gancho numérico' },
+                    ].map((format) => (
+                      <label key={format.id} className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedFormats[`social-${format.id}`]?.selected || false}
+                          onChange={(e) => {
+                            const key = `social-${format.id}`;
+                            setSelectedFormats({
+                              ...selectedFormats,
+                              [key]: { ...selectedFormats[key], selected: e.target.checked }
+                            });
+                          }}
+                          className="w-4 h-4 mt-0.5 cursor-pointer accent-pink-500"
+                        />
+                        <div className="flex-1">
+                          <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
+                          <p className="text-xs text-gray-600">{format.desc}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CATEGORÍA 3: EMAIL & PREMIUM */}
+                <div className="space-y-3 p-4 rounded-lg bg-amber-50 border-2 border-amber-200">
+                  <div className="px-3 py-2 rounded-lg text-sm font-bold text-white bg-amber-500">
+                    📧 EMAIL & PREMIUM
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'email-sales', name: 'Email de Venta', icon: '💌', desc: '250-350 palabras, variables' },
+                      { id: 'newsletter', name: 'Newsletter Editorial', icon: '📰', desc: '600-800 palabras, Substack' },
+                      { id: 'pdf-leadmagnet', name: 'PDF Report', icon: '📄', desc: '2-3 páginas descargables' },
+                    ].map((format) => (
+                      <label key={format.id} className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedFormats[`email-${format.id}`]?.selected || false}
+                          onChange={(e) => {
+                            const key = `email-${format.id}`;
+                            setSelectedFormats({
+                              ...selectedFormats,
+                              [key]: { ...selectedFormats[key], selected: e.target.checked }
+                            });
+                          }}
+                          className="w-4 h-4 mt-0.5 cursor-pointer accent-amber-500"
+                        />
+                        <div className="flex-1">
+                          <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
+                          <p className="text-xs text-gray-600">{format.desc}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CATEGORÍA 4: REPUTACIÓN & COMUNIDAD */}
+                <div className="space-y-3 p-4 rounded-lg bg-purple-50 border-2 border-purple-200">
+                  <div className="px-3 py-2 rounded-lg text-sm font-bold text-white bg-purple-500">
+                    ⭐ REPUTACIÓN & COMUNIDAD
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'local-seo-reviews', name: 'Reseñas Local SEO', icon: '📍', desc: 'Optimizadas con keywords locales' },
+                      { id: 'tiktok-ugc', name: 'TikTok & UGC', icon: '🎬', desc: 'Guiones de video estilo UGC' },
+                    ].map((format) => (
+                      <label key={format.id} className="flex items-start gap-2 p-2 rounded hover:bg-white cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedFormats[`reputation-${format.id}`]?.selected || false}
+                          onChange={(e) => {
+                            const key = `reputation-${format.id}`;
+                            setSelectedFormats({
+                              ...selectedFormats,
+                              [key]: { ...selectedFormats[key], selected: e.target.checked }
+                            });
+                          }}
+                          className="w-4 h-4 mt-0.5 cursor-pointer accent-purple-500"
+                        />
+                        <div className="flex-1">
+                          <p className="text-xs font-semibold text-gray-800">{format.icon} {format.name}</p>
+                          <p className="text-xs text-gray-600">{format.desc}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Resumen de Formatos Seleccionados */}
+              {Object.values(selectedFormats).some((f) => f.selected) && (
+                <div className="p-3 bg-green-50 rounded-lg border-2 border-green-300">
+                  <p className="text-xs font-semibold text-green-900 mb-2">✨ Formatos Seleccionados:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(selectedFormats)
+                      .filter(([, format]) => format.selected)
+                      .map(([key]) => {
+                        const [, , formatId] = key.split('-');
+                        const formats: Record<string, any> = {
+                          'web-seo': { blog: '📝 Blog Post', landing: '🎯 Landing', 'faq-schema': '❓ FAQ + Schema' },
+                          social: { linkedin: '💼 LinkedIn', instagram: '📸 Instagram', facebook: '👥 Facebook', twitter: '𝕏 Twitter' },
+                          email: { 'email-sales': '💌 Email Venta', newsletter: '📰 Newsletter', 'pdf-leadmagnet': '📄 PDF' },
+                          reputation: { 'local-seo-reviews': '📍 Local SEO', 'tiktok-ugc': '🎬 TikTok' },
+                        };
+                        const [category] = key.split('-');
+                        const label = formats[category]?.[formatId] || formatId;
+                        return (
+                          <span key={key} className="px-3 py-1 rounded-full text-xs font-medium bg-white border border-green-300 text-green-700">
+                            {label}
+                          </span>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* PASO 6: Origen del Insight + SEO Local */}
       {selectedClient && selectedKeywordsArray.length > 0 && (
         <div className="space-y-4 pt-2 border-t border-gray-200">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">5</span>
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">6</span>
             <label className="text-sm font-bold text-gray-800">⚙️ Configuración Final</label>
           </div>
 
