@@ -193,10 +193,10 @@ export default function PlanGeneratorInteligente({
                 <label className="text-sm font-bold text-gray-800">🗝️ Investigación Semántica</label>
               </div>
 
-              {/* Keyword Levels */}
+              {/* Keyword Levels - Excluir Nivel 5 */}
               {selectedClient && (
                 <div className="space-y-2">
-                  {KEYWORD_STRUCTURE.map((level) => (
+                  {KEYWORD_STRUCTURE.filter(level => level.id !== 'level-5-longtail').map((level) => (
                     <div key={level.id} className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
                       <button
                         onClick={() => setExpandedLevel(expandedLevel === level.id ? null : level.id)}
@@ -245,17 +245,17 @@ export default function PlanGeneratorInteligente({
             </div>
 
             {/* Columna 3: Refina Manualmente (1/3 del ancho) */}
-            <div className="border-l-2 border-gray-300 p-4 bg-gradient-to-br from-amber-50 to-amber-100 space-y-3 max-h-96 overflow-y-auto flex flex-col">
+            <div className="border-l-2 border-gray-300 p-4 bg-gradient-to-br from-amber-50 to-amber-100 space-y-3 flex flex-col">
               {/* Refina Title - Always Visible */}
               <div className="flex items-center gap-1 sticky top-0 bg-gradient-to-r from-amber-50 to-amber-100 pb-2 border-b border-amber-200 flex-shrink-0">
                 <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex-shrink-0">2</span>
                 <label className="text-xs font-bold text-gray-800">Refina</label>
               </div>
 
-              {/* Keywords Grouped by Level - Always Present */}
+              {/* Keywords Grouped by Level - Always Present (Excluir Nivel 5) */}
               {selectedClient && selectedKeywordsArray.length > 0 ? (
-                <div className="space-y-2 flex-1 overflow-y-auto">
-                  {Object.entries(keywordsByLevel).map(([levelId, { level, keywords }]) => (
+                <div className="space-y-2 flex-1">
+                  {Object.entries(keywordsByLevel).filter(([levelId]) => levelId !== 'level-5-longtail').map(([levelId, { level, keywords }]) => (
                     <div key={levelId} className="bg-white rounded-lg border border-amber-200 p-2 space-y-1">
                       <p className="text-xs font-bold text-gray-800">{level}</p>
                       <div className="flex flex-wrap gap-1">
