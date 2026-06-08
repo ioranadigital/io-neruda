@@ -87,7 +87,16 @@ export default function GeneratorPanel() {
       return;
     }
 
-    const enabledFormatsCount = Object.values(formData.enabledFormats).filter(Boolean).length;
+    // Check new selectedFormats system first (PASO 5)
+    const selectedFormatsCount = formData.selectedFormats
+      ? Object.values(formData.selectedFormats).filter((f) => f.selected).length
+      : 0;
+
+    // Fallback to old enabledFormats for backward compatibility
+    const enabledFormatsCount = selectedFormatsCount > 0
+      ? selectedFormatsCount
+      : Object.values(formData.enabledFormats).filter(Boolean).length;
+
     if (enabledFormatsCount === 0) {
       setError('Selecciona al menos un formato de contenido');
       return;
