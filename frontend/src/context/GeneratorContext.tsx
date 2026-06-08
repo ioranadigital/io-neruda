@@ -212,28 +212,44 @@ const GeneratorContext = createContext<GeneratorContextType | undefined>(undefin
 
 export function GeneratorProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(generatorReducer, initialState);
+  const [isMounted, setIsMounted] = React.useState(false);
 
-  // Load clients from localStorage on mount
+  // Initialize clients - First check if we have them already in state
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Load clients from localStorage after mount
   useEffect(() => {
-    const storedClients = localStorage.getItem('io-neruda-clients');
-    const clientsToLoad = storedClients ? JSON.parse(storedClients) : [];
+    if (!isMounted || typeof window === 'undefined') return;
 
-    // Auto-load MOCK_CLIENTS if no stored clients (development/demo mode)
-    if (clientsToLoad.length === 0) {
-      localStorage.setItem('io-neruda-clients', JSON.stringify(MOCK_CLIENTS));
-      dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
-      // Auto-select first client from mocks
-      if (MOCK_CLIENTS.length > 0) {
-        dispatch({ type: 'SELECT_CLIENT', payload: MOCK_CLIENTS[0] });
+    try {
+      const storedClients = localStorage.getItem('io-neruda-clients');
+      let clientsToLoad: Client[] = [];
+
+      if (storedClients) {
+        clientsToLoad = JSON.parse(storedClients);
       }
-    } else {
+
+      // Auto-load MOCK_CLIENTS if no stored clients (development/demo mode)
+      if (clientsToLoad.length === 0) {
+        localStorage.setItem('io-neruda-clients', JSON.stringify(MOCK_CLIENTS));
+        clientsToLoad = MOCK_CLIENTS;
+      }
+
       dispatch({ type: 'SET_CLIENTS', payload: clientsToLoad });
-      // Auto-select first real client
+      // Auto-select first client
       if (clientsToLoad.length > 0) {
         dispatch({ type: 'SELECT_CLIENT', payload: clientsToLoad[0] });
       }
+    } catch (error) {
+      console.error('Error loading clients:', error);
+      dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
+      if (MOCK_CLIENTS.length > 0) {
+        dispatch({ type: 'SELECT_CLIENT', payload: MOCK_CLIENTS[0] });
+      }
     }
-  }, []);
+  }, [isMounted]);
 
   const setLoading = useCallback((loading: boolean) => {
     dispatch({ type: 'SET_LOADING', payload: loading });
