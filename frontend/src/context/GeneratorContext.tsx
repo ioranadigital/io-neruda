@@ -213,12 +213,24 @@ const GeneratorContext = createContext<GeneratorContextType | undefined>(undefin
 export function GeneratorProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(generatorReducer, initialState);
 
-  // Load mock clients on mount
+  // Load clients from localStorage on mount
   useEffect(() => {
-    dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
-    // Auto-select first client
-    if (MOCK_CLIENTS.length > 0) {
-      dispatch({ type: 'SELECT_CLIENT', payload: MOCK_CLIENTS[0] });
+    const storedClients = localStorage.getItem('io-neruda-clients');
+    const clientsToLoad = storedClients ? JSON.parse(storedClients) : [];
+
+    // Only load MOCK_CLIENTS if there are no stored clients AND no real clients
+    if (clientsToLoad.length === 0) {
+      dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
+      // Auto-select first client from mocks
+      if (MOCK_CLIENTS.length > 0) {
+        dispatch({ type: 'SELECT_CLIENT', payload: MOCK_CLIENTS[0] });
+      }
+    } else {
+      dispatch({ type: 'SET_CLIENTS', payload: clientsToLoad });
+      // Auto-select first real client
+      if (clientsToLoad.length > 0) {
+        dispatch({ type: 'SELECT_CLIENT', payload: clientsToLoad[0] });
+      }
     }
   }, []);
 

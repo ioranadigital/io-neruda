@@ -1,23 +1,35 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useGenerator } from '../context/GeneratorContext';
 import { Client, ClientCreateInput, ClientUpdateInput } from '../types/client';
-import { MOCK_CLIENTS } from '../data/mockClients';
 
-let mockClientsStorage = [...MOCK_CLIENTS];
+const CLIENTS_STORAGE_KEY = 'io-neruda-clients';
+
+// Get clients from localStorage
+function getStoredClients(): Client[] {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem(CLIENTS_STORAGE_KEY);
+  return stored ? JSON.parse(stored) : [];
+}
+
+// Save clients to localStorage
+function saveClientsToStorage(clients: Client[]): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(clients));
+}
 
 export function useClients() {
   const { setClients, addClient, selectClient, setError, setLoading } = useGenerator();
   const [isFetching, setIsFetching] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
-  // Fetch all active clients (mock data)
+  // Fetch all active clients from localStorage
   const getClients = useCallback(async () => {
     setIsFetching(true);
     setError(null);
 
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
-      const activeClients = mockClientsStorage.filter(c => c.is_active);
+      const activeClients = getStoredClients().filter(c => c.is_active);
       setClients(activeClients);
       return activeClients;
     } catch (err) {
@@ -29,7 +41,7 @@ export function useClients() {
     }
   }, [setClients, setError]);
 
-  // Create new client (mock)
+  // Create new client
   const createNewClient = useCallback(
     async (input: ClientCreateInput) => {
       setIsCreating(true);
@@ -40,7 +52,8 @@ export function useClients() {
           throw new Error('Name and slug are required');
         }
 
-        const exists = mockClientsStorage.some(c => c.slug === input.slug);
+        const storedClients = getStoredClients();
+        const exists = storedClients.some(c => c.slug === input.slug);
         if (exists) {
           throw new Error(`Slug "${input.slug}" already exists`);
         }
@@ -53,6 +66,9 @@ export function useClients() {
           slug: input.slug,
           description: input.description || '',
           is_active: true,
+          default_tone: input.default_tone || 'professional',
+          forbidden_keywords: input.forbidden_keywords || [],
+          competitor_urls: input.competitor_urls || [],
           keywords_niche: input.keywords_niche || [],
           keywords_longtail: input.keywords_longtail || [],
           channel_blog: input.channel_blog || false,
@@ -65,7 +81,10 @@ export function useClients() {
           updated_at: new Date().toISOString(),
         };
 
-        mockClientsStorage.push(newClient);
+        // Save to localStorage
+        const updatedClients = [...storedClients, newClient];
+        saveClientsToStorage(updatedClients);
+
         addClient(newClient);
         return newClient;
       } catch (err) {
@@ -79,7 +98,7 @@ export function useClients() {
     [addClient, setError]
   );
 
-  // Select client (mock)
+  // Select client
   const selectClientById = useCallback(
     async (clientId: string) => {
       setLoading(true);
@@ -87,7 +106,8 @@ export function useClients() {
 
       try {
         await new Promise(resolve => setTimeout(resolve, 200));
-        const client = mockClientsStorage.find(c => c.id === clientId);
+        const storedClients = getStoredClients();
+        const client = storedClients.find(c => c.id === clientId);
 
         if (!client) {
           throw new Error('Client not found');
@@ -106,7 +126,7 @@ export function useClients() {
     [selectClient, setError, setLoading]
   );
 
-  // Update client (mock)
+  // Update client
   const updateClientBrandMemory = useCallback(
     async (clientId: string, updates: Partial<ClientUpdateInput>) => {
       setLoading(true);
@@ -115,18 +135,20 @@ export function useClients() {
       try {
         await new Promise(resolve => setTimeout(resolve, 300));
 
-        const clientIndex = mockClientsStorage.findIndex(c => c.id === clientId);
+        const storedClients = getStoredClients();
+        const clientIndex = storedClients.findIndex(c => c.id === clientId);
         if (clientIndex === -1) {
           throw new Error('Client not found');
         }
 
         const updated: Client = {
-          ...mockClientsStorage[clientIndex],
+          ...storedClients[clientIndex],
           ...updates,
           updated_at: new Date().toISOString(),
         };
 
-        mockClientsStorage[clientIndex] = updated;
+        storedClients[clientIndex] = updated;
+        saveClientsToStorage(storedClients);
         selectClient(updated);
         return updated;
       } catch (err) {
@@ -140,7 +162,7 @@ export function useClients() {
     [selectClient, setError, setLoading]
   );
 
-  // Deactivate client (mock)
+  // Deactivate client
   const deactivateClient = useCallback(
     async (clientId: string) => {
       setLoading(true);
@@ -149,12 +171,14 @@ export function useClients() {
       try {
         await new Promise(resolve => setTimeout(resolve, 200));
 
-        const clientIndex = mockClientsStorage.findIndex(c => c.id === clientId);
+        const storedClients = getStoredClients();
+        const clientIndex = storedClients.findIndex(c => c.id === clientId);
         if (clientIndex === -1) {
           throw new Error('Client not found');
         }
 
-        mockClientsStorage[clientIndex].is_active = false;
+        storedClients[clientIndex].is_active = false;
+        saveClientsToStorage(storedClients);
         return true;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to deactivate client';

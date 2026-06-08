@@ -17,7 +17,7 @@ export default function ClientsPage() {
     try {
       await deactivateClient(clientId);
       showToast.success('✅ Cliente desactivado');
-      await loadClients();
+      window.location.reload();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error desactivando cliente';
       showToast.error(`❌ ${message}`);
