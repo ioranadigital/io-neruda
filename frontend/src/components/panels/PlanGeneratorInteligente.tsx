@@ -137,7 +137,14 @@ export default function PlanGeneratorInteligente({
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    // Auto-select first keyword if client is selected and no keywords selected yet
+    if (selectedClient && selectedKeywords.size === 0) {
+      const firstKeyword = selectedClient.keywords_niche?.[0];
+      if (firstKeyword) {
+        setSelectedKeywords(new Set([firstKeyword]));
+      }
+    }
+  }, [selectedClient]);
 
   useEffect(() => {
     if (h1Title.trim()) {
