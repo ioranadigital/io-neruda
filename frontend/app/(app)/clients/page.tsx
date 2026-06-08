@@ -16,15 +16,17 @@ export default function ClientsPage() {
   const handleLoadExampleData = async () => {
     try {
       setIsLoadingDemo(true);
+      await new Promise(resolve => setTimeout(resolve, 300));
       // Save mock clients to localStorage
       localStorage.setItem('io-neruda-clients', JSON.stringify(MOCK_CLIENTS));
       // Update context
       setClients(MOCK_CLIENTS);
       showToast.success('✅ Datos de ejemplo cargados');
+      // Reload page to reflect changes
+      setTimeout(() => window.location.reload(), 500);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error cargando datos de ejemplo';
       showToast.error(`❌ ${message}`);
-    } finally {
       setIsLoadingDemo(false);
     }
   };
