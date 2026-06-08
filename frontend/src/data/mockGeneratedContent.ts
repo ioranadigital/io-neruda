@@ -102,7 +102,7 @@ PRÓXIMOS PASOS
     config_id: configName,
     format: format as any,
     content: formats[format] || formats.blog,
-    status: 'completed',
+    status: 'draft',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
