@@ -90,6 +90,7 @@ export default function PlanGeneratorInteligente({
   const [insights, setInsights] = useState<InsightSuggestion[]>([]);
   const [selectedInsightId, setSelectedInsightId] = useState<string | null>(null);
   const [expandedPlan, setExpandedPlan] = useState(true);
+  const [expandedProposals, setExpandedProposals] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -308,29 +309,88 @@ export default function PlanGeneratorInteligente({
         )}
       </div>
 
-      {/* PASO 2: 5 Insights Sugeridos */}
+      {/* PASO 2: 5 Insights Sugeridos - Acordeón */}
       {selectedClient && insights.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">2</span>
-            <label className="text-sm font-bold text-gray-800">💡 5 Propuestas de Contenido</label>
-          </div>
-          <div className="grid grid-cols-1 gap-2">
-            {insights.map((insight) => (
-              <button
-                key={insight.id}
-                onClick={() => handleSelectInsight(insight)}
-                className={`w-full text-left p-3 rounded-lg border-2 transition ${
-                  selectedInsightId === insight.id
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
-              >
-                <p className="font-semibold text-sm text-gray-800">{insight.title}</p>
-                <p className="text-xs text-gray-600 mt-1">{insight.description}</p>
-              </button>
-            ))}
-          </div>
+        <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
+          {/* Header del Acordeón */}
+          <button
+            onClick={() => setExpandedProposals(!expandedProposals)}
+            className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition border-b border-gray-300"
+          >
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">2</span>
+              <h3 className="text-lg font-bold text-gray-800">💡 5 Propuestas de Contenido</h3>
+            </div>
+            <ChevronDown
+              size={20}
+              className={`transition text-gray-600 ${expandedProposals ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {/* Contenido del Acordeón - Grid 2 Columnas */}
+          {expandedProposals && (
+            <div className="grid grid-cols-2 gap-0">
+              {/* Columna 1: Lista de Propuestas (1/2 del ancho) */}
+              <div className="p-4 space-y-2 bg-white border-r border-gray-300">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+                  <label className="text-xs font-bold text-gray-800">Propuestas Disponibles</label>
+                </div>
+                <div className="space-y-2">
+                  {insights.map((insight) => (
+                    <button
+                      key={insight.id}
+                      onClick={() => handleSelectInsight(insight)}
+                      className={`w-full text-left p-2.5 rounded-lg border-2 transition text-sm ${
+                        selectedInsightId === insight.id
+                          ? 'border-green-500 bg-green-50'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
+                      }`}
+                    >
+                      <p className="font-semibold text-xs text-gray-800 line-clamp-2">{insight.title}</p>
+                      <p className="text-xs text-gray-600 mt-1 line-clamp-1">{insight.description}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Columna 2: Detalle Seleccionado (1/2 del ancho) */}
+              <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 flex flex-col">
+                {selectedInsightId ? (
+                  <div className="space-y-3">
+                    {insights.find(i => i.id === selectedInsightId) && (
+                      <>
+                        <div>
+                          <p className="text-xs font-semibold text-gray-600 mb-1">Título</p>
+                          <p className="text-sm font-bold text-gray-800">{insights.find(i => i.id === selectedInsightId)?.title}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-gray-600 mb-1">Descripción</p>
+                          <p className="text-xs text-gray-700">{insights.find(i => i.id === selectedInsightId)?.description}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-gray-600 mb-1">Keywords Sugeridas</p>
+                          <div className="flex flex-wrap gap-1">
+                            {insights.find(i => i.id === selectedInsightId)?.suggestedKeywords.slice(0, 4).map((kw) => (
+                              <span key={kw} className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">
+                                {kw}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-center">
+                    <div>
+                      <p className="text-gray-400 text-xs font-medium">Selecciona una propuesta</p>
+                      <p className="text-gray-300 text-xs mt-1">para ver los detalles</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
