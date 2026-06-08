@@ -121,6 +121,46 @@ export default function PlanGeneratorInteligente({
     setSelectedInsightId(null);
   };
 
+  const generateSlug = (text: string): string => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  };
+
+  const handleSelectProposal = (insightId: string) => {
+    setSelectedInsightId(insightId);
+    const insight = insights.find(i => i.id === insightId);
+    if (insight) {
+      // Auto-fill H1 Title with proposal title
+      setH1Title(insight.title);
+
+      // Auto-fill H2 Title with first content pillar
+      if (insight.contentPillars.length > 0) {
+        setH2Title(insight.contentPillars[0]);
+      }
+
+      // Auto-generate URL slug from title
+      const slug = generateSlug(insight.title);
+      setUrlSlug(`/${slug}/`);
+
+      // Auto-generate internal links from content pillars
+      if (insight.contentPillars.length > 1) {
+        const link1Slug = generateSlug(insight.contentPillars[1]);
+        setInternalLink1(`/blog/${link1Slug}/`);
+      }
+
+      if (insight.contentPillars.length > 2) {
+        const link2Slug = generateSlug(insight.contentPillars[2]);
+        setInternalLink2(`/blog/${link2Slug}/`);
+      } else {
+        setInternalLink2(`/tienda/accesorios/`);
+      }
+    }
+  };
+
   const handleAddCustomKeyword = () => {
     if (keywordInput.trim() && !selectedKeywords.has(keywordInput.trim())) {
       const newSelected = new Set(selectedKeywords);
@@ -143,7 +183,7 @@ export default function PlanGeneratorInteligente({
   };
 
   const handleSelectInsight = (insight: InsightSuggestion) => {
-    setSelectedInsightId(insight.id);
+    handleSelectProposal(insight.id);
     onInsightSelect?.(insight);
   };
 
