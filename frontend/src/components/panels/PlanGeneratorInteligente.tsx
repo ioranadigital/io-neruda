@@ -108,6 +108,13 @@ export default function PlanGeneratorInteligente({
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (h1Title.trim()) {
+      const slug = generateSlug(h1Title);
+      setUrlSlug(`/${slug}/`);
+    }
+  }, [h1Title]);
+
   const handleToggleKeyword = (keyword: string) => {
     const newSelected = new Set(selectedKeywords);
     if (newSelected.has(keyword)) {
@@ -134,17 +141,13 @@ export default function PlanGeneratorInteligente({
     setSelectedInsightId(insightId);
     const insight = insights.find(i => i.id === insightId);
     if (insight) {
-      // Auto-fill H1 Title with proposal title
+      // Auto-fill H1 Title with proposal title (slug will auto-generate via useEffect)
       setH1Title(insight.title);
 
       // Auto-fill H2 Title with first content pillar
       if (insight.contentPillars.length > 0) {
         setH2Title(insight.contentPillars[0]);
       }
-
-      // Auto-generate URL slug from title
-      const slug = generateSlug(insight.title);
-      setUrlSlug(`/${slug}/`);
 
       // Auto-generate internal links from content pillars
       if (insight.contentPillars.length > 1) {
