@@ -92,6 +92,9 @@ export default function PlanGeneratorInteligente({
   const [expandedPlan, setExpandedPlan] = useState(true);
   const [expandedProposals, setExpandedProposals] = useState(true);
   const [expandedStrategy, setExpandedStrategy] = useState(true);
+  const [selectedContentIntent, setSelectedContentIntent] = useState<string | null>(null);
+  const [selectedTone, setSelectedTone] = useState<string | null>(null);
+  const [targetAudience, setTargetAudience] = useState('');
 
   useEffect(() => {
     setMounted(true);
@@ -346,7 +349,7 @@ export default function PlanGeneratorInteligente({
               {/* 2. Intención de Contenidos */}
               <div>
                 <label className="text-sm font-semibold text-gray-800 mb-2">📍 Intención de Contenidos</label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-4 gap-2">
                   {[
                     { value: 'educational', label: 'Educativo', desc: 'Informativo' },
                     { value: 'transactional', label: 'Transaccional', desc: 'Venta' },
@@ -355,10 +358,24 @@ export default function PlanGeneratorInteligente({
                   ].map(({ value, label, desc }) => (
                     <button
                       key={value}
-                      className="text-left p-3 rounded-lg border-2 border-gray-200 bg-white hover:border-indigo-300 transition"
+                      onClick={() => setSelectedContentIntent(value)}
+                      className={`text-left p-3 rounded-lg border-2 transition ${
+                        selectedContentIntent === value
+                          ? 'border-indigo-500 bg-indigo-50'
+                          : 'border-gray-200 bg-white hover:border-indigo-300'
+                      }`}
                     >
-                      <p className="font-semibold text-xs text-gray-800">{label}</p>
-                      <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                      <div className="flex items-start gap-2">
+                        <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex-shrink-0 ${
+                          selectedContentIntent === value
+                            ? 'border-indigo-500 bg-indigo-500'
+                            : 'border-gray-300'
+                        }`} />
+                        <div>
+                          <p className="font-semibold text-xs text-gray-800">{label}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                        </div>
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -375,10 +392,24 @@ export default function PlanGeneratorInteligente({
                   ].map(({ value, label, desc }) => (
                     <button
                       key={value}
-                      className="w-full text-left p-3 rounded-lg border-2 border-gray-200 bg-white hover:border-indigo-300 transition"
+                      onClick={() => setSelectedTone(value)}
+                      className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                        selectedTone === value
+                          ? 'border-indigo-500 bg-indigo-50'
+                          : 'border-gray-200 bg-white hover:border-indigo-300'
+                      }`}
                     >
-                      <p className="font-semibold text-sm text-gray-800">{label}</p>
-                      <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
+                          selectedTone === value
+                            ? 'border-indigo-500 bg-indigo-500'
+                            : 'border-gray-300'
+                        }`} />
+                        <div>
+                          <p className="font-semibold text-sm text-gray-800">{label}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                        </div>
+                      </div>
                     </button>
                   ))}
                 </div>
