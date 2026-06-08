@@ -5,7 +5,8 @@ import { useGenerator } from '../../context/GeneratorContext';
 import { Configuration, EnabledFormats } from '../../types/generator';
 import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
-import ContentDefinition, { InsightOrigin, ContentIntent } from '../selectors/ContentDefinition';
+import PlanGeneratorInteligente, { InsightOrigin } from './PlanGeneratorInteligente';
+import type { ContentIntent } from '../selectors/ContentDefinition';
 import BlogLengthSelector, { BlogLength } from '../selectors/BlogLengthSelector';
 import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
@@ -131,8 +132,9 @@ export default function GeneratorPanel() {
             onSelectClient={selectClient}
           />
 
-          {/* Content Definition */}
-          <ContentDefinition
+          {/* Plan Generator Inteligente */}
+          <PlanGeneratorInteligente
+            selectedClient={selectedClient}
             insightOrigin={formData.insightOrigin}
             localGeoEnabled={formData.localGeoEnabled}
             localGeoValue={formData.localGeoValue}
