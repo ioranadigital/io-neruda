@@ -168,7 +168,16 @@ Generado: ${new Date().toLocaleString()}
   };
 
   const isReady = selectedClient;
-  const enabledFormatsCount = Object.values(formData.enabledFormats).filter((v) => v).length;
+  // Count from new selectedFormats system (PASO 5)
+  const selectedFormatsCount = formData.selectedFormats
+    ? Object.values(formData.selectedFormats).filter((f) => f.selected).length
+    : 0;
+
+  // Fallback to old enabledFormats system for backward compatibility
+  const enabledFormatsCount = selectedFormatsCount > 0
+    ? selectedFormatsCount
+    : Object.values(formData.enabledFormats).filter((v) => v).length;
+
   const isMultiFormat = enabledFormatsCount > 1;
 
   return (
