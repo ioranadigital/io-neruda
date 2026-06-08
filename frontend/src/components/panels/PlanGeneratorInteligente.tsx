@@ -15,6 +15,11 @@ interface InsightSuggestion {
   contentPillars: string[];
 }
 
+interface FormatSelection {
+  selected: boolean;
+  subType?: string;
+}
+
 interface PlanGeneratorInteligenteProps {
   selectedClient: Client | null;
   insightOrigin: InsightOrigin;
@@ -104,8 +109,8 @@ export default function PlanGeneratorInteligente({
   const [internalLink2, setInternalLink2] = useState('');
   const [semanticElements, setSemanticElements] = useState<Set<string>>(new Set());
   const [expandedFormatOutput, setExpandedFormatOutput] = useState(true);
-  const [selectedFormats, setSelectedFormats] = useState<Record<string, { selected: boolean; subType?: string }>({});
-  const [subSelectorValues, setSubSelectorValues] = useState<Record<string, string>>({});
+  const [selectedFormats, setSelectedFormats] = useState<{ [key: string]: FormatSelection }>({});
+  const [subSelectorValues, setSubSelectorValues] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     setMounted(true);
