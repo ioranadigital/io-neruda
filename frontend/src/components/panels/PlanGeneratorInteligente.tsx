@@ -495,29 +495,38 @@ export default function PlanGeneratorInteligente({
                   👥 Público Objetivo
                 </label>
                 {selectedClient?.buyer_personas_list && selectedClient.buyer_personas_list.filter(bp => bp).length > 0 ? (
-                  <div className="grid grid-cols-2 gap-2">
-                    {selectedClient.buyer_personas_list.map((persona, index) => (
-                      persona && (
-                        <button
-                          key={index}
-                          onClick={() => setTargetAudience(persona)}
-                          className={`text-left p-3 rounded-lg border-2 transition ${
-                            targetAudience === persona
-                              ? 'border-indigo-500 bg-indigo-50'
-                              : 'border-gray-200 bg-white hover:border-indigo-300'
+                  <div className="grid grid-cols-2 gap-3">
+                    {selectedClient.buyer_personas_list.map((persona, index) => {
+                      const personaName = typeof persona === 'string' ? persona : persona?.name;
+                      const personaDesc = typeof persona === 'string' ? '' : persona?.description;
+                      return (
+                        personaName && (
+                          <button
+                            key={index}
+                            onClick={() => setTargetAudience(personaName)}
+                            className={`text-left p-3 rounded-lg border-2 transition group relative ${
+                              targetAudience === personaName
+                                ? 'border-indigo-500 bg-indigo-50'
+                                : 'border-gray-200 bg-white hover:border-indigo-300'
                           }`}
                         >
-                          <div className="flex items-center gap-2">
-                            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
-                              targetAudience === persona
+                          <div className="flex items-start gap-2">
+                            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 ${
+                              targetAudience === personaName
                                 ? 'border-indigo-500 bg-indigo-500'
                                 : 'border-gray-300'
                             }`} />
-                            <p className="font-semibold text-sm text-gray-800">{persona}</p>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-sm text-gray-800 leading-tight">{personaName}</p>
+                              {personaDesc && (
+                                <p className="text-xs text-gray-600 mt-1 leading-snug line-clamp-2">{personaDesc}</p>
+                              )}
+                            </div>
                           </div>
                         </button>
-                      )
-                    ))}
+                        )
+                      );
+                    })}
                   </div>
                 ) : (
                   <>
