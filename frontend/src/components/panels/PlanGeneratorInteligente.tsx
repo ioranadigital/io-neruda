@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Client } from '../../types/client';
-import { Lightbulb, RefreshCw, RotateCcw, ChevronDown } from 'lucide-react';
+import { Lightbulb, RefreshCw, ChevronDown } from 'lucide-react';
 import { KEYWORD_STRUCTURE } from '../../data/keywordStructure';
 
 export type InsightOrigin = 'direct_idea' | 'keyword_seo' | 'obsidian_drive';
@@ -89,6 +89,7 @@ export default function PlanGeneratorInteligente({
   const [keywordInput, setKeywordInput] = useState('');
   const [insights, setInsights] = useState<InsightSuggestion[]>([]);
   const [selectedInsightId, setSelectedInsightId] = useState<string | null>(null);
+  const [expandedPlan, setExpandedPlan] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -139,72 +140,94 @@ export default function PlanGeneratorInteligente({
 
   return (
     <div className="w-full space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <Lightbulb size={20} style={{ color: '#18bdc1' }} />
-        <h3 className="text-lg font-bold text-gray-800">Plan Generator Inteligente</h3>
-      </div>
-
-      {/* PASO 1: Acordeón de Keywords */}
-      {selectedClient && (
-        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg p-4 space-y-3">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold">1</span>
-            <label className="text-sm font-bold text-gray-800">🗝️ Investigación Semántica: Selecciona Keywords</label>
+      {/* ACORDEÓN: Plan Generator Inteligente */}
+      <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
+        {/* Header del Acordeón */}
+        <button
+          onClick={() => setExpandedPlan(!expandedPlan)}
+          className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 transition border-b border-gray-300"
+        >
+          <div className="flex items-center gap-3">
+            <Lightbulb size={24} style={{ color: '#18bdc1' }} />
+            <h3 className="text-lg font-bold text-gray-800">Plan Generator Inteligente</h3>
           </div>
+          <ChevronDown
+            size={20}
+            className={`transition text-gray-600 ${expandedPlan ? 'rotate-180' : ''}`}
+          />
+        </button>
 
-          {/* Keyword Levels */}
-          <div className="space-y-2">
-            {KEYWORD_STRUCTURE.map((level) => (
-              <div key={level.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                <button
-                  onClick={() => setExpandedLevel(expandedLevel === level.id ? null : level.id)}
-                  className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-50 transition"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{level.icon}</span>
-                    <span className="text-sm font-semibold text-gray-800">{level.level}</span>
-                  </div>
-                  <ChevronDown
-                    size={16}
-                    className={`transition ${expandedLevel === level.id ? 'rotate-180' : ''}`}
-                  />
-                </button>
+        {/* Contenido del Acordeón - Grid 2 Columnas */}
+        {expandedPlan && (
+          <div className="grid grid-cols-2 gap-0">
+            {/* Columna 1: Investigación Semántica */}
+            <div className="border-r border-gray-200 p-6 space-y-3 bg-white max-h-96 overflow-y-auto">
+              <div className="flex items-center gap-2 sticky top-0 bg-white pb-2 border-b border-gray-200">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold">1</span>
+                <label className="text-sm font-bold text-gray-800">🗝️ Investigación Semántica</label>
+              </div>
 
-                {expandedLevel === level.id && (
-                  <div className="px-4 py-4 border-t border-gray-200 bg-gray-50 space-y-3">
-                    {level.items.map((item) => (
-                      <div key={item.id} className="bg-white rounded-lg border border-gray-200 p-4 space-y-2">
-                        <div>
-                          <p className="text-sm font-bold text-gray-800">{item.name}</p>
-                          <p className="text-xs text-gray-600 mt-1">{item.description}</p>
+              {/* Keyword Levels */}
+              {selectedClient && (
+                <div className="space-y-2">
+                  {KEYWORD_STRUCTURE.map((level) => (
+                    <div key={level.id} className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+                      <button
+                        onClick={() => setExpandedLevel(expandedLevel === level.id ? null : level.id)}
+                        className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-100 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{level.icon}</span>
+                          <span className="text-xs font-semibold text-gray-800">{level.level}</span>
                         </div>
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          {item.keywords.map((kw) => (
-                            <button
-                              key={kw}
-                              onClick={() => handleToggleKeyword(kw)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition border ${
-                                selectedKeywords.has(kw)
-                                  ? 'bg-blue-500 text-white border-blue-500 shadow-md'
-                                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300 hover:bg-blue-50'
-                              }`}
-                            >
-                              {kw}
-                            </button>
+                        <ChevronDown
+                          size={14}
+                          className={`transition ${expandedLevel === level.id ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+
+                      {expandedLevel === level.id && (
+                        <div className="px-3 py-2 border-t border-gray-200 bg-white space-y-2">
+                          {level.items.map((item) => (
+                            <div key={item.id} className="space-y-1">
+                              <p className="text-xs font-bold text-gray-800">{item.name}</p>
+                              <div className="flex flex-wrap gap-1">
+                                {item.keywords.map((kw) => (
+                                  <button
+                                    key={kw}
+                                    onClick={() => handleToggleKeyword(kw)}
+                                    className={`px-2 py-1 rounded text-xs transition border ${
+                                      selectedKeywords.has(kw)
+                                        ? 'bg-blue-500 text-white border-blue-500'
+                                        : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                                    }`}
+                                  >
+                                    {kw}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
                           ))}
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-      {/* PASO 2: Cambiar Keywords Manualmente */}
+            {/* Columna 2: Vacío de momento */}
+            <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center min-h-96">
+              <div className="text-center">
+                <p className="text-gray-400 text-sm font-medium">Espacio reservado</p>
+                <p className="text-gray-300 text-xs mt-1">para futuras opciones</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* PASO 2: Cambiar Keywords Manualmente (Fuera del acordeón) */}
       {selectedClient && selectedKeywordsArray.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
           <div className="flex items-center gap-2">
