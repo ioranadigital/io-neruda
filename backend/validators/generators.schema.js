@@ -83,6 +83,24 @@ export const generateContentSchema = z.object({
   }).optional(),
   emailTemplateId: z.string().min(1).optional(),
 
+  // Parámetros estratégicos dinámicos
+  insightOrigin: z.enum(['direct_idea', 'keyword_seo', 'obsidian_drive'])
+    .optional()
+    .describe('Origen del insight para esta generación'),
+
+  contentIntent: z.enum(['educational', 'transactional', 'social_proof', 'thought_leadership'])
+    .optional()
+    .describe('Intención estratégica del contenido'),
+
+  localGeoEnabled: z.boolean()
+    .optional()
+    .describe('¿Aplicar optimización SEO local?'),
+
+  localGeoValue: z.string()
+    .max(200, 'localGeoValue no puede exceder 200 caracteres')
+    .optional()
+    .describe('Ubicación específica para SEO local (ciudad, región)'),
+
   // Opciones adicionales
   generateAlternatives: z.number()
     .int()

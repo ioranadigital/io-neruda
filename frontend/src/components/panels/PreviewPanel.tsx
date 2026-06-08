@@ -72,6 +72,11 @@ ${formData.keywordsLongtail.length > 0 ? formData.keywordsLongtail.map((kw) => `
 ## Tono
 ${formData.tone}
 
+## Parámetros Estratégicos
+${formData.insightOrigin ? `- **Origen del Insight:** ${formData.insightOrigin}` : ''}
+${formData.contentIntent ? `- **Intención:** ${formData.contentIntent}` : ''}
+${formData.localGeoEnabled && formData.localGeoValue ? `- **SEO Local:** ${formData.localGeoValue}` : formData.localGeoEnabled ? '- **SEO Local:** Habilitado (sin ubicación)' : ''}
+
 ## Formatos
 ${
   Object.entries(formData.enabledFormats)

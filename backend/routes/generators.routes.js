@@ -150,8 +150,21 @@ router.post('/generate', async (req, res) => {
       };
     }
 
-    // Generar contenido
-    const generated = await contentGeneratorService.generateMultiFormat(content, config);
+    // Extraer parámetros estratégicos dinámicos
+    const {
+      insightOrigin,
+      contentIntent,
+      localGeoEnabled,
+      localGeoValue,
+    } = validated;
+
+    // Generar contenido (pasar metadata estratégica)
+    const generated = await contentGeneratorService.generateMultiFormat(content, config, {
+      insightOrigin,
+      contentIntent,
+      localGeoEnabled,
+      localGeoValue,
+    });
 
     // Guardar cada formato en BD
     const generatedContents = {};
@@ -177,6 +190,10 @@ router.post('/generate', async (req, res) => {
           is_alternative: false,
           status: 'draft',
           generation_time_ms: result.generationTimeMs || 0,
+          insight_origin: insightOrigin,
+          content_intent: contentIntent,
+          local_geo_enabled: localGeoEnabled || false,
+          local_geo_value: localGeoValue,
         })
         .select('*')
         .single();

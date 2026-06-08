@@ -3,16 +3,24 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    const { configId, contentId } = data;
+    const {
+      configId,
+      contentId,
+      insightOrigin,
+      contentIntent,
+      localGeoEnabled,
+      localGeoValue,
+    } = data;
 
-    if (!configId || !contentId) {
+    if (!contentId) {
       return NextResponse.json(
-        { error: 'Missing configId or contentId' },
+        { error: 'Missing contentId' },
         { status: 400 }
       );
     }
 
     // Mock generated content - simulates AI generation
+    // En producción, esto llamaría a backend/routes/generators.routes.js POST /api/generators/generate
     const mockGeneratedContent = {
       id: contentId,
       configId,

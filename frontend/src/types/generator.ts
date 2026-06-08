@@ -108,6 +108,12 @@ export interface GenerateRequest {
   tone?: string;
   toneCustomText?: string;
   enabledFormats?: EnabledFormats;
+
+  // Parámetros estratégicos dinámicos
+  insightOrigin?: 'direct_idea' | 'keyword_seo' | 'obsidian_drive';
+  contentIntent?: 'educational' | 'transactional' | 'social_proof' | 'thought_leadership';
+  localGeoEnabled?: boolean;
+  localGeoValue?: string;
 }
 
 export interface BatchRequest {

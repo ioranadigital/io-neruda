@@ -10,12 +10,21 @@ import * as keywordOptimizer from './keyword-optimizer.service.js';
 
 /**
  * Genera contenido en múltiples formatos para un Plan
+ * @param {Object} content - Plan/contenido base
+ * @param {Object} config - Configuración de generación
+ * @param {Object} metadata - Parámetros estratégicos (insightOrigin, contentIntent, etc)
+ * @param {Boolean} mockMode - Si true, usa contenido mock en lugar de llamar al LLM
  */
-export async function generateMultiFormat(content, config, mockMode = false) {
+export async function generateMultiFormat(content, config, metadata = {}, mockMode = false) {
   try {
     logger.info(`Generando contenido para: ${content.title}`, {
       formats: Object.keys(config.enabledFormats).filter(k => config.enabledFormats[k]),
       contentId: content.id,
+      metadata: {
+        insightOrigin: metadata.insightOrigin,
+        contentIntent: metadata.contentIntent,
+        localGeoEnabled: metadata.localGeoEnabled,
+      },
     });
 
     const results = {};
@@ -31,6 +40,7 @@ export async function generateMultiFormat(content, config, mockMode = false) {
           content,
           format,
           config,
+          metadata,
           mockMode
         );
 
@@ -54,13 +64,18 @@ export async function generateMultiFormat(content, config, mockMode = false) {
 
 /**
  * Genera contenido para un formato específico
+ * @param {Object} content - Plan/contenido base
+ * @param {String} format - Formato de salida (blog, email, etc)
+ * @param {Object} config - Configuración de generación
+ * @param {Object} metadata - Parámetros estratégicos (insightOrigin, contentIntent, etc)
+ * @param {Boolean} mockMode - Si true, usa contenido mock
  */
-async function generateForFormat(content, format, config, mockMode = false) {
+async function generateForFormat(content, format, config, metadata = {}, mockMode = false) {
   const startTime = Date.now();
 
   try {
-    // 1. Construir prompt específico del formato
-    const prompt = buildFormatPrompt(content, format, config);
+    // 1. Construir prompt específico del formato (incluyendo metadata estratégica)
+    const prompt = buildFormatPrompt(content, format, config, metadata);
 
     // 2. Generar con Claude (o mock si mockMode)
     let generatedText;
@@ -122,8 +137,40 @@ async function generateForFormat(content, format, config, mockMode = false) {
 
 /**
  * Construye prompt específico por formato
+ * @param {Object} content - Plan/contenido base
+ * @param {String} format - Formato de salida
+ * @param {Object} config - Configuración de generación
+ * @param {Object} metadata - Parámetros estratégicos (insightOrigin, contentIntent, etc)
  */
-function buildFormatPrompt(content, format, config) {
+function buildFormatPrompt(content, format, config, metadata = {}) {
+  // Construir descripción de metadata estratégica
+  let metadataSection = '';
+
+  if (metadata.insightOrigin) {
+    const insightDescriptions = {
+      direct_idea: 'Idea directa del cliente o equipo (máxima originalidad, se puede ser creativo)',
+      keyword_seo: 'Basado en investigación SEO y búsquedas (optimizar para posicionamiento)',
+      obsidian_drive: 'Basado en investigación propia o base de conocimiento (aporta profundidad y autoridad)',
+    };
+    metadataSection += `\nOrigen del Insight: ${metadata.insightOrigin}\n  → ${insightDescriptions[metadata.insightOrigin]}`;
+  }
+
+  if (metadata.contentIntent) {
+    const intentDescriptions = {
+      educational: 'Proporcionar información y educar al lector sobre el tema',
+      transactional: 'Guiar al lector hacia una acción (compra, registro, contacto)',
+      social_proof: 'Incluir casos de éxito, testimonios y validación social',
+      thought_leadership: 'Posicionar la marca como autoridad y experto en el tema',
+    };
+    metadataSection += `\nIntención: ${metadata.contentIntent}\n  → ${intentDescriptions[metadata.contentIntent]}`;
+  }
+
+  if (metadata.localGeoEnabled && metadata.localGeoValue) {
+    metadataSection += `\nSEO Local: Optimizar para "${metadata.localGeoValue}"`;
+    metadataSection += `\n  → Incluir referencias geográficas naturales`;
+    metadataSection += `\n  → Usar variaciones: "${metadata.localGeoValue}", área cercana, región`;
+  }
+
   const basePrompt = `
 Genera contenido en formato ${format} basado en:
 Título: ${content.title}
@@ -135,6 +182,7 @@ Keywords a integrar:
 
 Tono: ${config.tone}
 ${config.toneCustomText ? `Guías personalizadas: ${config.toneCustomText}` : ''}
+${metadataSection}
 `;
 
   const formatSpecificPrompts = {
