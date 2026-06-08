@@ -187,27 +187,29 @@ export default function PlanGeneratorInteligente({
                       </button>
 
                       {expandedLevel === level.id && (
-                        <div className="px-3 py-2 border-t border-gray-200 bg-white space-y-2">
-                          {level.items.map((item) => (
-                            <div key={item.id} className="space-y-1">
-                              <p className="text-xs font-bold text-gray-800">{item.name}</p>
-                              <div className="flex flex-wrap gap-1">
-                                {item.keywords.map((kw) => (
-                                  <button
-                                    key={kw}
-                                    onClick={() => handleToggleKeyword(kw)}
-                                    className={`px-2 py-1 rounded text-xs transition border ${
-                                      selectedKeywords.has(kw)
-                                        ? 'bg-blue-500 text-white border-blue-500'
-                                        : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                                    }`}
-                                  >
-                                    {kw}
-                                  </button>
-                                ))}
+                        <div className="p-3 border-t border-gray-200 bg-gray-50">
+                          <div className="grid grid-cols-2 gap-2">
+                            {level.items.map((item) => (
+                              <div key={item.id} className="bg-white rounded-lg border border-gray-200 p-2.5 space-y-1.5">
+                                <p className="text-xs font-bold text-gray-800 line-clamp-2">{item.name}</p>
+                                <div className="flex flex-wrap gap-1">
+                                  {item.keywords.map((kw) => (
+                                    <button
+                                      key={kw}
+                                      onClick={() => handleToggleKeyword(kw)}
+                                      className={`px-2 py-0.5 rounded text-xs transition border ${
+                                        selectedKeywords.has(kw)
+                                          ? 'bg-blue-500 text-white border-blue-500'
+                                          : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                                      }`}
+                                    >
+                                      {kw}
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
