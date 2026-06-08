@@ -24,8 +24,8 @@ export const MOCK_CLIENTS: Client[] = [
       { name: 'Product Manager', description: 'Enfocado en features, roadmap y cómo las soluciones impactan el producto' },
       { name: 'IT Director', description: 'Gestor de presupuestos, compliance y alineación con objetivos corporativos' },
     ],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    created_at: '2026-06-08T00:00:00.000Z',
+    updated_at: '2026-06-08T00:00:00.000Z',
   },
   {
     id: '2',
@@ -50,8 +50,8 @@ export const MOCK_CLIENTS: Client[] = [
       { name: 'Content Creator', description: 'Produce contenido original, storytelling y narrativa para diferentes plataformas' },
       { name: 'Growth Hacker', description: 'Experimenta con tácticas de crecimiento rápido, viral loops y optimización de conversión' },
     ],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    created_at: '2026-06-08T00:00:00.000Z',
+    updated_at: '2026-06-08T00:00:00.000Z',
   },
   {
     id: '3',
@@ -76,8 +76,8 @@ export const MOCK_CLIENTS: Client[] = [
       { name: 'Customer Success Lead', description: 'Enfocado en satisfacción post-compra, retención y lifetime value del cliente' },
       { name: 'Logistics Manager', description: 'Gestiona entregas, inventario, devoluciones y eficiencia operativa de fulfillment' },
     ],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    created_at: '2026-06-08T00:00:00.000Z',
+    updated_at: '2026-06-08T00:00:00.000Z',
   },
   {
     id: '4',
@@ -102,7 +102,7 @@ export const MOCK_CLIENTS: Client[] = [
       { name: 'Wellness Administrator', description: 'Gestor de programas corporativos, compliance normativo y reportes de impacto' },
       { name: 'Nutritionist', description: 'Crea planes de nutrición personalizados e integra datos de salud del cliente' },
     ],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    created_at: '2026-06-08T00:00:00.000Z',
+    updated_at: '2026-06-08T00:00:00.000Z',
   },
 ];

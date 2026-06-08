@@ -233,13 +233,16 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
 
       // Auto-load MOCK_CLIENTS if no stored clients (development/demo mode)
       if (clientsToLoad.length === 0) {
+        console.log('No stored clients, loading MOCK_CLIENTS...');
         localStorage.setItem('io-neruda-clients', JSON.stringify(MOCK_CLIENTS));
         clientsToLoad = MOCK_CLIENTS;
       }
 
+      console.log('Loaded clients:', clientsToLoad.length);
       dispatch({ type: 'SET_CLIENTS', payload: clientsToLoad });
       // Auto-select first client
       if (clientsToLoad.length > 0) {
+        console.log('Selecting first client:', clientsToLoad[0].name);
         dispatch({ type: 'SELECT_CLIENT', payload: clientsToLoad[0] });
       }
     } catch (error) {
