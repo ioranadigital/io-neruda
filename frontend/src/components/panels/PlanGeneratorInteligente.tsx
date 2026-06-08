@@ -161,7 +161,7 @@ export default function PlanGeneratorInteligente({
         {expandedPlan && (
           <div className="grid grid-cols-3 gap-0">
             {/* Columna 1-2: Investigación Semántica (2/3 del ancho) */}
-            <div className="col-span-2 p-6 space-y-3 bg-white max-h-96 overflow-y-auto">
+            <div className="col-span-2 p-6 space-y-3 bg-white">
               <div className="flex items-center gap-2 sticky top-0 bg-white pb-2 border-b border-gray-200">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold">1</span>
                 <label className="text-sm font-bold text-gray-800">🗝️ Investigación Semántica</label>
