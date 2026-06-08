@@ -134,9 +134,35 @@ export default function PlanGeneratorInteligente({
     onInsightSelect?.(insight);
   };
 
+  const getKeywordsByLevel = () => {
+    const groupedByLevel: { [key: string]: { level: string; keywords: string[] } } = {};
+
+    selectedKeywords.forEach((keyword) => {
+      for (const level of KEYWORD_STRUCTURE) {
+        for (const item of level.items) {
+          if (item.keywords.includes(keyword)) {
+            if (!groupedByLevel[level.id]) {
+              groupedByLevel[level.id] = { level: level.level, keywords: [] };
+            }
+            groupedByLevel[level.id].keywords.push(keyword);
+            return;
+          }
+        }
+      }
+      // Si no se encuentra en ningún nivel, es un keyword custom
+      if (!groupedByLevel['custom']) {
+        groupedByLevel['custom'] = { level: 'Custom', keywords: [] };
+      }
+      groupedByLevel['custom'].keywords.push(keyword);
+    });
+
+    return groupedByLevel;
+  };
+
   if (!mounted) return null;
 
   const selectedKeywordsArray = Array.from(selectedKeywords);
+  const keywordsByLevel = getKeywordsByLevel();
 
   return (
     <div className="w-full space-y-4">
@@ -219,34 +245,40 @@ export default function PlanGeneratorInteligente({
             </div>
 
             {/* Columna 3: Refina Manualmente (1/3 del ancho) */}
-            <div className="border-l-2 border-gray-300 p-4 bg-gradient-to-br from-amber-50 to-amber-100 space-y-3 max-h-96 overflow-y-auto">
-              {selectedClient && selectedKeywordsArray.length > 0 ? (
-                <>
-                  <div className="flex items-center gap-1 sticky top-0 bg-gradient-to-r from-amber-50 to-amber-100 pb-2 border-b border-amber-200">
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex-shrink-0">2</span>
-                    <label className="text-xs font-bold text-gray-800">Refina</label>
-                  </div>
+            <div className="border-l-2 border-gray-300 p-4 bg-gradient-to-br from-amber-50 to-amber-100 space-y-3 max-h-96 overflow-y-auto flex flex-col">
+              {/* Refina Title - Always Visible */}
+              <div className="flex items-center gap-1 sticky top-0 bg-gradient-to-r from-amber-50 to-amber-100 pb-2 border-b border-amber-200 flex-shrink-0">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex-shrink-0">2</span>
+                <label className="text-xs font-bold text-gray-800">Refina</label>
+              </div>
 
-                  {/* Keywords Display */}
-                  <div className="flex flex-wrap gap-1">
-                    {selectedKeywordsArray.map((kw) => (
-                      <div
-                        key={kw}
-                        className="flex items-center gap-1 px-2 py-0.5 bg-white border border-amber-300 rounded-full text-xs"
-                      >
-                        <span className="text-gray-800 line-clamp-1">{kw}</span>
-                        <button
-                          onClick={() => handleRemoveKeyword(kw)}
-                          className="text-red-500 hover:text-red-700 text-xs font-bold flex-shrink-0"
-                        >
-                          ✕
-                        </button>
+              {/* Keywords Grouped by Level - Always Present */}
+              {selectedClient && selectedKeywordsArray.length > 0 ? (
+                <div className="space-y-2 flex-1 overflow-y-auto">
+                  {Object.entries(keywordsByLevel).map(([levelId, { level, keywords }]) => (
+                    <div key={levelId} className="bg-white rounded-lg border border-amber-200 p-2 space-y-1">
+                      <p className="text-xs font-bold text-gray-800">{level}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {keywords.map((kw) => (
+                          <div
+                            key={kw}
+                            className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 border border-amber-300 rounded text-xs"
+                          >
+                            <span className="text-gray-800 line-clamp-1">{kw}</span>
+                            <button
+                              onClick={() => handleRemoveKeyword(kw)}
+                              className="text-red-500 hover:text-red-700 font-bold flex-shrink-0"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
 
                   {/* Input Nueva Keyword */}
-                  <div className="flex gap-1 flex-col">
+                  <div className="flex gap-1 flex-col pt-2 border-t border-amber-200">
                     <input
                       type="text"
                       value={keywordInput}
@@ -262,11 +294,11 @@ export default function PlanGeneratorInteligente({
                       Agregar
                     </button>
                   </div>
-                </>
+                </div>
               ) : (
-                <div className="flex items-center justify-center min-h-96">
-                  <div className="text-center">
-                    <p className="text-gray-400 text-sm font-medium">Selecciona keywords</p>
+                <div className="flex-1 flex items-center justify-center text-center">
+                  <div>
+                    <p className="text-gray-400 text-xs font-medium">Selecciona keywords</p>
                     <p className="text-gray-300 text-xs mt-1">en la columna izquierda</p>
                   </div>
                 </div>
