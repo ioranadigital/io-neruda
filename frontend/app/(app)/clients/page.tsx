@@ -1,15 +1,33 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useGenerator } from '@/src/context/GeneratorContext';
 import { useClients } from '@/src/hooks/useClients';
 import { showToast } from '@/src/components/shared/Toast';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Database } from 'lucide-react';
+import { MOCK_CLIENTS } from '@/src/data/mockClients';
 
 export default function ClientsPage() {
-  const { clients, isLoading } = useGenerator();
+  const { clients, isLoading, setClients } = useGenerator();
   const { deactivateClient } = useClients();
+  const [isLoadingDemo, setIsLoadingDemo] = useState(false);
+
+  const handleLoadExampleData = async () => {
+    try {
+      setIsLoadingDemo(true);
+      // Save mock clients to localStorage
+      localStorage.setItem('io-neruda-clients', JSON.stringify(MOCK_CLIENTS));
+      // Update context
+      setClients(MOCK_CLIENTS);
+      showToast.success('✅ Datos de ejemplo cargados');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error cargando datos de ejemplo';
+      showToast.error(`❌ ${message}`);
+    } finally {
+      setIsLoadingDemo(false);
+    }
+  };
 
   const handleDeleteClient = async (clientId: string, clientName: string) => {
     if (!confirm(`¿Desactivar cliente "${clientName}"?`)) return;
@@ -60,15 +78,25 @@ export default function ClientsPage() {
         {/* Clients Grid */}
         {clients.length === 0 ? (
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
-            <p className="text-gray-600 text-lg mb-4">No hay clientes aún</p>
-            <Link
-              href="/clients/new"
-              className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg transition font-medium hover:opacity-90"
-              style={{ backgroundColor: '#7BF1A8' }}
-            >
-              <Plus size={20} />
-              Crear primer cliente
-            </Link>
+            <p className="text-gray-600 text-lg mb-6">No hay clientes aún</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/clients/new"
+                className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg transition font-medium hover:opacity-90"
+                style={{ backgroundColor: '#7BF1A8' }}
+              >
+                <Plus size={20} />
+                Crear nuevo cliente
+              </Link>
+              <button
+                onClick={handleLoadExampleData}
+                disabled={isLoadingDemo}
+                className="inline-flex items-center gap-2 px-6 py-3 text-gray-700 rounded-lg transition font-medium border-2 border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+              >
+                <Database size={20} />
+                {isLoadingDemo ? 'Cargando...' : 'Cargar datos de ejemplo'}
+              </button>
+            </div>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
