@@ -96,6 +96,8 @@ export default function PlanGeneratorInteligente({
   const [selectedMainTone, setSelectedMainTone] = useState<string | null>(null);
   const [selectedTone, setSelectedTone] = useState<string | null>(null);
   const [targetAudience, setTargetAudience] = useState('');
+  const [expandedSemantic, setExpandedSemantic] = useState(true);
+  const [semanticStructure, setSemanticStructure] = useState<string>('');
 
   useEffect(() => {
     setMounted(true);
@@ -705,11 +707,62 @@ export default function PlanGeneratorInteligente({
         </div>
       )}
 
-      {/* PASO 3: Origen del Insight + SEO Local */}
+      {/* PASO 4: Definición y Mapeo Semántico */}
+      {selectedClient && selectedKeywordsArray.length > 0 && insights.length > 0 && (
+        <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
+          {/* Header del Acordeón */}
+          <button
+            onClick={() => setExpandedSemantic(!expandedSemantic)}
+            className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 transition border-b border-gray-300"
+          >
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold">4</span>
+              <h3 className="text-lg font-bold text-gray-800">📊 Definición y Mapeo Semántico</h3>
+            </div>
+            <ChevronDown
+              size={20}
+              className={`transition text-gray-600 ${expandedSemantic ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {/* Contenido del Acordeón */}
+          {expandedSemantic && (
+            <div className="px-6 py-4 space-y-4">
+              <p className="text-sm text-gray-600 mb-4">Define la estructura semántica y conceptos clave basados en la propuesta de contenido seleccionada. La IA puede sugerir opciones basadas en PASO 3.</p>
+
+              {/* Estructura Semántica - Textarea Editable */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Estructura Semántica</label>
+                <textarea
+                  value={semanticStructure}
+                  onChange={(e) => setSemanticStructure(e.target.value)}
+                  placeholder="Define la estructura semántica aquí. Ejemplo: Conceptos clave, relaciones semánticas, entidades nombradas, etc."
+                  className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:outline-none resize-none"
+                  rows={4}
+                />
+              </div>
+
+              {/* Sugerencias basadas en propuesta seleccionada */}
+              {selectedInsightId && insights.find(i => i.id === selectedInsightId) && (
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-xs font-semibold text-blue-900 mb-2">💡 Sugerencias basadas en la propuesta:</p>
+                  <div className="text-xs text-blue-800 space-y-1">
+                    <p><strong>Propuesta:</strong> {insights.find(i => i.id === selectedInsightId)?.title}</p>
+                    <p><strong>Descripción:</strong> {insights.find(i => i.id === selectedInsightId)?.description}</p>
+                    <p><strong>Keywords sugeridos:</strong> {insights.find(i => i.id === selectedInsightId)?.suggestedKeywords.join(', ')}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* PASO 5: Origen del Insight + SEO Local */}
       {selectedClient && selectedKeywordsArray.length > 0 && (
         <div className="space-y-4 pt-2 border-t border-gray-200">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">4</span>
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">5</span>
             <label className="text-sm font-bold text-gray-800">⚙️ Configuración Final</label>
           </div>
 
