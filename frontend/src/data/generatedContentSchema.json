@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Schema de salida para contenido generado por IA",
+  "generatedContent": {
+    "metadata": {
+      "id": "string - UUID único del contenido",
+      "contentType": "blog|email|social_linkedin|social_instagram|whatsapp|pdf",
+      "clientId": "string",
+      "clientName": "string",
+      "generatedAt": "ISO 8601 timestamp",
+      "generatedBy": "AI Model version",
+      "version": "number - para historial de versiones"
+    },
+    "seoMetadata": {
+      "title": {
+        "text": "string",
+        "length": "number (máx 60)",
+        "keyword": "boolean - contiene keyword principal"
+      },
+      "metaDescription": {
+        "text": "string",
+        "length": "number (máx 160)",
+        "includes_cta": "boolean"
+      },
+      "h1": {
+        "text": "string",
+        "keyword": "boolean"
+      },
+      "estimatedReadTime": "number - minutos",
+      "seoScore": "number (0-100)",
+      "keywordAnalysis": {
+        "primaryKeyword": "string",
+        "density": "number - porcentaje",
+        "placement": {
+          "title": "boolean",
+          "h1": "boolean",
+          "firstParagraph": "boolean",
+          "sections": "number - cuántas secciones la contienen"
+        },
+        "secondaryKeywords": [
+          {
+            "keyword": "string",
+            "density": "number",
+            "occurrences": "number"
+          }
+        ]
+      }
+    },
+    "content": {
+      "intro": {
+        "hook": "string - primera frase que engancha",
+        "context": "string - por qué importa",
+        "promise": "string - qué aprenderá",
+        "emotionalAppeal": "string - elemento emocional"
+      },
+      "sections": [
+        {
+          "h2": "string",
+          "order": "number",
+          "content": "string - markdown formatted",
+          "wordCount": "number",
+          "keyTakeaway": "string - punto clave",
+          "hasExamples": "boolean",
+          "hasStatistics": "boolean",
+          "hasVisuals": "boolean - si dice [imagen] o similar"
+        }
+      ],
+      "conclusion": {
+        "summary": "string - resumen conciso",
+        "ctaBridge": "string - transición natural al CTA",
+        "wordCount": "number"
+      },
+      "cta": {
+        "primary": "string - CTA principal",
+        "actionVerb": "string - Download, Register, Learn, etc",
+        "urgency": "high|medium|low",
+        "clearness": "number (0-100)"
+      }
+    },
+    "contentAnalysis": {
+      "totalWordCount": "number",
+      "paragraphCount": "number",
+      "sectionCount": "number",
+      "averageParagraphLength": "number - palabras",
+      "readabilityScore": "number (0-100 - Flesch Reading Ease)",
+      "sentenceComplexity": "simple|moderate|complex",
+      "structure": {
+        "hasIntro": "boolean",
+        "hasConclusion": "boolean",
+        "hasCta": "boolean",
+        "flowQuality": "number (0-100)"
+      }
+    },
+    "engagement": {
+      "personalityIndex": "number (0-100 - cuán personal/conversacional)",
+      "sentimentAnalysis": {
+        "tone": "positive|neutral|urgent|inspirational|cautionary",
+        "confidence": "number (0-100)"
+      },
+      "trustBuilders": [
+        {
+          "type": "statistic|case_study|expert_quote|social_proof|evidence",
+          "content": "string",
+          "source": "string - si aplica"
+        }
+      ],
+      "emotionalTriggers": [
+        {
+          "emotion": "fear|aspiration|belonging|achievement|curiosity",
+          "trigger": "string - qué lo dispara",
+          "position": "intro|body|conclusion"
+        }
+      ],
+      "audienceAlignment": {
+        "buyerPersona": "string",
+        "resonanceScore": "number (0-100)",
+        "painPointAddressed": "boolean",
+        "goalProgression": "boolean"
+      }
+    },
+    "brandAlignment": {
+      "voiceConsistency": "number (0-100)",
+      "valueReflection": ["valor1", "valor2"],
+      "toneMatch": "number (0-100)",
+      "uniquenessToClient": "number (0-100 - cuán específico es para esta marca)",
+      "differentiatorHighlight": "boolean - menciona el diferenciador"
+    },
+    "qualityMetrics": {
+      "overallScore": "number (0-100)",
+      "componentScores": {
+        "buyerPersonaAlignment": "number (0-100)",
+        "contentIntentMatch": "number (0-100)",
+        "brandVoiceConsistency": "number (0-100)",
+        "keywordIntegration": "number (0-100)",
+        "formatOptimization": "number (0-100)"
+      },
+      "passesQualityThreshold": "boolean - >= 80",
+      "recommendations": [
+        {
+          "area": "keyword_density|brand_voice|cta_clarity|structure|engagement",
+          "suggestion": "string",
+          "priority": "high|medium|low"
+        }
+      ]
+    },
+    "metadata": {
+      "format": "string - Blog post, Email campaign, LinkedIn article, etc",
+      "industry": "string",
+      "targetMarket": "string",
+      "competitorContext": "string",
+      "seasonalRelevance": "boolean",
+      "expirationRelevance": "string - ever-green|seasonal|dated_after_YYYY-MM-DD"
+    },
+    "outputs": {
+      "htmlVersion": "string - HTML formatted para web",
+      "markdownVersion": "string - Markdown puro",
+      "plainTextVersion": "string - Sin formato",
+      "jsonldStructuredData": "object - Schema.org JSON-LD",
+      "socialMediaVariations": {
+        "linkedin": "string - versión optimizada para LinkedIn",
+        "instagram": "string - versión optimizada para Instagram",
+        "twitter": "string - versión optimizada para Twitter/X",
+        "email": "string - versión optimizada para email"
+      }
+    }
+  }
+}
