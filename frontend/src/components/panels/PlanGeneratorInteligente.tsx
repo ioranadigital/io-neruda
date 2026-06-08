@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Client } from '../../types/client';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, RefreshCw, RotateCcw } from 'lucide-react';
 
 export type InsightOrigin = 'direct_idea' | 'keyword_seo' | 'obsidian_drive';
 
@@ -25,49 +25,50 @@ interface PlanGeneratorInteligenteProps {
   onInsightSelect?: (insight: InsightSuggestion) => void;
 }
 
-const generateInsights = (client: Client | null): InsightSuggestion[] => {
-  if (!client) return [];
+const generateInsights = (keywords: string[], client: Client | null): InsightSuggestion[] => {
+  if (!client || keywords.length === 0) return [];
 
   const business = client.business_type || '';
   const audience = client.target_audience || '';
   const pillars = client.content_pillars || [];
-  const keywords = client.keywords_niche || [];
   const proposition = client.unique_proposition || '';
+  const primaryKeyword = keywords[0];
+  const secondaryKeywords = keywords.slice(1);
 
   return [
     {
       id: '1',
-      title: `${proposition ? `${proposition}: ` : ''}Guía Completa para ${audience}`,
-      description: `Educational deep-dive sobre cómo ${audience} puede maximizar ${business}.`,
-      suggestedKeywords: keywords.slice(0, 3),
+      title: `Guía Completa: ${primaryKeyword} para ${audience}`,
+      description: `Educational deep-dive. Todo lo que ${audience} debe saber sobre ${primaryKeyword}.`,
+      suggestedKeywords: keywords,
       contentPillars: pillars.slice(0, 2),
     },
     {
       id: '2',
-      title: `Tendencias ${new Date().getFullYear()} en ${business}`,
-      description: `Análisis de tendencias emergentes. Posiciona como thought leader.`,
-      suggestedKeywords: [...keywords.slice(0, 2), `tendencias ${business.toLowerCase()}`],
+      title: `Tendencias ${new Date().getFullYear()} en ${primaryKeyword}`,
+      description: `Análisis de tendencias emergentes y futuro de ${primaryKeyword}. Posiciónate como experto.`,
+      suggestedKeywords: [...keywords, `tendencias ${primaryKeyword.toLowerCase()}`],
       contentPillars: pillars.slice(0, 2),
     },
     {
       id: '3',
-      title: `Cómo Elegir ${business}: Comparativa + Recomendaciones`,
-      description: `Content comercial que guía en decisión de compra/contratación.`,
-      suggestedKeywords: [...keywords, `mejor ${business.toLowerCase()}`],
+      title: `Cómo Elegir ${primaryKeyword}: Comparativa + Guía de Selección`,
+      description: `Content comercial. Guía al usuario en decisión de compra/contratación de ${primaryKeyword}.`,
+      suggestedKeywords: [...keywords, `mejor ${primaryKeyword.toLowerCase()}`],
       contentPillars: pillars.slice(0, 2),
     },
     {
       id: '4',
-      title: `${client.success_case || `Caso de Éxito: ${audience} Consiguió Resultados Extraordinarios`}`,
-      description: `Storytelling + datos con métricas concretas. Máximo social proof.`,
+      title: `${audience}: Casos de Éxito con ${primaryKeyword}`,
+      description: `Storytelling + datos. Demuestra valor real de ${primaryKeyword} con métricas concretas.`,
       suggestedKeywords: keywords.slice(0, 2),
       contentPillars: pillars.slice(0, 2),
     },
     {
       id: '5',
-      title: `${audience}: Errores Comunes a Evitar en ${business}`,
-      description: `Educational + Posicionamiento. Identifica pain points.`,
-      suggestedKeywords: keywords.slice(0, 3),
+      title: `Errores Comunes al Usar ${primaryKeyword} (y Cómo Evitarlos)`,
+      description: `Educational + Posicionamiento. Identifica pain points comunes en ${primaryKeyword}.`,
+      suggestedKeywords: keywords,
       contentPillars: pillars.slice(0, 2),
     },
   ];
@@ -84,6 +85,8 @@ export default function PlanGeneratorInteligente({
   onInsightSelect,
 }: PlanGeneratorInteligenteProps) {
   const [mounted, setMounted] = useState(false);
+  const [customKeywords, setCustomKeywords] = useState<string[]>([]);
+  const [keywordInput, setKeywordInput] = useState('');
   const [insights, setInsights] = useState<InsightSuggestion[]>([]);
   const [selectedInsightId, setSelectedInsightId] = useState<string | null>(null);
 
@@ -93,11 +96,40 @@ export default function PlanGeneratorInteligente({
 
   useEffect(() => {
     if (selectedClient && mounted) {
-      const newInsights = generateInsights(selectedClient);
+      const clientKeywords = selectedClient.keywords_niche || [];
+      setCustomKeywords(clientKeywords);
+      const newInsights = generateInsights(clientKeywords, selectedClient);
       setInsights(newInsights);
       setSelectedInsightId(null);
     }
   }, [selectedClient, mounted]);
+
+  const handleAddKeyword = () => {
+    if (keywordInput.trim() && !customKeywords.includes(keywordInput.trim())) {
+      const updatedKeywords = [...customKeywords, keywordInput.trim()];
+      setCustomKeywords(updatedKeywords);
+      setKeywordInput('');
+      const newInsights = generateInsights(updatedKeywords, selectedClient);
+      setInsights(newInsights);
+      setSelectedInsightId(null);
+    }
+  };
+
+  const handleRemoveKeyword = (idx: number) => {
+    const updatedKeywords = customKeywords.filter((_, i) => i !== idx);
+    setCustomKeywords(updatedKeywords);
+    const newInsights = generateInsights(updatedKeywords, selectedClient);
+    setInsights(newInsights);
+    setSelectedInsightId(null);
+  };
+
+  const handleResetKeywords = () => {
+    const clientKeywords = selectedClient?.keywords_niche || [];
+    setCustomKeywords(clientKeywords);
+    const newInsights = generateInsights(clientKeywords, selectedClient);
+    setInsights(newInsights);
+    setSelectedInsightId(null);
+  };
 
   const handleSelectInsight = (insight: InsightSuggestion) => {
     setSelectedInsightId(insight.id);
@@ -113,6 +145,59 @@ export default function PlanGeneratorInteligente({
         <Lightbulb size={20} style={{ color: '#18bdc1' }} />
         <h3 className="text-lg font-bold text-gray-800">Plan Generator Inteligente</h3>
       </div>
+
+      {/* Cambiar Keywords */}
+      {selectedClient && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-semibold text-gray-800">🔄 Cambiar Keywords para Nuevas Propuestas</label>
+            <button
+              onClick={handleResetKeywords}
+              className="flex items-center gap-1 px-3 py-1 text-xs bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+              title="Restaurar keywords originales del cliente"
+            >
+              <RotateCcw size={12} /> Restaurar
+            </button>
+          </div>
+
+          {/* Keywords Display */}
+          <div className="flex flex-wrap gap-2">
+            {customKeywords.map((kw, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 px-3 py-1 bg-white border border-blue-300 rounded-full text-sm"
+              >
+                <span className="text-gray-800">{kw}</span>
+                <button
+                  onClick={() => handleRemoveKeyword(idx)}
+                  className="text-red-500 hover:text-red-700 text-xs font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Input Nueva Keyword */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={keywordInput}
+              onChange={(e) => setKeywordInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleAddKeyword()}
+              placeholder="Ingresa una keyword y presiona Enter"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={handleAddKeyword}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm font-medium flex items-center gap-2"
+            >
+              <RefreshCw size={14} /> Regenerar
+            </button>
+          </div>
+          <p className="text-xs text-gray-600">💡 Cambia los keywords para ver 5 nuevas propuestas de contenido</p>
+        </div>
+      )}
 
       {/* 5 Insights Sugeridos */}
       {selectedClient && insights.length > 0 && (
