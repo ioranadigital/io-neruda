@@ -172,19 +172,22 @@ export default function PlanGeneratorInteligente({
                 </button>
 
                 {expandedLevel === level.id && (
-                  <div className="px-3 py-2 border-t border-gray-200 bg-gray-50 space-y-2 max-h-40 overflow-y-auto">
+                  <div className="px-4 py-4 border-t border-gray-200 bg-gray-50 space-y-3">
                     {level.items.map((item) => (
-                      <div key={item.id} className="space-y-1">
-                        <p className="text-xs font-semibold text-gray-800">{item.name}</p>
-                        <div className="flex flex-wrap gap-1">
+                      <div key={item.id} className="bg-white rounded-lg border border-gray-200 p-4 space-y-2">
+                        <div>
+                          <p className="text-sm font-bold text-gray-800">{item.name}</p>
+                          <p className="text-xs text-gray-600 mt-1">{item.description}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2 pt-2">
                           {item.keywords.map((kw) => (
                             <button
                               key={kw}
                               onClick={() => handleToggleKeyword(kw)}
-                              className={`px-2 py-1 rounded text-xs transition border ${
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition border ${
                                 selectedKeywords.has(kw)
-                                  ? 'bg-blue-500 text-white border-blue-500'
-                                  : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                                  ? 'bg-blue-500 text-white border-blue-500 shadow-md'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300 hover:bg-blue-50'
                               }`}
                             >
                               {kw}
