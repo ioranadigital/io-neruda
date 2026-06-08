@@ -91,6 +91,7 @@ export default function PlanGeneratorInteligente({
   const [selectedInsightId, setSelectedInsightId] = useState<string | null>(null);
   const [expandedPlan, setExpandedPlan] = useState(true);
   const [expandedProposals, setExpandedProposals] = useState(true);
+  const [expandedStrategy, setExpandedStrategy] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -309,7 +310,76 @@ export default function PlanGeneratorInteligente({
         )}
       </div>
 
-      {/* PASO 2: 5 Insights Sugeridos - Acordeón */}
+      {/* PASO 2: Estrategia, Tono y Enfoque - Acordeón */}
+      {selectedClient && selectedKeywordsArray.length > 0 && (
+        <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
+          {/* Header del Acordeón */}
+          <button
+            onClick={() => setExpandedStrategy(!expandedStrategy)}
+            className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 transition border-b border-gray-300"
+          >
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold">2</span>
+              <h3 className="text-lg font-bold text-gray-800">Estrategia, Tono y Enfoque (Personalidad)</h3>
+            </div>
+            <ChevronDown
+              size={20}
+              className={`transition text-gray-600 ${expandedStrategy ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {/* Contenido del Acordeón - Grid 2 Columnas */}
+          {expandedStrategy && (
+            <div className="grid grid-cols-2 gap-0">
+              {/* Columna 1: Tarjeta de Tono de Contenido */}
+              <div className="p-6 bg-white border-r border-gray-300 flex flex-col justify-center">
+                <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg border-2 border-indigo-200 p-4 space-y-3">
+                  <h4 className="text-sm font-bold text-gray-800">🎨 Tono de Contenido</h4>
+                  <p className="text-xs text-gray-700 leading-relaxed">
+                    Define la personalidad y voz con la que se comunica tu marca. El tono impacta cómo el contenido es percibido por tu audiencia.
+                  </p>
+                  <div className="pt-2 border-t border-indigo-200">
+                    <p className="text-xs font-semibold text-indigo-700">Opciones disponibles:</p>
+                    <ul className="text-xs text-gray-600 mt-1 space-y-1">
+                      <li>• <strong>Professional</strong>: Formal, estructurado</li>
+                      <li>• <strong>Casual</strong>: Relajado, conversacional</li>
+                      <li>• <strong>Technical</strong>: Especializado, preciso</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Columna 2: Selector de Tono (Intacto) */}
+              <div className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-3">Selecciona el Tono</label>
+                  <div className="space-y-2">
+                    {[
+                      { value: 'professional', label: '💼 Professional', desc: 'Formal y estructurado' },
+                      { value: 'casual', label: '😊 Casual', desc: 'Relajado y conversacional' },
+                      { value: 'technical', label: '🔧 Technical', desc: 'Especializado y preciso' },
+                    ].map(({ value, label, desc }) => (
+                      <button
+                        key={value}
+                        className="w-full text-left p-3 rounded-lg border-2 transition"
+                        style={{
+                          borderColor: '#818cf8',
+                          backgroundColor: '#f0f4ff',
+                        }}
+                      >
+                        <p className="font-semibold text-sm text-gray-800">{label}</p>
+                        <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* PASO 3: 5 Insights Sugeridos - Acordeón */}
       {selectedClient && insights.length > 0 && (
         <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
           {/* Header del Acordeón */}
@@ -318,7 +388,7 @@ export default function PlanGeneratorInteligente({
             className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition border-b border-gray-300"
           >
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">2</span>
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">3</span>
               <h3 className="text-lg font-bold text-gray-800">💡 5 Propuestas de Contenido</h3>
             </div>
             <ChevronDown
@@ -398,7 +468,7 @@ export default function PlanGeneratorInteligente({
       {selectedClient && selectedKeywordsArray.length > 0 && (
         <div className="space-y-4 pt-2 border-t border-gray-200">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">3</span>
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">4</span>
             <label className="text-sm font-bold text-gray-800">⚙️ Configuración Final</label>
           </div>
 

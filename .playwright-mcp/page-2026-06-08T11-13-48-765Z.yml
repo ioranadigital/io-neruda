@@ -1,0 +1,137 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e6]: D
+        - heading "Dashmin" [level=1] [ref=e7]
+      - generic [ref=e8]:
+        - button [ref=e9] [cursor=pointer]:
+          - img [ref=e10]
+        - button [ref=e14] [cursor=pointer]:
+          - img [ref=e15]
+        - button "A Admin" [ref=e19] [cursor=pointer]:
+          - generic [ref=e21]: A
+          - generic [ref=e22]: Admin
+  - complementary [ref=e23]:
+    - navigation [ref=e24]:
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: MENÚ PRINCIPAL
+        - generic [ref=e27]:
+          - link "Dashboard" [ref=e28] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e29]
+            - generic [ref=e34]: Dashboard
+          - link "E-commerce" [ref=e35] [cursor=pointer]:
+            - /url: /ecommerce
+            - img [ref=e36]
+            - generic [ref=e40]: E-commerce
+      - generic [ref=e41]:
+        - paragraph [ref=e42]: APLICACIONES
+        - generic [ref=e43]:
+          - link "Correo" [ref=e44] [cursor=pointer]:
+            - /url: /apps/mail
+            - img [ref=e45]
+            - generic [ref=e48]: Correo
+          - link "Chat" [ref=e49] [cursor=pointer]:
+            - /url: /apps/chat
+            - img [ref=e50]
+            - generic [ref=e52]: Chat
+          - link "Calendario" [ref=e53] [cursor=pointer]:
+            - /url: /apps/calendar
+            - img [ref=e54]
+            - generic [ref=e56]: Calendario
+          - link "Facturas" [ref=e57] [cursor=pointer]:
+            - /url: /apps/invoices
+            - img [ref=e58]
+            - generic [ref=e61]: Facturas
+      - generic [ref=e62]:
+        - paragraph [ref=e63]: GESTIÓN
+        - generic [ref=e64]:
+          - link "Clientes" [ref=e65] [cursor=pointer]:
+            - /url: /clients
+            - img [ref=e66]
+            - generic [ref=e71]: Clientes
+          - link "Generador" [ref=e72] [cursor=pointer]:
+            - /url: /generators
+            - img [ref=e73]
+            - generic [ref=e75]: Generador
+          - link "Analítica" [ref=e76] [cursor=pointer]:
+            - /url: /analytics
+            - img [ref=e77]
+            - generic [ref=e79]: Analítica
+      - generic [ref=e80]:
+        - paragraph [ref=e81]: SISTEMA
+        - generic [ref=e82]:
+          - link "Configuración" [ref=e83] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=e84]
+            - generic [ref=e87]: Configuración
+          - link "Ayuda" [ref=e88] [cursor=pointer]:
+            - /url: /help
+            - img [ref=e89]
+            - generic [ref=e92]: Ayuda
+  - main [ref=e93]:
+    - generic [ref=e94]:
+      - generic [ref=e96]:
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - img [ref=e101]
+              - generic [ref=e106]:
+                - heading "Seleccionar Cliente" [level=3] [ref=e107]
+                - paragraph [ref=e108]: Datos e información del cliente
+            - generic [ref=e109]:
+              - combobox [ref=e110] [cursor=pointer]:
+                - option "-- Selecciona cliente --" [selected]
+              - img
+            - button [ref=e111] [cursor=pointer]:
+              - img [ref=e112]
+          - paragraph [ref=e116]: Selecciona un cliente para ver sus datos
+        - generic [ref=e118]:
+          - button "Formato de Salida Análisis de relevancia y optimización de contenido" [ref=e120] [cursor=pointer]:
+            - generic [ref=e121]:
+              - img [ref=e123]
+              - generic [ref=e126]:
+                - heading "Formato de Salida" [level=3] [ref=e127]
+                - paragraph [ref=e128]: Análisis de relevancia y optimización de contenido
+            - img [ref=e129]
+          - button "Definición y Mapeo Semántico Estructura semántica y definición de conceptos clave" [ref=e132] [cursor=pointer]:
+            - generic [ref=e133]:
+              - img [ref=e135]
+              - generic [ref=e137]:
+                - heading "Definición y Mapeo Semántico" [level=3] [ref=e138]
+                - paragraph [ref=e139]: Estructura semántica y definición de conceptos clave
+            - img [ref=e140]
+          - button "KW - Definición y Mapeo Semántico Investigación y mapeo de palabras clave" [ref=e143] [cursor=pointer]:
+            - generic [ref=e144]:
+              - img [ref=e146]
+              - generic [ref=e148]:
+                - heading "KW - Definición y Mapeo Semántico" [level=3] [ref=e149]
+                - paragraph [ref=e150]: Investigación y mapeo de palabras clave
+            - img [ref=e151]
+          - button "Estrategia, Tono y Enfoque (Personalidad) Definición de estrategia y personalidad de contenido" [ref=e154] [cursor=pointer]:
+            - generic [ref=e155]:
+              - img [ref=e157]
+              - generic [ref=e159]:
+                - heading "Estrategia, Tono y Enfoque (Personalidad)" [level=3] [ref=e160]
+                - paragraph [ref=e161]: Definición de estrategia y personalidad de contenido
+            - img [ref=e162]
+      - button "6 👁️ Ver Preview & Generar" [ref=e165] [cursor=pointer]:
+        - generic [ref=e166]: "6"
+        - text: 👁️ Ver Preview & Generar
+    - generic [ref=e167]:
+      - generic [ref=e168]:
+        - generic [ref=e169]: ✨
+        - heading "Multi-Formato" [level=3] [ref=e170]
+        - paragraph [ref=e171]: Blog, Email, Social, PDF y más
+      - generic [ref=e172]:
+        - generic [ref=e173]: ⚡
+        - heading "Generación Rápida" [level=3] [ref=e174]
+        - paragraph [ref=e175]: Resultados en segundos
+      - generic [ref=e176]:
+        - generic [ref=e177]: 🎨
+        - heading "Personalizable" [level=3] [ref=e178]
+        - paragraph [ref=e179]: Keywords, tono y formatos
+    - generic [ref=e180]:
+      - paragraph [ref=e181]: Powered by Advanced AI • Secure • Reliable
+      - paragraph [ref=e182]: v2.0 - Content Generation System
