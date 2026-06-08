@@ -30,6 +30,8 @@ interface PlanGeneratorInteligenteProps {
   onLocalGeoValueChange: (value: string) => void;
   onInsightSelect?: (insight: InsightSuggestion) => void;
   onFormDataChange?: (data: {
+    keywordsNiche: string[];
+    keywordsLongtail: string[];
     targetAudience: string;
     selectedContentIntent: string | null;
     selectedMainTone: string | null;
@@ -140,7 +142,10 @@ export default function PlanGeneratorInteligente({
 
   useEffect(() => {
     if (onFormDataChange && mounted) {
+      const selectedKeywordsArray = Array.from(selectedKeywords);
       onFormDataChange({
+        keywordsNiche: selectedKeywordsArray,
+        keywordsLongtail: [],
         targetAudience,
         selectedContentIntent,
         selectedMainTone,
@@ -156,6 +161,7 @@ export default function PlanGeneratorInteligente({
       });
     }
   }, [
+    selectedKeywords,
     targetAudience,
     selectedContentIntent,
     selectedMainTone,
