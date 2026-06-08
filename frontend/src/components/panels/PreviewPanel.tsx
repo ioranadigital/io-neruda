@@ -167,7 +167,7 @@ Generado: ${new Date().toLocaleString()}
     showToast.success('✅ Descargando Briefing...');
   };
 
-  const isReady = selectedClient && formData.name && formData.keywordsNiche.length > 0;
+  const isReady = selectedClient;
   const enabledFormatsCount = Object.values(formData.enabledFormats).filter((v) => v).length;
   const isMultiFormat = enabledFormatsCount > 1;
 
