@@ -4,9 +4,8 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: path.join(__dirname),
-  webpack: (config) => {
-    config.resolve.symlinks = false;
-    return config;
+  turbopack: {
+    root: path.join(__dirname),
   },
 };
 
