@@ -2,13 +2,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Zap, Sparkles, Users, Settings, BarChart3, FileText, Bolt, HelpCircle
+  Zap, Sparkles, Users, Settings, BarChart3, FileText, Bolt, HelpCircle, Map
 } from 'lucide-react';
 
 const NAV_SECTIONS = [
   {
     title: 'Generador',
     items: [
+      { href: '/generador', icon: Map, label: 'Planificador', desc: 'Crear planes de contenido' },
       { href: '/generators', icon: Sparkles, label: 'Generador', desc: 'Crear contenido' },
       { href: '/dashboard', icon: BarChart3, label: 'Dashboard', desc: 'Análisis y métricas' },
     ]
