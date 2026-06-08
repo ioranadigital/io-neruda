@@ -137,14 +137,32 @@ export default function PlanGeneratorInteligente({
 
   useEffect(() => {
     setMounted(true);
-    // Auto-select first keyword if client is selected and no keywords selected yet
-    if (selectedClient && selectedKeywords.size === 0) {
+  }, []);
+
+  // Reset and auto-select keyword when client changes
+  useEffect(() => {
+    if (selectedClient) {
+      // Reset all form fields for new client
+      setSelectedKeywords(new Set());
+      setTargetAudience('');
+      setSelectedContentIntent(null);
+      setSelectedMainTone(null);
+      setSelectedTone(null);
+      setH1Title('');
+      setH2Title('');
+      setUrlSlug('');
+      setInternalLink1('');
+      setInternalLink2('');
+      setSemanticElements(new Set());
+      setKeywordInput('');
+
+      // Auto-select first keyword
       const firstKeyword = selectedClient.keywords_niche?.[0];
       if (firstKeyword) {
         setSelectedKeywords(new Set([firstKeyword]));
       }
     }
-  }, [selectedClient]);
+  }, [selectedClient?.id]);
 
   useEffect(() => {
     if (h1Title.trim()) {
