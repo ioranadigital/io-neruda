@@ -25,7 +25,7 @@ const NAV_SECTIONS = [
     title: 'Sistema',
     items: [
       { href: '/config', icon: Settings, label: 'Configuración', desc: 'Ajustes globales' },
-      { href: '/integrations', icon: Bolt, label: 'Integraciones', desc: 'APIs y conectores' },
+      { href: '/integraciones', icon: Bolt, label: 'Integraciones', desc: 'APIs y conectores' },
     ]
   },
   {

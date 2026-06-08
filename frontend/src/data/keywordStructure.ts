@@ -54,9 +54,9 @@ export const KEYWORD_STRUCTURE: KeywordCategory[] = [
     items: [
       {
         id: 'local-geo',
-        name: 'Keywords Locales (Geo-targeted KW)',
-        description: 'Palabras clave que incluyen una ubicación geográfica. Cruciales para SEO Local.',
-        keywords: ['barbacoas Madrid', 'parrillas Barcelona', 'tienda barbacoas Valencia', 'accesorios jardín Bilbao'],
+        name: 'Ubicaciones Geográficas (SEO Local)',
+        description: 'Ciudades, municipios y provincias para segmentar contenido localmente. Combina con keywords en Refina.',
+        keywords: ['Madrid', 'Barcelona', 'Valencia', 'Bilbao', 'Sevilla', 'Málaga', 'Alicante', 'Murcia', 'Zaragoza', 'Palma'],
       },
       {
         id: 'audience-profile',

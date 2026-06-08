@@ -98,11 +98,14 @@ export interface GeneratorState {
   clients: Client[];
   currentClientId: string | null;
   selectedClient: Client | null;
+  contentResults: ContentResult[];
 }
 
 export interface GenerateRequest {
   contentId: string;
   configId?: string;
+  configName?: string;
+  clientId?: string;
   keywordsNiche?: string[];
   keywordsLongtail?: string[];
   tone?: string;
@@ -114,6 +117,7 @@ export interface GenerateRequest {
   contentIntent?: 'educational' | 'transactional' | 'social_proof' | 'thought_leadership';
   localGeoEnabled?: boolean;
   localGeoValue?: string;
+  blogLength?: string;
 }
 
 export interface BatchRequest {
@@ -121,4 +125,19 @@ export interface BatchRequest {
   configId?: string;
   contentIds: string[];
   concurrencyLimit: number;
+}
+
+export interface ContentResult {
+  id: string;
+  clientId: string;
+  clientName: string;
+  postTitle: string;
+  outputFormat: ContentFormat;
+  keywordsUsed: string[];
+  generatedDate: string;
+  targetAudience: string;
+  contentIntent: string;
+  generatedContent?: string;
+  status: 'draft' | 'published' | 'archived';
+  tags?: string[];
 }

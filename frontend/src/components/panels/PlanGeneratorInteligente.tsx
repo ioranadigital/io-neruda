@@ -29,6 +29,7 @@ interface PlanGeneratorInteligenteProps {
   onLocalGeoToggle: (enabled: boolean) => void;
   onLocalGeoValueChange: (value: string) => void;
   onInsightSelect?: (insight: InsightSuggestion) => void;
+  onAddCustomKeyword?: (clientId: string, keyword: string) => void;
   onFormDataChange?: (data: {
     keywordsNiche: string[];
     keywordsLongtail: string[];
@@ -103,6 +104,7 @@ export default function PlanGeneratorInteligente({
   onLocalGeoToggle,
   onLocalGeoValueChange,
   onInsightSelect,
+  onAddCustomKeyword,
   onFormDataChange,
 }: PlanGeneratorInteligenteProps) {
   const [mounted, setMounted] = useState(false);
@@ -128,6 +130,10 @@ export default function PlanGeneratorInteligente({
   const [expandedFormatOutput, setExpandedFormatOutput] = useState(true);
   const [selectedFormats, setSelectedFormats] = useState<{ [key: string]: FormatSelection }>({});
   const [subSelectorValues, setSubSelectorValues] = useState<{ [key: string]: string }>({});
+  const [showSaveKeywordModal, setShowSaveKeywordModal] = useState(false);
+  const [pendingKeyword, setPendingKeyword] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState<string>('level-1-entity');
+  const [selectedSubLevel, setSelectedSubLevel] = useState<string>('');
 
   useEffect(() => {
     setMounted(true);
@@ -267,11 +273,11 @@ export default function PlanGeneratorInteligente({
           }
         }
       }
-      // Si no se encuentra en ningún nivel, es un keyword custom
-      if (!groupedByLevel['custom']) {
-        groupedByLevel['custom'] = { level: 'Custom', keywords: [] };
+      // Si no se encuentra en ningún nivel, es un keyword agregado en esta sesión
+      if (!groupedByLevel['aggregated']) {
+        groupedByLevel['aggregated'] = { level: 'Agregado en esta sesión', keywords: [] };
       }
-      groupedByLevel['custom'].keywords.push(keyword);
+      groupedByLevel['aggregated'].keywords.push(keyword);
     });
 
     return groupedByLevel;
@@ -293,7 +299,10 @@ export default function PlanGeneratorInteligente({
         >
           <div className="flex items-center gap-3">
             <Lightbulb size={24} style={{ color: '#18bdc1' }} />
-            <h3 className="text-lg font-bold text-gray-800">Plan Generator Inteligente</h3>
+            <div className="text-left">
+              <h3 className="text-lg font-bold text-gray-800">Plan Generator Inteligente</h3>
+              {selectedClient && <p className="text-xs text-gray-600 mt-0.5">Cliente: {selectedClient.name}</p>}
+            </div>
           </div>
           <ChevronDown
             size={20}
@@ -370,10 +379,10 @@ export default function PlanGeneratorInteligente({
                 <label className="text-xs font-bold text-gray-800">Refina</label>
               </div>
 
-              {/* Keywords Grouped by Level - Always Present (Excluir Nivel 5) */}
-              {selectedClient && selectedKeywordsArray.length > 0 ? (
-                <div className="space-y-2 flex-1">
-                  {Object.entries(keywordsByLevel).filter(([levelId]) => levelId !== 'level-5-longtail').map(([levelId, { level, keywords }]) => (
+              {/* Keywords Grouped by Level */}
+              {selectedClient && selectedKeywordsArray.length > 0 && (
+                <div className="space-y-2">
+                  {Object.entries(keywordsByLevel).filter(([levelId]) => levelId !== 'level-5-longtail' && levelId !== 'aggregated').map(([levelId, { level, keywords }]) => (
                     <div key={levelId} className="bg-white rounded-lg border border-amber-200 p-2 space-y-1">
                       <p className="text-xs font-bold text-gray-800">{level}</p>
                       <div className="flex flex-wrap gap-1">
@@ -394,33 +403,66 @@ export default function PlanGeneratorInteligente({
                       </div>
                     </div>
                   ))}
-
-                  {/* Input Nueva Keyword */}
-                  <div className="flex gap-1 flex-col pt-2 border-t border-amber-200">
-                    <input
-                      type="text"
-                      value={keywordInput}
-                      onChange={(e) => setKeywordInput(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddCustomKeyword()}
-                      placeholder="Agregar..."
-                      className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-amber-500"
-                    />
-                    <button
-                      onClick={handleAddCustomKeyword}
-                      className="px-2 py-1 bg-amber-500 text-white rounded hover:bg-amber-600 transition text-xs font-medium"
-                    >
-                      Agregar
-                    </button>
-                  </div>
                 </div>
-              ) : (
-                <div className="flex-1 flex items-center justify-center text-center">
-                  <div>
-                    <p className="text-gray-400 text-xs font-medium">Selecciona keywords</p>
-                    <p className="text-gray-300 text-xs mt-1">en la columna izquierda</p>
+              )}
+
+              {/* Agregado en esta sesión */}
+              {keywordsByLevel['aggregated'] && keywordsByLevel['aggregated'].keywords.length > 0 && (
+                <div className="bg-white rounded-lg border border-purple-200 p-2 space-y-1">
+                  <p className="text-xs font-bold text-purple-800">Agregado en esta sesión</p>
+                  <div className="flex flex-wrap gap-1">
+                    {keywordsByLevel['aggregated'].keywords.map((kw) => (
+                      <div
+                        key={kw}
+                        className="flex items-center gap-1 px-2 py-0.5 bg-purple-50 border border-purple-300 rounded text-xs"
+                      >
+                        <span className="text-gray-800 line-clamp-1">{kw}</span>
+                        <button
+                          onClick={() => handleRemoveKeyword(kw)}
+                          className="text-red-500 hover:text-red-700 font-bold flex-shrink-0"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
+
+              {selectedClient && selectedKeywordsArray.length === 0 && (
+                <div className="text-center py-2">
+                  <p className="text-gray-400 text-xs font-medium">Sin keywords seleccionadas</p>
+                </div>
+              )}
+
+              {/* Input Nueva Keyword - Always Visible */}
+              <div className="flex gap-1 flex-col pt-2 border-t border-amber-200">
+                <label className="text-xs font-semibold text-gray-800">➕ Agregar Keyword Personalizado</label>
+                <input
+                  type="text"
+                  value={keywordInput}
+                  onChange={(e) => setKeywordInput(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && keywordInput.trim()) {
+                      setPendingKeyword(keywordInput.trim());
+                      setShowSaveKeywordModal(true);
+                    }
+                  }}
+                  placeholder="Escribe una keyword personalizada..."
+                  className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-amber-500"
+                />
+                <button
+                  onClick={() => {
+                    if (keywordInput.trim()) {
+                      setPendingKeyword(keywordInput.trim());
+                      setShowSaveKeywordModal(true);
+                    }
+                  }}
+                  className="px-2 py-1 bg-amber-500 text-white rounded hover:bg-amber-600 transition text-xs font-medium"
+                >
+                  Agregar
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -452,11 +494,43 @@ export default function PlanGeneratorInteligente({
                 <label className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
                   👥 Público Objetivo
                 </label>
-                <input
-                  type="text"
-                  placeholder="Define el público objetivo (Crear)"
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                />
+                {selectedClient?.buyer_personas_list && selectedClient.buyer_personas_list.filter(bp => bp).length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    {selectedClient.buyer_personas_list.map((persona, index) => (
+                      persona && (
+                        <button
+                          key={index}
+                          onClick={() => setTargetAudience(persona)}
+                          className={`text-left p-3 rounded-lg border-2 transition ${
+                            targetAudience === persona
+                              ? 'border-indigo-500 bg-indigo-50'
+                              : 'border-gray-200 bg-white hover:border-indigo-300'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
+                              targetAudience === persona
+                                ? 'border-indigo-500 bg-indigo-500'
+                                : 'border-gray-300'
+                            }`} />
+                            <p className="font-semibold text-sm text-gray-800">{persona}</p>
+                          </div>
+                        </button>
+                      )
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      value={targetAudience}
+                      onChange={(e) => setTargetAudience(e.target.value)}
+                      placeholder="Define el público objetivo"
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">💡 Tip: Configura Buyer Personas en la ficha del cliente para seleccionar de opciones predefinidas</p>
+                  </>
+                )}
               </div>
 
               {/* 2. Intención de Contenidos */}
@@ -1326,6 +1400,113 @@ export default function PlanGeneratorInteligente({
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
               />
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Guardar Keyword en Cliente */}
+      {showSaveKeywordModal && (
+        <div className="fixed inset-0 z-50">
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowSaveKeywordModal(false)} />
+
+          {/* Modal */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-4 w-96">
+            <h3 className="text-base font-bold text-gray-800 mb-1">Agregar Keyword</h3>
+            <p className="text-xs text-gray-600 mb-3">
+              <span className="font-semibold text-amber-700">"{pendingKeyword}"</span>
+            </p>
+
+            <div className="space-y-2 mb-4">
+              <p className="text-xs text-gray-700 font-medium">Clasificación:</p>
+
+              {/* Selector de Nivel */}
+              <div>
+                <select
+                  value={selectedLevel}
+                  onChange={(e) => {
+                    setSelectedLevel(e.target.value);
+                    const levelObj = KEYWORD_STRUCTURE.find(l => l.id === e.target.value);
+                    if (levelObj && levelObj.items.length > 0) {
+                      setSelectedSubLevel(levelObj.items[0].id);
+                    }
+                  }}
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-amber-500"
+                >
+                  {KEYWORD_STRUCTURE.map(level => (
+                    <option key={level.id} value={level.id}>
+                      {level.level}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Selector de Sub-nivel */}
+              {KEYWORD_STRUCTURE.find(l => l.id === selectedLevel) && (
+                <select
+                  value={selectedSubLevel}
+                  onChange={(e) => setSelectedSubLevel(e.target.value)}
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-amber-500"
+                >
+                  {KEYWORD_STRUCTURE.find(l => l.id === selectedLevel)?.items.map(item => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  const newSelected = new Set(selectedKeywords);
+                  newSelected.add(pendingKeyword);
+                  setSelectedKeywords(newSelected);
+                  setKeywordInput('');
+                  setPendingKeyword('');
+                  setShowSaveKeywordModal(false);
+                  const newInsights = generateInsights(Array.from(newSelected), selectedClient);
+                  setInsights(newInsights);
+                  setSelectedInsightId(null);
+                }}
+                className="w-full px-3 py-2 bg-blue-50 text-blue-700 border border-blue-300 rounded hover:bg-blue-100 transition text-xs font-medium"
+              >
+                Solo sesión
+              </button>
+
+              <button
+                onClick={() => {
+                  const newSelected = new Set(selectedKeywords);
+                  newSelected.add(pendingKeyword);
+                  setSelectedKeywords(newSelected);
+                  setKeywordInput('');
+
+                  if (selectedClient && onAddCustomKeyword) {
+                    onAddCustomKeyword(selectedClient.id, pendingKeyword);
+                  }
+
+                  setPendingKeyword('');
+                  setShowSaveKeywordModal(false);
+                  const newInsights = generateInsights(Array.from(newSelected), selectedClient);
+                  setInsights(newInsights);
+                  setSelectedInsightId(null);
+                }}
+                className="w-full px-3 py-2 bg-green-50 text-green-700 border border-green-300 rounded hover:bg-green-100 transition text-xs font-medium"
+              >
+                💾 Guardar en cliente
+              </button>
+
+              <button
+                onClick={() => {
+                  setPendingKeyword('');
+                  setShowSaveKeywordModal(false);
+                }}
+                className="w-full px-3 py-2 text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition text-xs font-medium"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       )}

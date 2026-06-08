@@ -16,6 +16,7 @@ export interface Client {
   // Audience & Market
   target_audience?: string;
   buyer_personas?: string;
+  buyer_personas_list?: string[];
   avg_age?: number;
   income_level?: string;
   target_industries?: string[];

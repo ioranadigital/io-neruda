@@ -14,7 +14,7 @@ import { showToast } from '../shared/Toast';
 import { X } from 'lucide-react';
 
 export default function GeneratorPanel() {
-  const { clients, selectedClient, setError, error, selectClient } = useGenerator();
+  const { clients, selectedClient, setError, error, selectClient, addContentResult, addCustomKeywordToClient } = useGenerator();
   const { createConfig } = useCreateConfiguration();
   const { generateContent, isGenerating } = useGenerateContent();
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -118,6 +118,26 @@ export default function GeneratorPanel() {
         blogLength: formData.blogLength,
       });
 
+      // Save content results for each selected format
+      const selectedFormats = Object.entries(formData.selectedFormats || {})
+        .filter(([, format]) => format.selected)
+        .map(([key]) => key as any);
+
+      selectedFormats.forEach(format => {
+        addContentResult({
+          id: `result_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+          clientId: selectedClient.id,
+          clientName: selectedClient.name,
+          postTitle: formData.name,
+          outputFormat: format,
+          keywordsUsed: [...formData.keywordsNiche, ...formData.keywordsLongtail],
+          generatedDate: new Date().toISOString(),
+          targetAudience: formData.targetAudience,
+          contentIntent: formData.selectedContentIntent || 'No especificado',
+          status: 'draft',
+        });
+      });
+
       showToast.success('✅ Ecosistema de contenido generado exitosamente');
 
       setTimeout(() => setShowPreviewModal(false), 500);
@@ -140,6 +160,18 @@ export default function GeneratorPanel() {
         localGeoEnabled: false,
         localGeoValue: '',
         blogLength: 'standard',
+        targetAudience: '',
+        selectedContentIntent: null,
+        selectedMainTone: null,
+        selectedTone: null,
+        h1Title: '',
+        h2Title: '',
+        urlSlug: '',
+        internalLink1: '',
+        internalLink2: '',
+        semanticElements: new Set(),
+        selectedFormats: {},
+        subSelectorValues: {},
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error generating content';
@@ -178,6 +210,7 @@ export default function GeneratorPanel() {
             onInsightOriginChange={(origin) => setFormData({ ...formData, insightOrigin: origin })}
             onLocalGeoToggle={(enabled) => setFormData({ ...formData, localGeoEnabled: enabled })}
             onLocalGeoValueChange={(value) => setFormData({ ...formData, localGeoValue: value })}
+            onAddCustomKeyword={addCustomKeywordToClient}
             onFormDataChange={(data) => setFormData({ ...formData, ...data })}
           />
 
