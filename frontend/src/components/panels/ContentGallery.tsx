@@ -33,12 +33,6 @@ export default function ContentGallery({ contentId }: ContentGalleryProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
   const [copied, setCopied] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Load content on mount
-  useEffect(() => {
-    getGeneratedContent(contentId).catch(err => console.error('Error loading content:', err)).finally(() => setIsLoading(false));
-  }, [contentId, getGeneratedContent]);
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -77,12 +71,11 @@ export default function ContentGallery({ contentId }: ContentGalleryProps) {
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Generated Content</h2>
 
-        {isLoading ? (
+        {generatedContent.length === 0 ? (
           <div className="text-center py-8">
-            <div className="inline-block animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
-            <p className="text-gray-600 mt-2">Loading content...</p>
+            <p className="text-gray-600 mt-2">No hay contenido generado aún</p>
           </div>
-        ) : content.length === 0 ? (
+        ) : generatedContent.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <p>No generated content yet. Generate some content to see it here!</p>
           </div>
@@ -98,7 +91,7 @@ export default function ContentGallery({ contentId }: ContentGalleryProps) {
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                All ({content.length})
+                All ({generatedContent.length})
               </button>
               {Object.entries(groupedByFormat).map(([format, items]) => (
                 <button
