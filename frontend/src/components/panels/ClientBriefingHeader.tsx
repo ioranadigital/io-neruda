@@ -17,9 +17,9 @@ export default function ClientBriefingHeader({
 }: ClientBriefingHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const getEnabledChannels = () => {
+  const getEnabledChannels = (): string[] => {
     if (!selectedClient) return [];
-    const channels = [];
+    const channels: string[] = [];
     if (selectedClient.channel_blog) channels.push('📝 Blog');
     if (selectedClient.channel_email) channels.push('📧 Email');
     if (selectedClient.channel_linkedin) channels.push('💼 LinkedIn');

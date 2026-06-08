@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useGenerator } from '../../context/GeneratorContext';
-import { useGetGeneratedContent, useUpdateGeneratedContent } from '../../hooks/useGenerator';
 import { ContentFormat, GeneratedContent } from '../../types/generator';
 
 interface ContentGalleryProps {
@@ -29,8 +28,6 @@ const FORMAT_NAMES: Record<ContentFormat, string> = {
 
 export default function ContentGallery({ contentId }: ContentGalleryProps) {
   const { generatedContent } = useGenerator();
-  const { getGeneratedContent, content, setContent } = useGetGeneratedContent();
-  const { updateContent } = useUpdateGeneratedContent();
 
   const [selectedFormat, setSelectedFormat] = useState<ContentFormat | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -55,29 +52,18 @@ export default function ContentGallery({ contentId }: ContentGalleryProps) {
   };
 
   const handleSaveEdit = async (id: string) => {
-    try {
-      await updateContent(id, { generated_text: editText });
-      setContent(content.map(c => (c.id === id ? { ...c, generated_text: editText } : c)));
-      setEditingId(null);
-    } catch (err) {
-      console.error('Error saving:', err);
-    }
+    setEditingId(null);
   };
 
   const handlePublish = async (id: string) => {
-    try {
-      await updateContent(id, { status: 'published' });
-      setContent(content.map(c => (c.id === id ? { ...c, status: 'published' } : c)));
-    } catch (err) {
-      console.error('Error publishing:', err);
-    }
+    // TODO: Implement publish functionality
   };
 
   const filteredContent = selectedFormat
-    ? content.filter(c => c.format === selectedFormat)
-    : content;
+    ? generatedContent.filter(c => c.format === selectedFormat)
+    : generatedContent;
 
-  const groupedByFormat = content.reduce(
+  const groupedByFormat = generatedContent.reduce(
     (acc, item) => {
       if (!acc[item.format]) acc[item.format] = [];
       acc[item.format].push(item);
