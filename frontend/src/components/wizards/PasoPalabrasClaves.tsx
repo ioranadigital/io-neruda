@@ -482,15 +482,6 @@ export default function PasoPalabrasClaves({
     >
       {/* CONTENEDOR MAESTRO - Bloque Fijo Principal */}
       <div className="w-full bg-white rounded-xl border border-slate-200 overflow-hidden">
-        {/* Header Fijo */}
-        <div className="w-full px-6 md:px-8 py-4 flex flex-row items-center bg-white">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
-              <Tags size={24} className="text-cyan-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-slate-900">Selección de Keywords</h3>
-          </div>
-        </div>
 
         {/* Banner Informativo Según Contexto */}
         {isKeywordsBypassed && (
