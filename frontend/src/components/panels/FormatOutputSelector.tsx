@@ -280,10 +280,25 @@ export default function FormatOutputSelector({
     const key = `${categoryId}-${formatId}`;
     const updated = { ...selectedFormats };
 
-    if (checked) {
-      updated[key] = { selected: true, subType };
+    // For Web & SEO category, use radio button logic (only 1 selection)
+    if (categoryId === 'web-seo') {
+      // Remove any previously selected web-seo formats
+      Object.keys(updated).forEach((k) => {
+        if (k.startsWith('web-seo-')) {
+          delete updated[k];
+        }
+      });
+      // Add the new selection if checked
+      if (checked) {
+        updated[key] = { selected: true, subType };
+      }
     } else {
-      delete updated[key];
+      // For other categories, use checkbox logic (multiple selections allowed)
+      if (checked) {
+        updated[key] = { selected: true, subType };
+      } else {
+        delete updated[key];
+      }
     }
 
     setSelectedFormats(updated);
@@ -341,31 +356,62 @@ export default function FormatOutputSelector({
 
               return (
                 <div key={format.id} className="space-y-2">
-                  {/* Format Checkbox */}
-                  <label className="flex items-start p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm cursor-pointer hover:border-gray-300 transition">
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={(e) =>
+                  {/* Format Selection */}
+                  {category.id === 'web-seo' ? (
+                    // For Web & SEO: Button-style selection (no checkbox)
+                    <button
+                      onClick={() =>
                         handleFormatChange(
                           category.id,
                           format.id,
-                          e.target.checked,
+                          !isSelected,
                           format.subType
                         )
                       }
-                      className="w-4 h-4 mt-1 cursor-pointer"
-                      style={{ accentColor: webColors.primary }}
-                    />
-                    <div className="ml-3 flex-1">
-                      <p className="font-semibold text-gray-800">
+                      className={`w-full text-left p-4 rounded-lg border-2 transition ${
+                        isSelected
+                          ? 'bg-blue-50 border-blue-400 ring-2 ring-blue-200'
+                          : 'bg-white border-gray-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <p className={`font-semibold transition ${
+                        isSelected ? 'text-blue-700' : 'text-gray-800'
+                      }`}>
                         {format.icon} {format.name}
                       </p>
-                      <p className="text-xs text-gray-600 mt-1">
+                      <p className={`text-xs mt-1 transition ${
+                        isSelected ? 'text-blue-600' : 'text-gray-600'
+                      }`}>
                         {format.description}
                       </p>
-                    </div>
-                  </label>
+                    </button>
+                  ) : (
+                    // For other categories: Checkbox selection (allows multiple)
+                    <label className="flex items-start p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm cursor-pointer hover:border-gray-300 transition">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) =>
+                          handleFormatChange(
+                            category.id,
+                            format.id,
+                            e.target.checked,
+                            format.subType
+                          )
+                        }
+                        className="w-4 h-4 mt-1 cursor-pointer"
+                        style={{ accentColor: webColors.primary }}
+                      />
+                      <div className="ml-3 flex-1">
+                        <p className="font-semibold text-gray-800">
+                          {format.icon} {format.name}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1">
+                          {format.description}
+                        </p>
+                      </div>
+                    </label>
+                  )}
 
                   {/* Sub-Selectors */}
                   {isSelected && hasSub && format.subType === 'blog-types' && (
