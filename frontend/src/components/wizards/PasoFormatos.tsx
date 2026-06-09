@@ -239,71 +239,62 @@ export default function PasoFormatos({
             <Globe className="w-6 h-6 text-purple-600" />
             <h3 className="text-lg font-semibold text-purple-700">Web & SEO</h3>
           </div>
-          <div className="space-y-3">
-            {SECTIONS.find((s) => s.id === 'web_seo')?.formats?.map((format) => {
-              const isExpanded = expandedFormats[format.id] || false;
-              const hasSelected = hasSelectedSubFormats(format.id);
-              return (
-                <div key={format.id}>
-                  {/* Header con Acordeón */}
-                  <button
-                    onClick={() => toggleAccordion(format.id)}
-                    className={`w-full border p-3 rounded-lg flex items-center justify-between transition ${
-                      hasSelected
-                        ? 'bg-purple-100 border-purple-300'
-                        : 'bg-white border-slate-200 hover:border-purple-300'
-                    }`}
-                  >
-                    <div className="text-left flex-1">
-                      <p className={`font-semibold text-sm ${
-                        hasSelected ? 'text-purple-700' : 'text-slate-900'
-                      }`}>{format.label}</p>
-                      <p className={`text-xs mt-0.5 ${
-                        hasSelected ? 'text-purple-600' : 'text-slate-500'
-                      }`}>{format.desc}</p>
-                    </div>
-                    <ChevronDown
-                      size={18}
-                      className={`text-purple-600 flex-shrink-0 transition-transform ${
-                        isExpanded ? 'rotate-180' : ''
+          <div className="space-y-4">
+            {/* Nivel 1: Formatos principales (solo 1 seleccionable) */}
+            <div className="space-y-2">
+              {SECTIONS.find((s) => s.id === 'web_seo')?.formats?.map((format) => {
+                const hasSelected = hasSelectedSubFormats(format.id);
+                const isExpanded = expandedFormats[format.id] || false;
+                return (
+                  <div key={format.id}>
+                    {/* Tarjeta de Formato (sin checkbox) */}
+                    <button
+                      onClick={() => toggleAccordion(format.id)}
+                      className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                        isExpanded
+                          ? 'bg-purple-50 border-purple-400 ring-2 ring-purple-200'
+                          : 'bg-white border-slate-200 hover:border-purple-300'
                       }`}
-                    />
-                  </button>
+                    >
+                      <p className={`font-semibold text-sm transition ${
+                        isExpanded ? 'text-purple-700' : 'text-slate-900'
+                      }`}>{format.label}</p>
+                      <p className={`text-xs mt-1 transition ${
+                        isExpanded ? 'text-purple-600' : 'text-slate-500'
+                      }`}>{format.desc}</p>
+                    </button>
 
-                  {/* Sub-formatos expandibles */}
-                  {isExpanded && (format as any).subFormats && (
-                    <div className="mt-2 pl-3 flex flex-col gap-2">
-                      {(format as any).subFormats.map((sub: any) => {
-                        const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
-                        return (
-                          <label
-                            key={sub.id}
-                            className={`flex items-start gap-2 p-2 rounded cursor-pointer transition ${
-                              subIsSelected
-                                ? 'bg-purple-50 border border-purple-200'
-                                : 'hover:bg-purple-50'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={subIsSelected}
-                              onChange={() => handleFormatToggle(sub.id)}
-                              className="mt-0.5 rounded border-slate-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
-                            />
-                            <div className="flex-1">
-                              <p className={`text-xs font-medium ${
+                    {/* Nivel 2: Sub-formatos (tarjetas clicables sin checkbox) */}
+                    {isExpanded && (format as any).subFormats && (
+                      <div className="mt-3 space-y-2 pl-2">
+                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona una opción:</p>
+                        {(format as any).subFormats.map((sub: any) => {
+                          const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
+                          return (
+                            <button
+                              key={sub.id}
+                              onClick={() => handleFormatToggle(sub.id)}
+                              className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                                subIsSelected
+                                  ? 'bg-purple-100 border-purple-400'
+                                  : 'bg-slate-50 border-slate-200 hover:border-purple-300'
+                              }`}
+                            >
+                              <p className={`text-xs font-medium transition ${
                                 subIsSelected ? 'text-purple-700' : 'text-slate-700'
                               }`}>{sub.label}</p>
-                              <p className="text-[11px] text-slate-500 mt-0.5">{sub.desc}</p>
-                            </div>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                              <p className={`text-[11px] mt-1 transition ${
+                                subIsSelected ? 'text-purple-600' : 'text-slate-500'
+                              }`}>{sub.desc}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -313,71 +304,62 @@ export default function PasoFormatos({
             <Share2 className="w-6 h-6 text-pink-600" />
             <h3 className="text-lg font-semibold text-pink-700">Social Media</h3>
           </div>
-          <div className="space-y-3">
-            {SECTIONS.find((s) => s.id === 'social')?.formats?.map((format) => {
-              const isExpanded = expandedFormats[format.id] || false;
-              const hasSelected = hasSelectedSubFormats(format.id);
-              return (
-                <div key={format.id}>
-                  {/* Header con Acordeón */}
-                  <button
-                    onClick={() => toggleAccordion(format.id)}
-                    className={`w-full border p-3 rounded-lg flex items-center justify-between transition ${
-                      hasSelected
-                        ? 'bg-pink-100 border-pink-300'
-                        : 'bg-white border-slate-200 hover:border-pink-300'
-                    }`}
-                  >
-                    <div className="text-left flex-1">
-                      <p className={`font-semibold text-sm ${
-                        hasSelected ? 'text-pink-700' : 'text-slate-900'
-                      }`}>{format.label}</p>
-                      <p className={`text-xs mt-0.5 ${
-                        hasSelected ? 'text-pink-600' : 'text-slate-500'
-                      }`}>{format.desc}</p>
-                    </div>
-                    <ChevronDown
-                      size={18}
-                      className={`text-pink-600 flex-shrink-0 transition-transform ${
-                        isExpanded ? 'rotate-180' : ''
+          <div className="space-y-4">
+            {/* Nivel 1: Plataformas (sin checkbox) */}
+            <div className="space-y-2">
+              {SECTIONS.find((s) => s.id === 'social')?.formats?.map((format) => {
+                const hasSelected = hasSelectedSubFormats(format.id);
+                const isExpanded = expandedFormats[format.id] || false;
+                return (
+                  <div key={format.id}>
+                    {/* Tarjeta de Plataforma (sin checkbox) */}
+                    <button
+                      onClick={() => toggleAccordion(format.id)}
+                      className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                        isExpanded
+                          ? 'bg-pink-50 border-pink-400 ring-2 ring-pink-200'
+                          : 'bg-white border-slate-200 hover:border-pink-300'
                       }`}
-                    />
-                  </button>
+                    >
+                      <p className={`font-semibold text-sm transition ${
+                        isExpanded ? 'text-pink-700' : 'text-slate-900'
+                      }`}>{format.label}</p>
+                      <p className={`text-xs mt-1 transition ${
+                        isExpanded ? 'text-pink-600' : 'text-slate-500'
+                      }`}>{format.desc}</p>
+                    </button>
 
-                  {/* Sub-formatos expandibles */}
-                  {isExpanded && (format as any).subFormats && (
-                    <div className="mt-2 pl-3 flex flex-col gap-2">
-                      {(format as any).subFormats.map((sub: any) => {
-                        const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
-                        return (
-                          <label
-                            key={sub.id}
-                            className={`flex items-start gap-2 p-2 rounded cursor-pointer transition ${
-                              subIsSelected
-                                ? 'bg-pink-50 border border-pink-200'
-                                : 'hover:bg-pink-50'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={subIsSelected}
-                              onChange={() => handleFormatToggle(sub.id)}
-                              className="mt-0.5 rounded border-slate-300 text-pink-600 focus:ring-pink-500 cursor-pointer"
-                            />
-                            <div className="flex-1">
-                              <p className={`text-xs font-medium ${
+                    {/* Nivel 2: Tipos de contenido (tarjetas clicables sin checkbox) */}
+                    {isExpanded && (format as any).subFormats && (
+                      <div className="mt-3 space-y-2 pl-2">
+                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona opción(es):</p>
+                        {(format as any).subFormats.map((sub: any) => {
+                          const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
+                          return (
+                            <button
+                              key={sub.id}
+                              onClick={() => handleFormatToggle(sub.id)}
+                              className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                                subIsSelected
+                                  ? 'bg-pink-100 border-pink-400'
+                                  : 'bg-slate-50 border-slate-200 hover:border-pink-300'
+                              }`}
+                            >
+                              <p className={`text-xs font-medium transition ${
                                 subIsSelected ? 'text-pink-700' : 'text-slate-700'
                               }`}>{sub.label}</p>
-                              <p className="text-[11px] text-slate-500 mt-0.5">{sub.desc}</p>
-                            </div>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                              <p className={`text-[11px] mt-1 transition ${
+                                subIsSelected ? 'text-pink-600' : 'text-slate-500'
+                              }`}>{sub.desc}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -387,71 +369,62 @@ export default function PasoFormatos({
             <Mail className="w-6 h-6 text-amber-600" />
             <h3 className="text-lg font-semibold text-amber-700">Email Mensajería</h3>
           </div>
-          <div className="space-y-3">
-            {SECTIONS.find((s) => s.id === 'email')?.formats?.map((format) => {
-              const isExpanded = expandedFormats[format.id] || false;
-              const hasSelected = hasSelectedSubFormats(format.id);
-              return (
-                <div key={format.id}>
-                  {/* Header con Acordeón */}
-                  <button
-                    onClick={() => toggleAccordion(format.id)}
-                    className={`w-full border p-3 rounded-lg flex items-center justify-between transition ${
-                      hasSelected
-                        ? 'bg-amber-100 border-amber-300'
-                        : 'bg-white border-slate-200 hover:border-amber-300'
-                    }`}
-                  >
-                    <div className="text-left flex-1">
-                      <p className={`font-semibold text-sm ${
-                        hasSelected ? 'text-amber-700' : 'text-slate-900'
-                      }`}>{format.label}</p>
-                      <p className={`text-xs mt-0.5 ${
-                        hasSelected ? 'text-amber-600' : 'text-slate-500'
-                      }`}>{format.desc}</p>
-                    </div>
-                    <ChevronDown
-                      size={18}
-                      className={`text-amber-600 flex-shrink-0 transition-transform ${
-                        isExpanded ? 'rotate-180' : ''
+          <div className="space-y-4">
+            {/* Nivel 1: Tipos de email (sin checkbox) */}
+            <div className="space-y-2">
+              {SECTIONS.find((s) => s.id === 'email')?.formats?.map((format) => {
+                const hasSelected = hasSelectedSubFormats(format.id);
+                const isExpanded = expandedFormats[format.id] || false;
+                return (
+                  <div key={format.id}>
+                    {/* Tarjeta de Tipo Email (sin checkbox) */}
+                    <button
+                      onClick={() => toggleAccordion(format.id)}
+                      className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                        isExpanded
+                          ? 'bg-amber-50 border-amber-400 ring-2 ring-amber-200'
+                          : 'bg-white border-slate-200 hover:border-amber-300'
                       }`}
-                    />
-                  </button>
+                    >
+                      <p className={`font-semibold text-sm transition ${
+                        isExpanded ? 'text-amber-700' : 'text-slate-900'
+                      }`}>{format.label}</p>
+                      <p className={`text-xs mt-1 transition ${
+                        isExpanded ? 'text-amber-600' : 'text-slate-500'
+                      }`}>{format.desc}</p>
+                    </button>
 
-                  {/* Sub-formatos expandibles */}
-                  {isExpanded && (format as any).subFormats && (
-                    <div className="mt-2 pl-3 flex flex-col gap-2">
-                      {(format as any).subFormats.map((sub: any) => {
-                        const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
-                        return (
-                          <label
-                            key={sub.id}
-                            className={`flex items-start gap-2 p-2 rounded cursor-pointer transition ${
-                              subIsSelected
-                                ? 'bg-amber-50 border border-amber-200'
-                                : 'hover:bg-amber-50'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={subIsSelected}
-                              onChange={() => handleFormatToggle(sub.id)}
-                              className="mt-0.5 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
-                            />
-                            <div className="flex-1">
-                              <p className={`text-xs font-medium ${
+                    {/* Nivel 2: Variantes de email (tarjetas clicables sin checkbox) */}
+                    {isExpanded && (format as any).subFormats && (
+                      <div className="mt-3 space-y-2 pl-2">
+                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona opción(es):</p>
+                        {(format as any).subFormats.map((sub: any) => {
+                          const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
+                          return (
+                            <button
+                              key={sub.id}
+                              onClick={() => handleFormatToggle(sub.id)}
+                              className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                                subIsSelected
+                                  ? 'bg-amber-100 border-amber-400'
+                                  : 'bg-slate-50 border-slate-200 hover:border-amber-300'
+                              }`}
+                            >
+                              <p className={`text-xs font-medium transition ${
                                 subIsSelected ? 'text-amber-700' : 'text-slate-700'
                               }`}>{sub.label}</p>
-                              <p className="text-[11px] text-slate-500 mt-0.5">{sub.desc}</p>
-                            </div>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                              <p className={`text-[11px] mt-1 transition ${
+                                subIsSelected ? 'text-amber-600' : 'text-slate-500'
+                              }`}>{sub.desc}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
