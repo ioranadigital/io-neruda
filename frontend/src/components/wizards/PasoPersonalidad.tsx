@@ -280,9 +280,9 @@ export default function PasoPersonalidad({
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
               <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                step2Complete ? 'bg-purple-100' : 'bg-slate-200'
+                step2Complete ? 'bg-amber-100' : 'bg-slate-200'
               }`}>
-                <Volume2 size={24} className={step2Complete ? 'text-purple-600' : 'text-slate-500'} />
+                <Volume2 size={24} className={step2Complete ? 'text-amber-600' : 'text-slate-500'} />
               </div>
               <h3 className={`text-lg font-semibold ${step2Complete ? 'text-slate-900' : 'text-slate-500'}`}>Tono y Subtono</h3>
             </div>
@@ -377,7 +377,7 @@ export default function PasoPersonalidad({
         <div className={`rounded-xl border p-6 transition col-span-1 ${
           step3Complete
             ? formData.selectedNarrativeAngle
-              ? 'bg-slate-900 border-slate-700 hover:shadow-lg'
+              ? 'bg-amber-50 border-amber-200 hover:shadow-lg'
               : 'bg-white border-slate-200 hover:shadow-lg'
             : 'bg-slate-100 border-slate-300 opacity-50 cursor-not-allowed'
         }`}>
@@ -386,14 +386,14 @@ export default function PasoPersonalidad({
               <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                 step3Complete
                   ? formData.selectedNarrativeAngle
-                    ? 'bg-slate-700'
+                    ? 'bg-amber-100'
                     : 'bg-slate-100'
                   : 'bg-slate-200'
               }`}>
                 <Clapperboard size={24} className={
                   step3Complete
                     ? formData.selectedNarrativeAngle
-                      ? 'text-white'
+                      ? 'text-amber-600'
                       : 'text-slate-600'
                     : 'text-slate-500'
                 } />
@@ -401,19 +401,19 @@ export default function PasoPersonalidad({
               <h3 className={`text-lg font-semibold ${
                 step3Complete
                   ? formData.selectedNarrativeAngle
-                    ? 'text-white'
+                    ? 'text-amber-900'
                     : 'text-slate-900'
                   : 'text-slate-500'
               }`}>Ángulo Narrativo</h3>
             </div>
             {formData.selectedNarrativeAngle ? (
               <span className={`text-xl font-bold ${
-                formData.selectedNarrativeAngle ? 'text-white' : 'text-slate-600'
+                formData.selectedNarrativeAngle ? 'text-amber-600' : 'text-slate-600'
               }`}>✓</span>
             ) : (
               <span className={`text-xs font-bold px-2 py-1 rounded ${
                 step3Complete
-                  ? 'text-slate-600 bg-slate-100'
+                  ? 'text-amber-600 bg-amber-100'
                   : 'text-slate-500 bg-slate-200'
               }`}>PASO 4</span>
             )}
@@ -431,7 +431,7 @@ export default function PasoPersonalidad({
           <p className={`text-xs mb-4 leading-relaxed ${
             step3Complete
               ? formData.selectedNarrativeAngle
-                ? 'text-slate-200'
+                ? 'text-amber-900'
                 : 'text-slate-500'
               : 'text-slate-500'
           }`}>Selecciona la perspectiva narrativa que mejor enganche a tu audiencia.</p>
@@ -439,7 +439,7 @@ export default function PasoPersonalidad({
           {step3Complete && (
             <div className="space-y-2">
               <p className={`text-xs uppercase tracking-wide mb-2 font-semibold ${
-                formData.selectedNarrativeAngle ? 'text-slate-300' : 'text-slate-500'
+                formData.selectedNarrativeAngle ? 'text-amber-700' : 'text-slate-500'
               }`}>Elige ángulo</p>
               {NARRATIVE_ANGLES.map((angle) => (
                 <button
@@ -447,24 +447,24 @@ export default function PasoPersonalidad({
                   onClick={() => onChange({ selectedNarrativeAngle: angle.id })}
                   className={`w-full text-left rounded-lg p-2 transition border ${
                     formData.selectedNarrativeAngle === angle.id
-                      ? 'bg-slate-700 border-slate-600'
+                      ? 'bg-amber-100 border-amber-300'
                       : formData.selectedNarrativeAngle
-                      ? 'bg-slate-800 border-slate-700 hover:border-slate-600'
+                      ? 'bg-amber-50 border-amber-100 hover:border-amber-200'
                       : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     {angle.iconLucide && iconMap[angle.iconLucide] &&
                       React.createElement(iconMap[angle.iconLucide], { className: `w-4 h-4 ${
-                        formData.selectedNarrativeAngle ? 'text-white' : 'text-slate-600'
+                        formData.selectedNarrativeAngle ? 'text-amber-600' : 'text-slate-600'
                       }` })
                     }
                     <span className={`text-xs font-semibold ${
-                      formData.selectedNarrativeAngle ? 'text-white' : 'text-slate-900'
+                      formData.selectedNarrativeAngle ? 'text-amber-900' : 'text-slate-900'
                     }`}>{angle.label}</span>
                   </div>
                   <p className={`text-[10px] mt-0.5 ${
-                    formData.selectedNarrativeAngle ? 'text-slate-300' : 'text-slate-500'
+                    formData.selectedNarrativeAngle ? 'text-amber-700' : 'text-slate-500'
                   }`}>{angle.desc}</p>
                 </button>
               ))}
