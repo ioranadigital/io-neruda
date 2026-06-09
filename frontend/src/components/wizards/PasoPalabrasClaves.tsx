@@ -206,7 +206,7 @@ export default function PasoPalabrasClaves({
       {
         id: 'level-6-exclude',
         icon: '🚫',
-        level: 'Nivel 6: Exclusiones y Restricciones',
+        level: 'Nivel 6: Exclusiones y Restricciones [Heredado del Cliente]',
         title: 'Palabras a Evitar',
         items: [
           {
@@ -286,10 +286,7 @@ export default function PasoPalabrasClaves({
   // ===== REGLAS DE VALIDACIÓN ESTRICTAS =====
   const isKeywordDisabled = (keywordId: string, levelId: string): boolean => {
     const isLevel6 = levelId === 'level-6-exclude';
-    if (isLevel6) {
-      // El Nivel 6 SIEMPRE está deshabilitado para edición
-      return true;
-    }
+    // El Nivel 6 ahora es editable (se puede quitar pero no agregar más)
 
     // Deshabilita si está en la lista de disabledByIntention
     if (disabledByIntention?.includes(keywordId)) {
@@ -612,17 +609,15 @@ export default function PasoPalabrasClaves({
                                         <button
                                           disabled={isDisabled}
                                           onClick={() => {
-                                            if (isSelected && !isLevel6) {
+                                            if (isSelected) {
                                               handleRemoveKeyword(kw);
-                                            } else if (!isDisabled && !isLevel6) {
+                                            } else if (!isDisabled) {
                                               handleAddKeyword(kw);
                                             }
                                           }}
                                           title={disabledReason}
                                           className={`px-2 py-1 rounded-full text-xs font-medium transition border ${
-                                            isLevel6
-                                              ? 'bg-gray-100 text-gray-600 border-gray-300 cursor-not-allowed opacity-60'
-                                              : isSelected
+                                            isSelected
                                               ? 'bg-green-50 text-green-700 border-green-200 hover:border-green-300 cursor-pointer'
                                               : isDisabled
                                               ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed opacity-40'
@@ -631,11 +626,11 @@ export default function PasoPalabrasClaves({
                                         >
                                           <span className="flex items-center gap-1">
                                             {kw}
-                                            {isLevel6 && <span className="text-gray-400 text-xs">[Fijo]</span>}
+                                            {isLevel6 && isSelected && <span className="text-green-700 font-bold">×</span>}
                                           </span>
                                         </button>
                                         {/* Tooltip en hover para razón de deshabilitación */}
-                                        {(isDisabled || isLevel6) && disabledReason && (
+                                        {isDisabled && disabledReason && (
                                           <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-10 shadow-lg">
                                             {disabledReason}
                                           </div>
@@ -718,23 +713,16 @@ export default function PasoPalabrasClaves({
                               {levelGroup.keywords.map((kw) => (
                                 <div
                                   key={kw}
-                                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition ${
-                                    isLevel6
-                                      ? 'bg-gray-50 text-gray-700 border-gray-200'
-                                      : 'bg-green-50 text-green-700 border-green-200 hover:border-green-300'
-                                  }`}
-                                  title={isLevel6 ? 'Fijo por cliente (no removible)' : ''}
+                                  className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition bg-green-50 text-green-700 border-green-200 hover:border-green-300"
                                 >
                                   {kw}
-                                  {isLevel6 && <span className="text-gray-500 text-xs">[Fijo]</span>}
-                                  {!isLevel6 && (
-                                    <button
-                                      onClick={() => handleRemoveKeyword(kw)}
-                                      className="transition p-0.5 hover:text-green-900"
-                                    >
-                                      <X size={12} />
-                                    </button>
-                                  )}
+                                  <button
+                                    onClick={() => handleRemoveKeyword(kw)}
+                                    className="transition p-0.5 hover:text-green-900"
+                                    title={isLevel6 ? 'Heredado del cliente - click para remover' : 'Remover keyword'}
+                                  >
+                                    <X size={12} />
+                                  </button>
                                 </div>
                               ))}
                             </div>
