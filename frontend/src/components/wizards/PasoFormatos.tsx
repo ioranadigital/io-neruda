@@ -263,10 +263,11 @@ export default function PasoFormatos({
 
         {/* CONTENEDOR 2: Web & SEO */}
         <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-2">
             <Globe className="w-6 h-6 text-purple-600" />
             <h3 className="text-lg font-semibold text-purple-700">Web & SEO</h3>
           </div>
+          <p className="text-xs text-slate-500 ml-9 mb-4">Contenido para buscadores y web</p>
           <div className="space-y-4">
             {/* Nivel 1: Formatos principales (solo 1 seleccionable) */}
             <div className="space-y-2">
@@ -349,10 +350,11 @@ export default function PasoFormatos({
 
         {/* CONTENEDOR 3: Social Media */}
         <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-2">
             <Share2 className="w-6 h-6 text-pink-600" />
             <h3 className="text-lg font-semibold text-pink-700">Social Media</h3>
           </div>
+          <p className="text-xs text-slate-500 ml-9 mb-4">Contenido para redes sociales</p>
           <div className="space-y-4">
             {/* Nivel 1: Plataformas (sin checkbox) */}
             <div className="space-y-2">
@@ -435,10 +437,11 @@ export default function PasoFormatos({
 
         {/* CONTENEDOR 4: Email Mensajería */}
         <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-2">
             <Mail className="w-6 h-6 text-amber-600" />
             <h3 className="text-lg font-semibold text-amber-700">Email Mensajería</h3>
           </div>
+          <p className="text-xs text-slate-500 ml-9 mb-4">Comunicación directa por email y chat</p>
           <div className="space-y-4">
             {/* Nivel 1: Tipos de email (sin checkbox) */}
             <div className="space-y-2">
