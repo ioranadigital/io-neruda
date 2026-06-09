@@ -27,6 +27,15 @@ interface PasoIncubacionProps {
   onVariacionChange?: (index: number) => void;
 }
 
+// ===== SANITIZADOR TEMPORAL DINÁMICO =====
+// Reemplaza años obsoletos (2024, 2025) por el año actual del sistema
+const sanitizeYearContent = (text: string): string => {
+  const currentYear = new Date().getFullYear().toString();
+  return text
+    .replace(/\b2024\b/g, currentYear)
+    .replace(/\b2025\b/g, currentYear);
+};
+
 export default function PasoIncubacion({
   selectedClient,
   formData,
@@ -51,15 +60,20 @@ export default function PasoIncubacion({
     const propuesta = propuestas.find((p) => p.id === propuestaId);
     if (!propuesta) return;
 
-    const slug = generarSlug(propuesta.titulo);
+    // Sanitizar contenido para remover años obsoletos
+    const sanitizedTitulo = sanitizeYearContent(propuesta.titulo);
+    const sanitizedMetaTitle = sanitizeYearContent(propuesta.metaTitle);
+    const sanitizedMetaDescription = sanitizeYearContent(propuesta.metaDescription);
+
+    const slug = generarSlug(sanitizedTitulo);
 
     onChange({
       propuestaElegida: propuestaId,
-      seoH1: propuesta.titulo,
+      seoH1: sanitizedTitulo,
       seoH2: propuesta.puntosClave[0],
       seoSlug: slug,
-      metaTitle: propuesta.metaTitle,
-      metaDescription: propuesta.metaDescription,
+      metaTitle: sanitizedMetaTitle,
+      metaDescription: sanitizedMetaDescription,
     });
   };
 
@@ -185,7 +199,7 @@ export default function PasoIncubacion({
               }`}>
                 <p className="text-xs text-slate-500 uppercase tracking-wide mb-1 font-semibold">H1</p>
                 <p className="text-sm text-slate-900 font-semibold line-clamp-3 leading-snug">
-                  {propuesta.titulo}
+                  {sanitizeYearContent(propuesta.titulo)}
                 </p>
               </div>
 
@@ -221,9 +235,9 @@ export default function PasoIncubacion({
               }`}>
                 <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Meta Title</p>
                 <p className="text-[11px] text-slate-900 font-semibold line-clamp-1 leading-snug">
-                  {propuesta.metaTitle}
+                  {sanitizeYearContent(propuesta.metaTitle)}
                 </p>
-                <p className="text-[9px] text-slate-600">{propuesta.metaTitle.length} car.</p>
+                <p className="text-[9px] text-slate-600">{sanitizeYearContent(propuesta.metaTitle).length} car.</p>
               </div>
 
               {/* Meta Description Preview */}
@@ -240,9 +254,9 @@ export default function PasoIncubacion({
               }`}>
                 <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Meta Description</p>
                 <p className="text-[11px] text-slate-900 line-clamp-2 leading-tight">
-                  {propuesta.metaDescription}
+                  {sanitizeYearContent(propuesta.metaDescription)}
                 </p>
-                <p className="text-[9px] text-slate-600">{propuesta.metaDescription.length} car. (150-160)</p>
+                <p className="text-[9px] text-slate-600">{sanitizeYearContent(propuesta.metaDescription).length} car. (150-160)</p>
               </div>
 
               {/* Puntos Clave */}
