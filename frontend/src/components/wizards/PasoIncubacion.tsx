@@ -128,6 +128,24 @@ export default function PasoIncubacion({
                 </p>
               </div>
 
+              {/* H2 Propuesto */}
+              <div className={`mb-3 p-2.5 rounded-lg border ${
+                colors.accentColor === 'blue'
+                  ? 'bg-blue-50 border-blue-200'
+                  : colors.accentColor === 'green'
+                  ? 'bg-green-50 border-green-200'
+                  : colors.accentColor === 'purple'
+                  ? 'bg-purple-50 border-purple-200'
+                  : colors.accentColor === 'orange'
+                  ? 'bg-orange-50 border-orange-200'
+                  : 'bg-red-50 border-red-200'
+              }`}>
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1 font-semibold">H2 Propuesto</p>
+                <p className="text-xs text-slate-900 font-semibold line-clamp-2 leading-snug">
+                  {propuesta.puntosClave[0]}
+                </p>
+              </div>
+
               {/* Meta Title Preview */}
               <div className={`mb-3 p-2 rounded-lg border ${
                 colors.accentColor === 'blue'
