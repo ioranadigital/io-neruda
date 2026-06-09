@@ -137,12 +137,21 @@ export default function PasoSEOGEO({
     onToggleVerified: () => void;
   }) => {
     const colorClasses = {
-      blue: 'border-blue-200 hover:shadow-blue-100',
-      purple: 'border-purple-200 hover:shadow-purple-100',
-      amber: 'border-amber-200 hover:shadow-amber-100',
-      green: 'border-green-200 hover:shadow-green-100',
-      red: 'border-red-200 hover:shadow-red-100',
-      orange: 'border-orange-200 hover:shadow-orange-100',
+      blue: 'border-blue-200 hover:bg-blue-50 hover:border-blue-300',
+      purple: 'border-purple-200 hover:bg-purple-50 hover:border-purple-300',
+      amber: 'border-amber-200 hover:bg-amber-50 hover:border-amber-300',
+      green: 'border-green-200 hover:bg-green-50 hover:border-green-300',
+      red: 'border-red-200 hover:bg-red-50 hover:border-red-300',
+      orange: 'border-orange-200 hover:bg-orange-50 hover:border-orange-300',
+    };
+
+    const backgroundColors = {
+      blue: 'bg-blue-50',
+      purple: 'bg-purple-50',
+      amber: 'bg-amber-50',
+      green: 'bg-green-50',
+      red: 'bg-red-50',
+      orange: 'bg-orange-50',
     };
 
     const iconColors = {
@@ -155,16 +164,18 @@ export default function PasoSEOGEO({
     };
 
     const buttonColors = {
-      blue: 'border-blue-300 text-blue-700 hover:bg-blue-50',
-      purple: 'border-purple-300 text-purple-700 hover:bg-purple-50',
-      amber: 'border-amber-300 text-amber-700 hover:bg-amber-50',
-      green: 'border-green-300 text-green-700 hover:bg-green-50',
-      red: 'border-red-300 text-red-700 hover:bg-red-50',
-      orange: 'border-orange-300 text-orange-700 hover:bg-orange-50',
+      blue: 'border-blue-300 text-blue-700 hover:bg-blue-100',
+      purple: 'border-purple-300 text-purple-700 hover:bg-purple-100',
+      amber: 'border-amber-300 text-amber-700 hover:bg-amber-100',
+      green: 'border-green-300 text-green-700 hover:bg-green-100',
+      red: 'border-red-300 text-red-700 hover:bg-red-100',
+      orange: 'border-orange-300 text-orange-700 hover:bg-orange-100',
     };
 
     return (
-      <div className={`bg-white border ${colorClasses[color as keyof typeof colorClasses]} rounded-xl p-5 shadow-sm hover:shadow-md transition`}>
+      <div className={`border ${colorClasses[color as keyof typeof colorClasses]} rounded-xl p-5 shadow-sm hover:shadow-md transition ${
+        isVerified ? backgroundColors[color as keyof typeof backgroundColors] : 'bg-white'
+      }`}>
         {/* Header con icono y título */}
         <div className="flex items-center gap-2 mb-4">
           <Icon size={20} className={iconColors[color as keyof typeof iconColors]} />
