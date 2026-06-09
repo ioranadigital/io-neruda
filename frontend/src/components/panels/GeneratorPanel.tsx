@@ -34,15 +34,15 @@ import PasoClienteWelcome from '../wizards/PasoClienteWelcome';
 import ClientBriefingPanel from './ClientBriefingPanel';
 
 const STEP_LABELS = [
-  'Cliente',      // PASO 0
-  'Formatos',     // PASO 1
-  'Personalidad', // PASO 2
-  'Propuestas',   // PASO 3
-  'Keywords',     // PASO 4
-  'Incubación',   // PASO 5 (NUEVO)
-  'SEO/GEO',      // PASO 6
-  'Previsualizar',// PASO 7
-  'Generado',     // PASO 8
+  'Cliente',           // PASO 0
+  'Formatos',          // PASO 1
+  'Personalidad',      // PASO 2
+  'Propuestas',        // PASO 3
+  'Keywords',          // PASO 4
+  'Incubación',        // PASO 5
+  'SEO/GEO',           // PASO 6
+  'Previsualizar',     // PASO 7 (Prompt Preview)
+  'Generando',         // PASO 8 (Content Generation)
 ];
 
 export default function GeneratorPanel() {
@@ -57,6 +57,7 @@ export default function GeneratorPanel() {
   const [selectedKeyword, setSelectedKeyword] = useState<string>('');
   const [showGenerationStep, setShowGenerationStep] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<GenerationResponse | null>(null);
+  const [variacionIndex, setVariacionIndex] = useState(0);
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -86,6 +87,8 @@ export default function GeneratorPanel() {
     internalLink1: string;
     internalLink2: string;
     semanticElements: Set<string>;
+    // PASO 3: Propuestas (Subcategorías)
+    subcategoriaPropuesta: string | null;
     // PASO 5: Incubación
     propuestaElegida: string | null;
     // PASO 6: SEO/GEO (inyectados desde incubación)
@@ -140,6 +143,7 @@ export default function GeneratorPanel() {
     semanticElements: new Set(),
     // PASO 5: Incubación
     propuestaElegida: null,
+    subcategoriaPropuesta: null,
     // PASO 6: SEO/GEO
     seoH1: '',
     seoH2: '',
@@ -360,7 +364,8 @@ export default function GeneratorPanel() {
           selectedNarrativeAngle: formData.selectedNarrativeAngle,
         });
       case 3:
-        return !!formData.name; // PASO 3: Propuestas
+        // PASO 3: Propuestas - requiere propuesta Y subcategoría
+        return !!formData.selectedProposal && !!formData.subcategoriaPropuesta;
       case 4:
         return selectedKeyword.length > 0; // PASO 4: Keywords
       case 5:
@@ -549,6 +554,7 @@ export default function GeneratorPanel() {
       setFormData({
         name: '',
         selectedProposal: null,
+        subcategoriaPropuesta: null,
         keywordsNiche: [],
         keywordsLongtail: [],
         tone: 'professional',
@@ -683,7 +689,7 @@ export default function GeneratorPanel() {
           {currentStep === 3 && (
             <PasoPropuestas
               selectedClient={selectedClient}
-              formData={{ name: formData.name, selectedProposal: formData.selectedProposal }}
+              formData={{ name: formData.name, selectedProposal: formData.selectedProposal, subcategoriaPropuesta: formData.subcategoriaPropuesta }}
               onChange={(data) => setFormData({ ...formData, ...data })}
             />
           )}
@@ -724,6 +730,8 @@ export default function GeneratorPanel() {
                 metaDescription: formData.metaDescription,
               }}
               onChange={(data) => setFormData({ ...formData, ...data })}
+              variacionIndex={variacionIndex}
+              onVariacionChange={setVariacionIndex}
             />
           )}
 
@@ -748,19 +756,21 @@ export default function GeneratorPanel() {
             />
           )}
 
-          {/* PASO 7: Previsualizar */}
+          {/* PASO 7: Previsualizar Prompt */}
           {currentStep === 7 && (
-            <PreviewGenerationData
-              selectedClient={selectedClient}
-              selectedKeyword={selectedKeyword}
-              formData={formData}
-              onConfirm={async () => {
-                await handleStartAIGeneration();
-                setCurrentStep(8);
-                setShowGenerationStep(true);
-              }}
-              onCancel={() => setCurrentStep(6)}
-            />
+            <div className="w-full h-full flex flex-col">
+              <PreviewGenerationData
+                selectedClient={selectedClient}
+                selectedKeyword={selectedKeyword}
+                formData={formData}
+                onConfirm={async () => {
+                  await handleStartAIGeneration();
+                  setCurrentStep(8);
+                  setShowGenerationStep(true);
+                }}
+                onCancel={() => setCurrentStep(6)}
+              />
+            </div>
           )}
 
           {/* PASO 8: Generado */}

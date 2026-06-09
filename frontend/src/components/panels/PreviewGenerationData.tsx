@@ -5,6 +5,7 @@ import { Eye } from 'lucide-react';
 import { Client } from '@/src/types/client';
 import { renderPrompt, getPromptTemplate } from '@/src/services/promptRenderer';
 import { buildPromptData } from '@/src/utils/promptDataBuilder';
+import { showToast } from '../shared/Toast';
 
 interface PreviewGenerationDataProps {
   selectedClient: Client | null;
@@ -45,50 +46,52 @@ export default function PreviewGenerationData({
   };
 
   return (
-    <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-200">
-          <div className="flex items-center gap-3">
-            <Eye size={28} className="text-blue-600" />
-            <h2 className="text-2xl font-bold text-slate-900">PASO 6: Previsualizar Prompt y Generar</h2>
-          </div>
-          <button
-            onClick={onCancel}
-            className="text-slate-500 hover:text-slate-700 text-2xl font-bold"
-          >
-            ✕
-          </button>
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="flex-shrink-0 px-6 md:px-8 py-6 border-b border-slate-200 bg-white">
+        <div className="flex items-center gap-3 mb-2">
+          <Eye size={28} className="text-blue-600" />
+          <h2 className="text-2xl font-bold text-slate-900">PASO 7: Previsualizar Prompt y Generar</h2>
         </div>
+        <p className="text-slate-600 text-sm">Revisa el prompt que será enviado a Claude AI antes de generar el contenido</p>
+      </div>
 
+      {/* Content Area */}
+      <div className="flex-1 min-h-0 overflow-y-auto px-6 md:px-8 py-6">
         {/* Rendered Prompt - Markdown Style */}
-        <div className="flex-1 overflow-y-auto mb-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
-          <pre className="text-xs text-slate-700 whitespace-pre-wrap break-words font-mono leading-relaxed">
-            {renderedPrompt}
-          </pre>
+        <div className="bg-white rounded-lg border border-slate-200 p-6 mb-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wide">Contenido del Prompt</h3>
+          <div className="bg-slate-50 rounded-lg border border-slate-200 p-4 overflow-x-auto">
+            <pre className="text-xs text-slate-700 whitespace-pre-wrap break-words font-mono leading-relaxed">
+              {renderedPrompt}
+            </pre>
+          </div>
         </div>
 
-        {/* Botones */}
-        <div className="flex gap-3 pt-4 border-t border-slate-200">
-          <button
-            onClick={onCancel}
-            className="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-lg font-medium transition"
-          >
-            ← Volver
-          </button>
+        {/* Action Buttons */}
+        <div className="flex gap-3 mb-6">
           <button
             onClick={handleDownloadMD}
-            className="px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center justify-center gap-2"
+            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center gap-2 text-sm"
           >
-            ⬇️ Descargar MD
+            ⬇️ Descargar como Markdown
           </button>
           <button
-            onClick={onConfirm}
-            className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition flex items-center justify-center gap-2"
+            onClick={() => {
+              navigator.clipboard.writeText(renderedPrompt);
+              showToast.success('Prompt copiado al portapapeles');
+            }}
+            className="px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition flex items-center gap-2 text-sm"
           >
-            ✨ Generar con Claude AI
+            📋 Copiar Portapapeles
           </button>
+        </div>
+
+        {/* Info Box */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-900">
+            <strong>Nota:</strong> Este prompt será enviado a Claude AI para generar tu contenido. Haz clic en "Siguiente" para continuar con la generación.
+          </p>
         </div>
       </div>
     </div>
