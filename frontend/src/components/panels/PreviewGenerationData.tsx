@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Eye } from 'lucide-react';
+import { Eye, Download, Copy, Sparkles } from 'lucide-react';
 import { Client } from '@/src/types/client';
 import { renderPrompt, getPromptTemplate } from '@/src/services/promptRenderer';
 import { buildPromptData } from '@/src/utils/promptDataBuilder';
@@ -68,25 +68,6 @@ export default function PreviewGenerationData({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 mb-6">
-          <button
-            onClick={handleDownloadMD}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center gap-2 text-sm"
-          >
-            ⬇️ Descargar como Markdown
-          </button>
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(renderedPrompt);
-              showToast.success('Prompt copiado al portapapeles');
-            }}
-            className="px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition flex items-center gap-2 text-sm"
-          >
-            📋 Copiar Portapapeles
-          </button>
-        </div>
-
         {/* Info Box */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
           <p className="text-sm text-blue-900">
@@ -95,13 +76,39 @@ export default function PreviewGenerationData({
         </div>
       </div>
 
-      {/* Footer con Botón Principal */}
+      {/* Footer con Botones */}
       <div className="flex-shrink-0 px-6 md:px-8 py-6 border-t border-slate-200 bg-white flex justify-end gap-3">
+        {/* Botón Descargar */}
+        <button
+          onClick={handleDownloadMD}
+          className="flex items-center gap-2 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition text-sm shadow-sm hover:shadow-md"
+          title="Descargar prompt como archivo Markdown"
+        >
+          <Download size={18} />
+          Descargar
+        </button>
+
+        {/* Botón Copiar */}
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(renderedPrompt);
+            showToast.success('Prompt copiado al portapapeles');
+          }}
+          className="flex items-center gap-2 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition text-sm shadow-sm hover:shadow-md"
+          title="Copiar prompt al portapapeles"
+        >
+          <Copy size={18} />
+          Copiar
+        </button>
+
+        {/* Botón Generar Contenido */}
         <button
           onClick={onConfirm}
-          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition flex items-center gap-2 text-base shadow-sm hover:shadow-md"
+          className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition text-base shadow-sm hover:shadow-md"
+          title="Enviar a Anthropic API para generar contenido"
         >
-          ✨ Generar Contenido
+          <Sparkles size={20} />
+          Generar Contenido
         </button>
       </div>
     </div>
