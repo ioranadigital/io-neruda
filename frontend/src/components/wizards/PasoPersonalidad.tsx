@@ -199,60 +199,63 @@ export default function PasoPersonalidad({
             </div>
           )}
 
-          {/* Macro Intenciones como Cajetines (Buyer Personas Style) */}
-          <div className="mb-4">
+          {/* Macro Intenciones con Sub-intenciones Anidadas */}
+          <div className="space-y-3">
             <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Elige Intención</p>
-            <div className="space-y-2">
-              {INTENCIONES_CONTEXTO.map((macroIntent) => (
-                <button
-                  key={macroIntent.id}
-                  onClick={() => {
-                    onChange({
-                      selectedContentIntent: macroIntent.id,
-                      selectedSubIntencion: null
-                    });
-                  }}
-                  className={`w-full text-left rounded-lg p-2 transition border ${
-                    formData.selectedContentIntent === macroIntent.id
-                      ? 'bg-green-50 border-green-200'
-                      : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {macroIntent.iconLucide && iconMap[macroIntent.iconLucide] &&
-                      React.createElement(iconMap[macroIntent.iconLucide], { className: 'w-4 h-4' })
-                    }
-                    <span className="text-xs font-semibold text-slate-900">{macroIntent.nombre}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
+            {INTENCIONES_CONTEXTO.map((macroIntent) => {
+              const isExpanded = formData.selectedContentIntent === macroIntent.id;
+              return (
+                <div key={macroIntent.id}>
+                  {/* Botón de Intención */}
+                  <button
+                    onClick={() => {
+                      onChange({
+                        selectedContentIntent: macroIntent.id,
+                        selectedSubIntencion: null
+                      });
+                    }}
+                    className={`w-full text-left rounded-lg p-3 transition border-2 ${
+                      isExpanded
+                        ? 'bg-green-50 border-green-400 ring-2 ring-green-200'
+                        : 'bg-white border-slate-200 hover:border-green-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {macroIntent.iconLucide && iconMap[macroIntent.iconLucide] &&
+                        React.createElement(iconMap[macroIntent.iconLucide], { className: 'w-5 h-5' })
+                      }
+                      <span className={`text-sm font-semibold transition ${
+                        isExpanded ? 'text-green-700' : 'text-slate-900'
+                      }`}>{macroIntent.nombre}</span>
+                    </div>
+                  </button>
 
-          {/* Sub-intenciones Expandibles */}
-          {formData.selectedContentIntent && (
-            <div className="mt-4 pt-4 border-t border-slate-200">
-              <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Selecciona Sub-intención / Enfoque del Funnel</p>
-              <div className="space-y-2">
-                {INTENCIONES_CONTEXTO.find((t) => t.id === formData.selectedContentIntent)?.subIntenciones.map(
-                  (subIntent) => (
-                    <button
-                      key={subIntent.id}
-                      onClick={() => onChange({ selectedSubIntencion: subIntent.id })}
-                      className={`w-full text-left p-2 rounded-lg border transition text-xs ${
-                        formData.selectedSubIntencion === subIntent.id
-                          ? 'border-green-500 bg-green-50'
-                          : 'border-slate-200 bg-white hover:border-green-300'
-                      }`}
-                    >
-                      <p className="font-semibold">{subIntent.nombre}</p>
-                      <p className="text-slate-500 text-[11px] mt-0.5">{subIntent.descripcion}</p>
-                    </button>
-                  )
-                )}
-              </div>
-            </div>
-          )}
+                  {/* Sub-intenciones Anidadas */}
+                  {isExpanded && (
+                    <div className="mt-2 pl-3 space-y-2">
+                      <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona sub-intención:</p>
+                      {macroIntent.subIntenciones.map((subIntent) => (
+                        <button
+                          key={subIntent.id}
+                          onClick={() => onChange({ selectedSubIntencion: subIntent.id })}
+                          className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                            formData.selectedSubIntencion === subIntent.id
+                              ? 'bg-green-100 border-green-400'
+                              : 'bg-slate-50 border-slate-200 hover:border-green-300'
+                          }`}
+                        >
+                          <p className={`text-xs font-semibold transition ${
+                            formData.selectedSubIntencion === subIntent.id ? 'text-green-700' : 'text-slate-900'
+                          }`}>{subIntent.nombre}</p>
+                          <p className="text-slate-500 text-[11px] mt-1">{subIntent.descripcion}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Tono Principal + Subtonos (Sistema Dual) */}
@@ -282,61 +285,64 @@ export default function PasoPersonalidad({
             )}
           </div>
 
-          {/* Macro Tonos como Cajetines (Buyer Personas Style) */}
-          <div className="mb-4">
+          {/* Macro Tonos con Subtonos Anidados */}
+          <div className="space-y-3">
             <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Elige Tono</p>
-            <div className="space-y-2">
-              {TONOS_CONTEXTO.map((macroTono) => (
-                <button
-                  key={macroTono.id}
-                  onClick={() => {
-                    onChange({
-                      selectedMainTone: macroTono.id,
-                      selectedTone: macroTono.id,
-                      selectedSubtone: null
-                    });
-                  }}
-                  className={`w-full text-left rounded-lg p-2 transition border ${
-                    formData.selectedMainTone === macroTono.id
-                      ? 'bg-purple-50 border-purple-200'
-                      : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {macroTono.iconLucide && iconMap[macroTono.iconLucide] &&
-                      React.createElement(iconMap[macroTono.iconLucide], { className: 'w-4 h-4' })
-                    }
-                    <span className="text-xs font-semibold text-slate-900">{macroTono.nombre}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
+            {TONOS_CONTEXTO.map((macroTono) => {
+              const isExpanded = formData.selectedMainTone === macroTono.id;
+              return (
+                <div key={macroTono.id}>
+                  {/* Botón del Tono */}
+                  <button
+                    onClick={() => {
+                      onChange({
+                        selectedMainTone: macroTono.id,
+                        selectedTone: macroTono.id,
+                        selectedSubtone: null
+                      });
+                    }}
+                    className={`w-full text-left rounded-lg p-3 transition border-2 ${
+                      isExpanded
+                        ? 'bg-purple-50 border-purple-400 ring-2 ring-purple-200'
+                        : 'bg-white border-slate-200 hover:border-purple-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {macroTono.iconLucide && iconMap[macroTono.iconLucide] &&
+                        React.createElement(iconMap[macroTono.iconLucide], { className: 'w-5 h-5' })
+                      }
+                      <span className={`text-sm font-semibold transition ${
+                        isExpanded ? 'text-purple-700' : 'text-slate-900'
+                      }`}>{macroTono.nombre}</span>
+                    </div>
+                  </button>
 
-          {/* Subtonos Expandibles */}
-          {formData.selectedMainTone && (
-            <div className="mt-4 pt-4 border-t border-slate-200">
-              <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Selecciona Subtono</p>
-              <div className="space-y-2">
-                {TONOS_CONTEXTO.find((t) => t.id === formData.selectedMainTone)?.subtonos.map(
-                  (subtono) => (
-                    <button
-                      key={subtono.id}
-                      onClick={() => onChange({ selectedSubtone: subtono.id })}
-                      className={`w-full text-left p-2 rounded-lg border transition text-xs ${
-                        formData.selectedSubtone === subtono.id
-                          ? 'bg-purple-50 border-purple-200'
-                          : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-                      }`}
-                    >
-                      <p className="text-xs font-semibold text-slate-900">{subtono.nombre}</p>
-                      <p className="text-slate-500 text-[11px] mt-0.5">{subtono.descripcion}</p>
-                    </button>
-                  )
-                )}
-              </div>
-            </div>
-          )}
+                  {/* Subtonos Anidados */}
+                  {isExpanded && (
+                    <div className="mt-2 pl-3 space-y-2">
+                      <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona subtono:</p>
+                      {macroTono.subtonos.map((subtono) => (
+                        <button
+                          key={subtono.id}
+                          onClick={() => onChange({ selectedSubtone: subtono.id })}
+                          className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                            formData.selectedSubtone === subtono.id
+                              ? 'bg-purple-100 border-purple-400'
+                              : 'bg-slate-50 border-slate-200 hover:border-purple-300'
+                          }`}
+                        >
+                          <p className={`text-xs font-semibold transition ${
+                            formData.selectedSubtone === subtono.id ? 'text-purple-700' : 'text-slate-900'
+                          }`}>{subtono.nombre}</p>
+                          <p className="text-slate-500 text-[11px] mt-1">{subtono.descripcion}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Ángulo / Enfoque Narrativo */}
