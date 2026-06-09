@@ -73,7 +73,7 @@ export default function PasoSEOGEO({
         seoSlug: sanitizeSlug(formData.seoH1)
       });
     }
-  }, [formData.seoH1]); // Genera slug automáticamente cuando H1 cambia
+  }, [formData.seoH1, formData.seoSlug, onChange]);
 
   if (!selectedClient) {
     return (
@@ -102,14 +102,16 @@ export default function PasoSEOGEO({
 
   const toggleVerified = (key: keyof typeof verified) => {
     setVerified(prev => {
-      const newVerified = { ...prev, [key]: !prev[key] };
-      // Pasar estado de verificación al padre cuando cambia
-      onChange({
-        seoFieldsVerified: JSON.stringify(newVerified)
-      } as any);
-      return newVerified;
+      return { ...prev, [key]: !prev[key] };
     });
   };
+
+  // Sincronizar estado de verificación con el padre
+  React.useEffect(() => {
+    onChange({
+      seoFieldsVerified: JSON.stringify(verified)
+    } as any);
+  }, [verified]);
 
   const h1Length = formData.seoH1.length;
   const h1Exceeded = h1Length > 60;
