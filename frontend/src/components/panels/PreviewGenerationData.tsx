@@ -88,11 +88,21 @@ export default function PreviewGenerationData({
         </div>
 
         {/* Info Box */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
           <p className="text-sm text-blue-900">
-            <strong>Nota:</strong> Este prompt será enviado a Claude AI para generar tu contenido. Haz clic en "Siguiente" para continuar con la generación.
+            <strong>Nota:</strong> Este prompt será enviado a Claude AI para generar tu contenido. Verifica que todo sea correcto antes de continuar.
           </p>
         </div>
+      </div>
+
+      {/* Footer con Botón Principal */}
+      <div className="flex-shrink-0 px-6 md:px-8 py-6 border-t border-slate-200 bg-white flex justify-end gap-3">
+        <button
+          onClick={onConfirm}
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition flex items-center gap-2 text-base shadow-sm hover:shadow-md"
+        >
+          ✨ Generar Contenido
+        </button>
       </div>
     </div>
   );
