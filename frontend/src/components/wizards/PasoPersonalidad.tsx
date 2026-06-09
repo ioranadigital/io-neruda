@@ -167,7 +167,7 @@ export default function PasoPersonalidad({
           step1Complete
             ? step2Complete
               ? 'bg-green-50 border-green-200 hover:shadow-lg'
-              : 'bg-slate-50 border-slate-200 hover:shadow-lg'
+              : 'bg-white border-slate-200 hover:shadow-lg'
             : 'bg-slate-100 border-slate-300 opacity-50 cursor-not-allowed'
         }`}>
           <div className="flex items-center justify-between gap-3 mb-4">
@@ -274,7 +274,7 @@ export default function PasoPersonalidad({
           step2Complete
             ? step3Complete
               ? 'bg-purple-50 border-purple-200 hover:shadow-lg'
-              : 'bg-slate-50 border-slate-200 hover:shadow-lg'
+              : 'bg-white border-slate-200 hover:shadow-lg'
             : 'bg-slate-100 border-slate-300 opacity-50 cursor-not-allowed'
         }`}>
           <div className="flex items-center justify-between gap-3 mb-4">
@@ -378,7 +378,7 @@ export default function PasoPersonalidad({
           step3Complete
             ? formData.selectedNarrativeAngle
               ? 'bg-slate-900 border-slate-700 hover:shadow-lg'
-              : 'bg-slate-50 border-slate-200 hover:shadow-lg'
+              : 'bg-white border-slate-200 hover:shadow-lg'
             : 'bg-slate-100 border-slate-300 opacity-50 cursor-not-allowed'
         }`}>
           <div className="flex items-center justify-between gap-3 mb-4">
