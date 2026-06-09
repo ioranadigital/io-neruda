@@ -106,6 +106,20 @@ const mockContentResults = [
   },
 ];
 
+// ===== INICIALIZAR ESTADO CON PERSISTENCIA =====
+// Cargar contentResults desde localStorage si existen, sino usar mocks
+const loadContentResultsFromStorage = (): ContentResult[] => {
+  if (typeof window === 'undefined') return mockContentResults as any;
+
+  try {
+    const stored = localStorage.getItem('io-neruda-content-results');
+    return stored ? JSON.parse(stored) : (mockContentResults as any);
+  } catch (error) {
+    console.error('Error loading content results from localStorage:', error);
+    return mockContentResults as any;
+  }
+};
+
 const initialState: GeneratorState = {
   configurations: [],
   selectedConfig: null,
@@ -117,7 +131,7 @@ const initialState: GeneratorState = {
   clients: MOCK_CLIENTS,
   currentClientId: null,
   selectedClient: null,
-  contentResults: mockContentResults as any,
+  contentResults: loadContentResultsFromStorage(),
 };
 
 function generatorReducer(state: GeneratorState, action: GeneratorAction): GeneratorState {
@@ -227,6 +241,13 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('io-neruda-clients', JSON.stringify(state.clients));
     }
   }, [state.clients]);
+
+  // Save contentResults to localStorage whenever they change (for persistence)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && state.contentResults.length > 0) {
+      localStorage.setItem('io-neruda-content-results', JSON.stringify(state.contentResults));
+    }
+  }, [state.contentResults]);
 
   const setLoading = useCallback((loading: boolean) => {
     dispatch({ type: 'SET_LOADING', payload: loading });
