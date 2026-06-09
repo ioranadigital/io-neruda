@@ -194,17 +194,37 @@ export default function PasoFormatos({
   const handleFormatToggle = (formatId: string) => {
     const currentFormats = formData.selectedFormats || {};
     const isSelected = currentFormats[formatId]?.selected;
+    const parentFormat = getParentFormat(formatId);
 
-    // Comportamiento de toggle simple: si está seleccionado, deselecciona; si no, selecciona
-    onChange({
-      selectedFormats: {
-        ...currentFormats,
-        [formatId]: {
-          ...currentFormats[formatId],
-          selected: !isSelected,
+    // Todas las categorías tienen restricción de 1 selección por formato padre
+    if (!isSelected && parentFormat) {
+      // Deseleccionar todos los sub-formatos del mismo padre
+      const siblingSubs = getSubFormatsForParent(parentFormat);
+      const updated = { ...currentFormats };
+
+      // Deseleccionar todos los hermanos
+      siblingSubs.forEach(subId => {
+        if (updated[subId]) {
+          updated[subId] = { ...updated[subId], selected: false };
+        }
+      });
+
+      // Seleccionar solo el nuevo
+      updated[formatId] = { ...currentFormats[formatId], selected: true };
+
+      onChange({ selectedFormats: updated });
+    } else if (isSelected) {
+      // Si ya está seleccionado, permitir deseleccionar
+      onChange({
+        selectedFormats: {
+          ...currentFormats,
+          [formatId]: {
+            ...currentFormats[formatId],
+            selected: false,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   const selectedCount = Object.values(formData.selectedFormats || {}).filter(
@@ -267,7 +287,10 @@ export default function PasoFormatos({
                     {/* Nivel 2: Sub-formatos (tarjetas clicables sin checkbox) */}
                     {isExpanded && (format as any).subFormats && (
                       <div className="mt-3 space-y-2 pl-2">
-                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona una opción:</p>
+                        <p className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-2">
+                          Selecciona solo una:
+                          <span className="inline-block px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded">Restringido</span>
+                        </p>
                         {(format as any).subFormats.map((sub: any) => {
                           const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
                           return (
@@ -332,7 +355,10 @@ export default function PasoFormatos({
                     {/* Nivel 2: Tipos de contenido (tarjetas clicables sin checkbox) */}
                     {isExpanded && (format as any).subFormats && (
                       <div className="mt-3 space-y-2 pl-2">
-                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona opción(es):</p>
+                        <p className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-2">
+                          Selecciona solo una:
+                          <span className="inline-block px-2 py-0.5 bg-pink-100 text-pink-700 text-xs font-bold rounded">Restringido</span>
+                        </p>
                         {(format as any).subFormats.map((sub: any) => {
                           const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
                           return (
@@ -397,7 +423,10 @@ export default function PasoFormatos({
                     {/* Nivel 2: Variantes de email (tarjetas clicables sin checkbox) */}
                     {isExpanded && (format as any).subFormats && (
                       <div className="mt-3 space-y-2 pl-2">
-                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona opción(es):</p>
+                        <p className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-2">
+                          Selecciona solo una:
+                          <span className="inline-block px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded">Restringido</span>
+                        </p>
                         {(format as any).subFormats.map((sub: any) => {
                           const subIsSelected = formData.selectedFormats?.[sub.id]?.selected || false;
                           return (
