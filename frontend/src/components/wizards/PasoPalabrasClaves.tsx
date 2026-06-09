@@ -380,14 +380,11 @@ export default function PasoPalabrasClaves({
     return true;
   };
 
-  // Asegurar que Nivel 6 siempre esté seleccionado al montar
+  // Asegurar que Nivel 6 siempre esté seleccionado por defecto
   React.useEffect(() => {
     const defaultLevel6 = getDefaultLevel6Keywords();
-    const missingLevel6 = defaultLevel6.filter((kw) => !selectedKeywords.includes(kw));
-    if (missingLevel6.length > 0 && selectedKeywords.length > 0) {
-      onKeywordChange([...selectedKeywords, ...missingLevel6]);
-    } else if (missingLevel6.length === defaultLevel6.length && selectedKeywords.length === 0) {
-      // Si no hay keywords, añade solo el Nivel 6
+    // Si no hay keywords seleccionadas, inicializar con el Nivel 6
+    if (selectedKeywords.length === 0 && defaultLevel6.length > 0) {
       onKeywordChange(defaultLevel6);
     }
   }, [selectedClient?.id]);
