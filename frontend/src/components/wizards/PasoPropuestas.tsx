@@ -4,14 +4,16 @@ import React from 'react';
 import { Client } from '@/src/types/client';
 import StepContainer from './StepContainer';
 import { BookOpen, BarChart3, Lightbulb, TrendingUp, Wrench, Zap, PenTool } from 'lucide-react';
+import { SUBCATEGORIAS_POR_PROPUESTA } from '@/src/data/incubacionPropuestas';
 
 interface PasoPropuestasProps {
   selectedClient: Client | null;
   formData: {
     name: string;
     selectedProposal: string | null;
+    subcategoriaPropuesta: string | null;
   };
-  onChange: (data: { name?: string; selectedProposal?: string | null }) => void;
+  onChange: (data: { name?: string; selectedProposal?: string | null; subcategoriaPropuesta?: string | null }) => void;
 }
 
 const CONTENT_PROPOSALS = [
@@ -20,42 +22,36 @@ const CONTENT_PROPOSALS = [
     title: 'Guía Completa',
     description: 'Un artículo profundo que cubre todos los aspectos del tema',
     icon: BookOpen,
-    color: 'blue',
   },
   {
     id: 'comparison',
     title: 'Comparativa',
     description: 'Análisis detallado entre opciones alternativas',
     icon: BarChart3,
-    color: 'purple',
   },
   {
     id: 'tips',
     title: 'Tips & Trucos',
     description: 'Lista de consejos prácticos e inmediatamente aplicables',
     icon: Lightbulb,
-    color: 'yellow',
   },
   {
     id: 'case_study',
     title: 'Caso de Estudio',
     description: 'Análisis real de cómo se logró un resultado',
     icon: TrendingUp,
-    color: 'green',
   },
   {
     id: 'tutorial',
     title: 'Tutorial Paso a Paso',
     description: 'Instrucciones detalladas para lograr algo específico',
     icon: Wrench,
-    color: 'orange',
   },
   {
     id: 'trends',
     title: 'Tendencias & Futuro',
     description: 'Análisis de tendencias emergentes y predicciones',
     icon: Zap,
-    color: 'red',
   },
 ];
 
@@ -76,71 +72,85 @@ export default function PasoPropuestas({
     <StepContainer
       title="Propuestas de Contenido"
       icon={PenTool}
-      iconColor="orange"
+      iconColor="green"
       columns={1}
       gap="medium"
     >
-      <div className="space-y-6">
-      {/* Nombre/Título del Contenido */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <label className="block text-sm font-bold text-gray-900 mb-2">
-          Nombre del Contenido (Título Tentativo)
-        </label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => onChange({ name: e.target.value })}
-          placeholder="ej: Guía Completa de SEO para Principiantes..."
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <p className="text-xs text-gray-500 mt-2">
-          Esto ayudará a la IA a contextualizar el tipo de contenido que necesitas
-        </p>
-      </div>
+      {/* Grid de 6 Columnas con Tarjetas */}
+      <div className="grid grid-cols-6 gap-4 w-full">
+        {CONTENT_PROPOSALS.map((proposal) => {
+          const Icon = proposal.icon;
+          const isSelected = formData.selectedProposal === proposal.id;
+          const subcategorias = SUBCATEGORIAS_POR_PROPUESTA[proposal.id] || [];
 
-      {/* Tipos de Propuestas */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <p className="text-sm font-bold text-gray-900 mb-4">Tipo de Propuesta de Contenido</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {CONTENT_PROPOSALS.map((proposal) => {
-            const Icon = proposal.icon;
-            const isSelected = formData.selectedProposal === proposal.id;
-            const colorClasses: Record<string, { bg: string; text: string; border: string; hoverBorder: string; selectedBorder: string; selectedBg: string }> = {
-              blue: { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200', hoverBorder: 'hover:border-blue-400', selectedBorder: 'border-blue-500', selectedBg: 'bg-blue-50' },
-              purple: { bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-purple-200', hoverBorder: 'hover:border-purple-400', selectedBorder: 'border-purple-500', selectedBg: 'bg-purple-50' },
-              yellow: { bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-yellow-200', hoverBorder: 'hover:border-yellow-400', selectedBorder: 'border-yellow-500', selectedBg: 'bg-yellow-50' },
-              green: { bg: 'bg-green-50', text: 'text-green-600', border: 'border-green-200', hoverBorder: 'hover:border-green-400', selectedBorder: 'border-green-500', selectedBg: 'bg-green-50' },
-              orange: { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-200', hoverBorder: 'hover:border-orange-400', selectedBorder: 'border-orange-500', selectedBg: 'bg-orange-50' },
-              red: { bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-200', hoverBorder: 'hover:border-red-400', selectedBorder: 'border-red-500', selectedBg: 'bg-red-50' },
-            };
-            const colors = colorClasses[proposal.color as keyof typeof colorClasses];
-            return (
-              <button
-                key={proposal.id}
-                onClick={() => onChange({ selectedProposal: proposal.id })}
-                className={`w-full text-left rounded-lg border-2 p-4 transition cursor-pointer ${
+          return (
+            <div key={proposal.id} className="flex flex-col">
+              {/* Tarjeta Individual de Propuesta */}
+              <div
+                className={`rounded-xl border p-4 transition-all duration-300 text-left flex flex-col h-full relative ${
                   isSelected
-                    ? `${colors.selectedBorder} ${colors.selectedBg} shadow-md`
-                    : `${colors.border} bg-white ${colors.hoverBorder} hover:shadow-md`
+                    ? 'border-green-400 bg-green-50 ring-2 ring-green-200 shadow-md'
+                    : 'border-slate-200 bg-white hover:bg-green-50 hover:border-green-300 hover:shadow-md cursor-pointer'
                 }`}
               >
-                <div className="flex items-start gap-3">
-                  <div className={`${colors.bg} p-2 rounded-lg flex-shrink-0`}>
-                    <Icon size={24} className={colors.text} />
+                {/* Contenedor clickeable para la propuesta */}
+                <button
+                  onClick={() => onChange({ selectedProposal: proposal.id, subcategoriaPropuesta: null })}
+                  className="flex flex-col flex-1 text-left w-full"
+                >
+                  {/* Icon */}
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 flex-shrink-0 ${
+                    isSelected ? 'bg-green-100' : 'bg-slate-100'
+                  }`}>
+                    <Icon size={20} className={isSelected ? 'text-green-600' : 'text-slate-600'} />
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{proposal.title}</p>
-                    <p className="text-xs text-gray-600 mt-1">{proposal.description}</p>
+
+                  {/* Título */}
+                  <h4 className={`font-semibold text-sm mb-1 transition ${
+                    isSelected ? 'text-green-700' : 'text-slate-900'
+                  }`}>
+                    {proposal.title}
+                  </h4>
+
+                  {/* Descripción */}
+                  <p className="text-xs text-slate-600 leading-tight flex-1">
+                    {proposal.description}
+                  </p>
+                </button>
+
+                {/* Check Arriba a la Derecha */}
+                {isSelected && (
+                  <div className="absolute top-3 right-3">
+                    <span className="text-xl font-bold text-green-600">✓</span>
                   </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-        <p className="text-xs text-gray-500 mt-4">
-          Las propuestas de contenido se adaptan automáticamente basadas en tu intención y tono
-        </p>
-      </div>
+                )}
+
+                {/* Subcategorías Dentro de la Tarjeta - Siempre Visibles */}
+                {subcategorias.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-slate-200 space-y-2">
+                    <p className="text-xs font-semibold text-slate-600 mb-2">Subcategoría:</p>
+                    {subcategorias.map((subcategoria) => (
+                      <button
+                        key={subcategoria.id}
+                        onClick={() => onChange({ selectedProposal: proposal.id, subcategoriaPropuesta: subcategoria.id })}
+                        className={`w-full text-left p-2 rounded-lg border-2 transition ${
+                          formData.subcategoriaPropuesta === subcategoria.id && isSelected
+                            ? 'bg-green-100 border-green-400'
+                            : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <p className={`text-xs font-semibold transition ${
+                          formData.subcategoriaPropuesta === subcategoria.id && isSelected ? 'text-green-700' : 'text-slate-900'
+                        }`}>{subcategoria.nombre}</p>
+                        <p className="text-slate-500 text-[10px] mt-0.5 leading-tight">{subcategoria.descripcion}</p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </StepContainer>
   );
