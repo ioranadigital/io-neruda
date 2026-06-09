@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useGenerator } from '../context/GeneratorContext';
 import { Configuration } from '../types/generator';
 
-let mockConfigurations: Configuration[] = [];
+const mockConfigurations: Configuration[] = [];
 
 export function useCreateConfiguration() {
   const { setLoading, setError, addConfiguration } = useGenerator();

@@ -97,11 +97,17 @@ PRÓXIMOS PASOS
   };
 
   return {
+    id: `content_${Date.now()}`,
     content_id: `content_${Date.now()}`,
-    client_id: clientName,
     config_id: configName,
     format: format as any,
-    content: formats[format] || formats.blog,
+    generated_text: formats[format] || formats.blog,
+    keywords_used: [],
+    tone_applied: 'professional',
+    word_count: (formats[format] || formats.blog).split(' ').length,
+    keyword_density: 0,
+    version: 1,
+    is_alternative: false,
     status: 'draft',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),

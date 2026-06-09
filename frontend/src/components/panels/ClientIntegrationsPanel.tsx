@@ -300,7 +300,7 @@ export default function ClientIntegrationsPanel({ clients }: ClientIntegrationsP
                           <AlertCircle size={20} className="text-amber-600" />
                           <div>
                             <p className="font-semibold text-amber-900">No conectado</p>
-                            <p className="text-xs text-amber-700">Haz clic en "Conectar" para configurar</p>
+                            <p className="text-xs text-amber-700">Haz clic en &quot;Conectar&quot; para configurar</p>
                           </div>
                         </>
                       )}

@@ -21,7 +21,7 @@ const MOCK_TEMPLATES: EmailTemplate[] = [
   },
 ];
 
-let mockTemplates = [...MOCK_TEMPLATES];
+const mockTemplates = [...MOCK_TEMPLATES];
 
 export function useEmailTemplates() {
   const { setLoading, setError, setEmailTemplates } = useGenerator();

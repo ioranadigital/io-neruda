@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Client } from '../../types/client';
 import { Lightbulb, RefreshCw, ChevronDown } from 'lucide-react';
 import { KEYWORD_STRUCTURE } from '../../data/keywordStructure';
+import type { Language } from '../selectors/LanguageSelector';
+import { showToast } from '../shared/Toast';
 
 export type InsightOrigin = 'direct_idea' | 'keyword_seo' | 'obsidian_drive';
 
@@ -37,6 +39,7 @@ interface PlanGeneratorInteligenteProps {
     selectedContentIntent: string | null;
     selectedMainTone: string | null;
     selectedTone: string | null;
+    language: Language;
     h1Title: string;
     h2Title: string;
     urlSlug: string;
@@ -130,6 +133,7 @@ export default function PlanGeneratorInteligente({
   const [expandedFormatOutput, setExpandedFormatOutput] = useState(true);
   const [selectedFormats, setSelectedFormats] = useState<{ [key: string]: FormatSelection }>({});
   const [subSelectorValues, setSubSelectorValues] = useState<{ [key: string]: string }>({});
+  const [language, setLanguage] = useState<Language>('es');
   const [showSaveKeywordModal, setShowSaveKeywordModal] = useState(false);
   const [pendingKeyword, setPendingKeyword] = useState('');
   const [selectedLevel, setSelectedLevel] = useState<string>('level-1-entity');
@@ -156,10 +160,14 @@ export default function PlanGeneratorInteligente({
       setSemanticElements(new Set());
       setKeywordInput('');
 
-      // Auto-select first keyword
-      const firstKeyword = selectedClient.keywords_niche?.[0];
-      if (firstKeyword) {
-        setSelectedKeywords(new Set([firstKeyword]));
+      // Auto-select all Nivel 6 keywords (Exclusiones y Restricciones)
+      const level6 = KEYWORD_STRUCTURE.find(level => level.id === 'level-6-exclude');
+      if (level6) {
+        const level6Keywords = new Set<string>();
+        level6.items.forEach(item => {
+          item.keywords.forEach(kw => level6Keywords.add(kw));
+        });
+        setSelectedKeywords(level6Keywords);
       }
     }
   }, [selectedClient?.id]);
@@ -181,6 +189,7 @@ export default function PlanGeneratorInteligente({
         selectedContentIntent,
         selectedMainTone,
         selectedTone,
+        language,
         h1Title,
         h2Title,
         urlSlug,
@@ -197,6 +206,7 @@ export default function PlanGeneratorInteligente({
     selectedContentIntent,
     selectedMainTone,
     selectedTone,
+    language,
     h1Title,
     h2Title,
     urlSlug,
@@ -210,11 +220,26 @@ export default function PlanGeneratorInteligente({
 
   const handleToggleKeyword = (keyword: string) => {
     const newSelected = new Set(selectedKeywords);
+
+    // Si ya está seleccionado, simplemente lo removemos
     if (newSelected.has(keyword)) {
       newSelected.delete(keyword);
-    } else {
-      newSelected.add(keyword);
+      setSelectedKeywords(newSelected);
+      const newInsights = generateInsights(Array.from(newSelected), selectedClient);
+      setInsights(newInsights);
+      return;
     }
+
+    // Validar si puede ser seleccionado (necesitamos recalcular disabledKeywords con la nueva selección)
+    const tempSelected = new Set([...selectedKeywords, keyword]);
+    const tempDisabled = getDisabledKeywordsFromSet(tempSelected);
+    if (tempDisabled[keyword]) {
+      showToast.error(`❌ ${tempDisabled[keyword]}`);
+      return;
+    }
+
+    // Si pasa validación, lo agregamos
+    newSelected.add(keyword);
     setSelectedKeywords(newSelected);
     const newInsights = generateInsights(Array.from(newSelected), selectedClient);
     setInsights(newInsights);
@@ -313,6 +338,121 @@ export default function PlanGeneratorInteligente({
   const selectedKeywordsArray = Array.from(selectedKeywords);
   const keywordsByLevel = getKeywordsByLevel();
 
+  // Helper function to check if keyword belongs to Level 6
+  const isLevel6Keyword = (keyword: string): boolean => {
+    const level6 = KEYWORD_STRUCTURE.find(level => level.id === 'level-6-exclude');
+    if (!level6) return false;
+    return level6.items.some(item => item.keywords.includes(keyword));
+  };
+
+  // Semantic validation engine
+  const getKeywordLevel = (keyword: string): string | null => {
+    for (const level of KEYWORD_STRUCTURE) {
+      for (const item of level.items) {
+        if (item.keywords.includes(keyword)) {
+          return level.id;
+        }
+      }
+    }
+    return null;
+  };
+
+  const getKeywordCategory = (keyword: string): string | null => {
+    for (const level of KEYWORD_STRUCTURE) {
+      for (const item of level.items) {
+        if (item.keywords.includes(keyword)) {
+          return item.id;
+        }
+      }
+    }
+    return null;
+  };
+
+  const getDisabledKeywordsFromSet = (keywordSet: Set<string>): { [key: string]: string } => {
+    const disabled: { [key: string]: string } = {};
+    const selectedArray = Array.from(keywordSet);
+
+    // Rule 1: If Branded KW is selected, disable Third-party Brand
+    const hasBrandedKW = selectedArray.some(kw => getKeywordCategory(kw) === 'branded-kw');
+    if (hasBrandedKW) {
+      KEYWORD_STRUCTURE.forEach(level => {
+        level.items.forEach(item => {
+          if (item.id === 'third-party-brand') {
+            item.keywords.forEach(kw => {
+              disabled[kw] = '🚫 Incompatible: Ya tienes Branded KW seleccionado';
+            });
+          }
+        });
+      });
+    }
+
+    // Rule 2: If any Level 5 (Long-Tail) is selected, disable Level 1 Head Terms
+    const hasLevel5 = selectedArray.some(kw => getKeywordLevel(kw) === 'level-5-longtail');
+    if (hasLevel5) {
+      KEYWORD_STRUCTURE.forEach(level => {
+        if (level.id === 'level-1-entity') {
+          level.items.forEach(item => {
+            if (item.id === 'niche-head') {
+              item.keywords.forEach(kw => {
+                disabled[kw] = '🚫 Incompatible: Long-tail activo (diferente funnel)';
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // Rule 3: If Problem/Symptom (Level 3) is selected, disable all Level 4
+    const hasProblemSymptom = selectedArray.some(kw => getKeywordCategory(kw) === 'problem-symptom');
+    if (hasProblemSymptom) {
+      KEYWORD_STRUCTURE.forEach(level => {
+        if (level.id === 'level-4-research') {
+          level.items.forEach(item => {
+            item.keywords.forEach(kw => {
+              disabled[kw] = '🚫 Incompatible: Problema/Síntoma excluye investigación comercial';
+            });
+          });
+        }
+      });
+    }
+
+    // Rule 4: Max 4 keywords total (excluding Level 6)
+    const nonLevel6Keywords = selectedArray.filter(kw => !isLevel6Keyword(kw));
+    if (nonLevel6Keywords.length >= 4) {
+      KEYWORD_STRUCTURE.forEach(level => {
+        if (level.id !== 'level-6-exclude') {
+          level.items.forEach(item => {
+            item.keywords.forEach(kw => {
+              if (!selectedArray.includes(kw) && !disabled[kw]) {
+                disabled[kw] = '🚫 Límite alcanzado: máximo 4 keywords';
+              }
+            });
+          });
+        }
+      });
+    }
+
+    // Rule 5: Max 1 Level 1 keyword (excluding Level 6)
+    const level1Count = selectedArray.filter(kw => getKeywordLevel(kw) === 'level-1-entity' && !isLevel6Keyword(kw)).length;
+    if (level1Count >= 1) {
+      KEYWORD_STRUCTURE.forEach(level => {
+        if (level.id === 'level-1-entity') {
+          level.items.forEach(item => {
+            item.keywords.forEach(kw => {
+              if (!selectedArray.includes(kw) && !disabled[kw]) {
+                disabled[kw] = '🚫 Límite: máximo 1 keyword Nivel 1';
+              }
+            });
+          });
+        }
+      });
+    }
+
+    return disabled;
+  };
+
+  const disabledKeywords = getDisabledKeywordsFromSet(selectedKeywords);
+
   return (
     <div className="w-full space-y-4">
       {/* ACORDEÓN: Plan Generator Inteligente */}
@@ -325,8 +465,7 @@ export default function PlanGeneratorInteligente({
           <div className="flex items-center gap-3">
             <Lightbulb size={24} style={{ color: '#18bdc1' }} />
             <div className="text-left">
-              <h3 className="text-lg font-bold text-gray-800">Plan Generator Inteligente</h3>
-              {selectedClient && <p className="text-xs text-gray-600 mt-0.5">Cliente: {selectedClient.name}</p>}
+              <h3 className="text-lg font-bold text-gray-800">🔍 PASO 2 : Palabras Claves del Contenido</h3>
             </div>
           </div>
           <ChevronDown
@@ -337,26 +476,26 @@ export default function PlanGeneratorInteligente({
 
         {/* Contenido del Acordeón - Grid 3 Columnas (2:1 ratio) */}
         {expandedPlan && (
-          <div className="grid grid-cols-3 gap-0">
-            {/* Columna 1-2: Investigación Semántica (2/3 del ancho) */}
-            <div className="col-span-2 p-6 space-y-3 bg-white">
-              <div className="flex items-center gap-2 sticky top-0 bg-white pb-2 border-b border-gray-200">
-                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold">1</span>
-                <label className="text-sm font-bold text-gray-800">🗝️ Investigación Semántica</label>
+          <div className="bg-white p-6 md:p-8">
+            <div className="grid grid-cols-3 gap-6">
+            {/* Columna 1-2: Seleccionar Palabras Claves */}
+            <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-4">
+              <div className="flex items-center gap-2 sticky top-0 bg-slate-50 pb-2 border-b border-slate-200 mb-4">
+                <label className="text-sm font-bold text-slate-900">Seleccionar Palabras Claves</label>
               </div>
 
               {/* Keyword Levels - Excluir Nivel 5 */}
               {selectedClient && (
-                <div className="space-y-2">
+                <div className="space-y-4">
                   {KEYWORD_STRUCTURE.filter(level => level.id !== 'level-5-longtail').map((level) => (
-                    <div key={level.id} className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+                    <div key={level.id} className="bg-white rounded-lg border border-slate-200 overflow-hidden">
                       <button
                         onClick={() => setExpandedLevel(expandedLevel === level.id ? null : level.id)}
-                        className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-100 transition"
+                        className="w-full px-3 py-2 flex items-center justify-between hover:bg-slate-50 transition"
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-lg">{level.icon}</span>
-                          <span className="text-xs font-semibold text-gray-800">{level.level}</span>
+                          <span className="text-xs font-semibold text-slate-900">{level.level}</span>
                         </div>
                         <ChevronDown
                           size={14}
@@ -365,20 +504,29 @@ export default function PlanGeneratorInteligente({
                       </button>
 
                       {expandedLevel === level.id && (
-                        <div className="p-3 border-t border-gray-200 bg-gray-50">
-                          <div className="grid grid-cols-2 gap-2">
+                        <div className="p-4 border-t border-slate-200 bg-slate-100 space-y-4">
+                          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch content-start">
                             {level.items.map((item) => (
-                              <div key={item.id} className="bg-white rounded-lg border border-gray-200 p-2.5 space-y-1.5">
-                                <p className="text-xs font-bold text-gray-800 line-clamp-2">{item.name}</p>
-                                <div className="flex flex-wrap gap-1">
+                              <div
+                                key={item.id}
+                                className="w-full bg-white rounded-xl border border-slate-300 p-4 space-y-2.5 hover:border-slate-400 transition shadow-sm"
+                              >
+                                <p className="text-xs font-bold text-slate-900 line-clamp-2">{item.name}</p>
+                                <div className="flex flex-wrap gap-2">
                                   {item.keywords.map((kw) => (
                                     <button
                                       key={kw}
                                       onClick={() => handleToggleKeyword(kw)}
-                                      className={`px-2 py-0.5 rounded text-xs transition border ${
+                                      disabled={!!disabledKeywords[kw]}
+                                      title={disabledKeywords[kw] || ''}
+                                      className={`px-3 py-1 rounded-lg text-xs font-medium transition border-2 ${
                                         selectedKeywords.has(kw)
-                                          ? 'bg-blue-500 text-white border-blue-500'
-                                          : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                                          ? isLevel6Keyword(kw)
+                                            ? 'bg-red-400 text-white border-red-500'
+                                            : 'bg-green-400 text-white border-green-500'
+                                          : disabledKeywords[kw]
+                                          ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-700 border-slate-300'
+                                          : 'bg-slate-100 text-slate-700 border-slate-300 hover:border-blue-500 hover:bg-blue-50'
                                       }`}
                                     >
                                       {kw}
@@ -396,27 +544,42 @@ export default function PlanGeneratorInteligente({
               )}
             </div>
 
-            {/* Columna 3: Refina Manualmente (1/3 del ancho) */}
-            <div className="border-l-2 border-gray-300 p-4 bg-gradient-to-br from-amber-50 to-amber-100 space-y-3 flex flex-col">
-              {/* Refina Title - Always Visible */}
-              <div className="flex items-center gap-1 sticky top-0 bg-gradient-to-r from-amber-50 to-amber-100 pb-2 border-b border-amber-200 flex-shrink-0">
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex-shrink-0">2</span>
-                <label className="text-xs font-bold text-gray-800">Refina</label>
+            {/* Columna 3: Keywords Seleccionadas */}
+            <div className="w-full bg-slate-50 border border-slate-200 pt-6 px-3 pb-3 rounded-xl space-y-2 flex flex-col">
+              {/* Keywords Seleccionadas Title - Always Visible */}
+              <div className="flex items-center gap-1 sticky top-0 bg-slate-50 pb-1 border-b border-slate-200 flex-shrink-0 mb-2">
+                <label className="text-sm font-bold text-slate-900">Keywords Seleccionadas</label>
               </div>
 
               {/* Keywords Grouped by Level */}
               {selectedClient && selectedKeywordsArray.length > 0 && (
                 <div className="space-y-2">
-                  {Object.entries(keywordsByLevel).filter(([levelId]) => levelId !== 'level-5-longtail' && levelId !== 'aggregated').map(([levelId, { level, keywords }]) => (
-                    <div key={levelId} className="bg-white rounded-lg border border-amber-200 p-2 space-y-1">
-                      <p className="text-xs font-bold text-gray-800">{level}</p>
+                  {Object.entries(keywordsByLevel)
+                    .filter(([levelId]) => levelId !== 'level-5-longtail' && levelId !== 'aggregated')
+                    .sort((a, b) => {
+                      const levelOrder: { [key: string]: number } = {
+                        'level-1-entity': 1,
+                        'level-2-segmentation': 2,
+                        'level-3-informational': 3,
+                        'level-4-research': 4,
+                        'level-6-exclude': 6,
+                      };
+                      return (levelOrder[a[0]] || 999) - (levelOrder[b[0]] || 999);
+                    })
+                    .map(([levelId, { level, keywords }]) => (
+                    <div key={levelId} className="bg-white rounded-lg border border-slate-200 p-2 space-y-1 shadow-sm">
+                      <p className="text-xs font-bold text-slate-900">{level}</p>
                       <div className="flex flex-wrap gap-1">
                         {keywords.map((kw) => (
                           <div
                             key={kw}
-                            className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 border border-amber-300 rounded text-xs"
+                            className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs ${
+                              isLevel6Keyword(kw)
+                                ? 'bg-red-200 border border-red-300 text-red-700'
+                                : 'bg-green-200 border border-green-300 text-green-700'
+                            }`}
                           >
-                            <span className="text-gray-800 line-clamp-1">{kw}</span>
+                            <span className="line-clamp-1">{kw}</span>
                             <button
                               onClick={() => handleRemoveKeyword(kw)}
                               className="text-red-500 hover:text-red-700 font-bold flex-shrink-0"
@@ -433,15 +596,15 @@ export default function PlanGeneratorInteligente({
 
               {/* Agregado en esta sesión */}
               {keywordsByLevel['aggregated'] && keywordsByLevel['aggregated'].keywords.length > 0 && (
-                <div className="bg-white rounded-lg border border-purple-200 p-2 space-y-1">
-                  <p className="text-xs font-bold text-purple-800">Agregado en esta sesión</p>
+                <div className="bg-white rounded-lg border border-slate-200 p-2 space-y-1 shadow-sm">
+                  <p className="text-xs font-bold text-slate-900">Agregado en esta sesión</p>
                   <div className="flex flex-wrap gap-1">
                     {keywordsByLevel['aggregated'].keywords.map((kw) => (
                       <div
                         key={kw}
-                        className="flex items-center gap-1 px-2 py-0.5 bg-purple-50 border border-purple-300 rounded text-xs"
+                        className="flex items-center gap-0.5 px-1.5 py-0.5 bg-green-200 border border-green-300 rounded text-xs text-green-700"
                       >
-                        <span className="text-gray-800 line-clamp-1">{kw}</span>
+                        <span className="line-clamp-1">{kw}</span>
                         <button
                           onClick={() => handleRemoveKeyword(kw)}
                           className="text-red-500 hover:text-red-700 font-bold flex-shrink-0"
@@ -456,13 +619,13 @@ export default function PlanGeneratorInteligente({
 
               {selectedClient && selectedKeywordsArray.length === 0 && (
                 <div className="text-center py-2">
-                  <p className="text-gray-400 text-xs font-medium">Sin keywords seleccionadas</p>
+                  <p className="text-slate-500 text-xs font-medium">Sin keywords seleccionadas</p>
                 </div>
               )}
 
               {/* Input Nueva Keyword - Always Visible */}
-              <div className="flex gap-1 flex-col pt-2 border-t border-amber-200">
-                <label className="text-xs font-semibold text-gray-800">➕ Agregar Keyword Personalizado</label>
+              <div className="flex gap-1 flex-col pt-1 border-t border-slate-200">
+                <label className="text-xs font-semibold text-slate-900">➕ Agregar Keyword Personalizado</label>
                 <input
                   type="text"
                   value={keywordInput}
@@ -474,7 +637,7 @@ export default function PlanGeneratorInteligente({
                     }
                   }}
                   placeholder="Escribe una keyword personalizada..."
-                  className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-amber-500"
+                  className="flex-1 px-2 py-1 border border-slate-300 rounded text-xs text-slate-900 bg-white focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                   onClick={() => {
@@ -483,18 +646,19 @@ export default function PlanGeneratorInteligente({
                       setShowSaveKeywordModal(true);
                     }
                   }}
-                  className="px-2 py-1 bg-amber-500 text-white rounded hover:bg-amber-600 transition text-xs font-medium"
+                  className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs font-medium"
                 >
                   Agregar
                 </button>
               </div>
             </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* PASO 2: Estrategia, Tono y Enfoque - Acordeón */}
-      {selectedClient && selectedKeywordsArray.length > 0 && (
+      {/* PASO 1: Estrategia, Tono y Enfoque - Acordeón */}
+      {selectedClient && (
         <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
           {/* Header del Acordeón */}
           <button
@@ -502,8 +666,8 @@ export default function PlanGeneratorInteligente({
             className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 transition border-b border-gray-300"
           >
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold">2</span>
-              <h3 className="text-lg font-bold text-gray-800">Estrategia, Tono y Enfoque (Personalidad)</h3>
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold">1</span>
+              <h3 className="text-lg font-bold text-gray-800">PASO 1 : Estrategia, Tono y Enfoque (Personalidad)</h3>
             </div>
             <ChevronDown
               size={20}
@@ -1069,7 +1233,6 @@ export default function PlanGeneratorInteligente({
             className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-green-50 to-teal-50 hover:from-green-100 hover:to-teal-100 transition border-b border-gray-300"
           >
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold">5</span>
               <h3 className="text-lg font-bold text-gray-800">📝 Formato de Salida de Contenido</h3>
             </div>
             <ChevronDown
@@ -1081,7 +1244,43 @@ export default function PlanGeneratorInteligente({
           {/* Contenido del Acordeón */}
           {expandedFormatOutput && (
             <div className="px-6 py-4 space-y-6">
-              <p className="text-sm text-gray-600">Selecciona los formatos en los que deseas generar el contenido. Elige entre 4 categorías principales:</p>
+              {/* Selector de Idiomas */}
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">🌍</span>
+                  <h4 className="font-semibold text-gray-800 text-sm">Idioma del Contenido</h4>
+                </div>
+                <div className="grid grid-cols-6 gap-2">
+                  {[
+                    { code: 'es' as Language, label: '🇪🇸', name: 'Español' },
+                    { code: 'en' as Language, label: '🇬🇧', name: 'English' },
+                    { code: 'pt' as Language, label: '🇵🇹', name: 'Português' },
+                    { code: 'fr' as Language, label: '🇫🇷', name: 'Français' },
+                    { code: 'de' as Language, label: '🇩🇪', name: 'Deutsch' },
+                    { code: 'it' as Language, label: '🇮🇹', name: 'Italiano' },
+                  ].map(({ code, label, name }) => (
+                    <label
+                      key={code}
+                      className="flex flex-col items-center gap-1 p-2 rounded cursor-pointer transition text-xs"
+                      style={{
+                        backgroundColor: language === code ? '#dbeafe' : 'white',
+                        border: language === code ? '2px solid #2563eb' : '1px solid #e2e8f0',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="language"
+                        value={code}
+                        checked={language === code}
+                        onChange={() => setLanguage(code)}
+                        className="w-3 h-3 cursor-pointer"
+                      />
+                      <span className="text-lg">{label}</span>
+                      <span className="text-gray-600 text-center font-medium">{name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
               {/* 4 Categorías de Formatos */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1377,66 +1576,6 @@ export default function PlanGeneratorInteligente({
         </div>
       )}
 
-      {/* PASO 6: Origen del Insight + SEO Local */}
-      {selectedClient && selectedKeywordsArray.length > 0 && (
-        <div className="space-y-4 pt-2 border-t border-gray-200">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">6</span>
-            <label className="text-sm font-bold text-gray-800">⚙️ Configuración Final</label>
-          </div>
-
-          {/* Origen del Insight */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">Origen del Insight</label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { value: 'direct_idea' as const, label: '💡 Idea Directa', desc: 'Idea del cliente' },
-                { value: 'keyword_seo' as const, label: '🔍 Keyword SEO', desc: 'Research SEO' },
-                { value: 'obsidian_drive' as const, label: '📚 Base Conocimiento', desc: 'Investigación propia' },
-              ].map(({ value, label, desc }) => (
-                <button
-                  key={value}
-                  onClick={() => onInsightOriginChange(value)}
-                  className={`p-3 rounded-lg border-2 transition text-center ${
-                    insightOrigin === value
-                      ? 'border-purple-500 bg-purple-50'
-                      : 'border-gray-200 bg-white hover:border-gray-300'
-                  }`}
-                >
-                  <p className="font-semibold text-sm text-gray-800">{label}</p>
-                  <p className="text-xs text-gray-600 mt-1">{desc}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Enfoque Geográfico Local */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-800">Enfoque Geográfico Local</label>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => onLocalGeoToggle(!localGeoEnabled)}
-                className={`px-4 py-2 rounded-lg border-2 transition font-medium text-sm ${
-                  localGeoEnabled
-                    ? 'border-purple-500 bg-purple-50 text-purple-700'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                }`}
-              >
-                {localGeoEnabled ? '✓ Aplicar SEO Local' : 'SEO Local (Deshabilitado)'}
-              </button>
-            </div>
-            {localGeoEnabled && (
-              <input
-                type="text"
-                value={localGeoValue}
-                onChange={(e) => onLocalGeoValueChange(e.target.value)}
-                placeholder="Ej: Madrid, Barcelona, Buenos Aires"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
-              />
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Modal: Guardar Keyword en Cliente */}
       {showSaveKeywordModal && (
@@ -1448,7 +1587,7 @@ export default function PlanGeneratorInteligente({
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-4 w-96">
             <h3 className="text-base font-bold text-gray-800 mb-1">Agregar Keyword</h3>
             <p className="text-xs text-gray-600 mb-3">
-              <span className="font-semibold text-amber-700">"{pendingKeyword}"</span>
+              <span className="font-semibold text-amber-700">&quot;{pendingKeyword}&quot;</span>
             </p>
 
             <div className="space-y-2 mb-4">

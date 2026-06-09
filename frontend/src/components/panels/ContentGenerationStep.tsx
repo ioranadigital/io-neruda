@@ -55,7 +55,7 @@ export default function ContentGenerationStep({
   return (
     <div className="bg-white rounded-lg border border-slate-200 p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">PASO 7 - Generación de Contenido</h2>
+        <h2 className="text-2xl font-bold text-slate-900">✨ PASO 7: Contenido Generado</h2>
         {step === 'complete' && !isGenerating && (
           <button
             onClick={onClose}
@@ -96,7 +96,15 @@ export default function ContentGenerationStep({
 
           {error && (
             <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded">
-              <p className="text-sm text-red-700">{error}</p>
+              <p className="text-sm text-red-700 mb-3">{error}</p>
+              {error.includes('rate limited') && (
+                <button
+                  onClick={onRegenerate}
+                  className="text-xs px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition"
+                >
+                  🔄 Reintentar en 30s
+                </button>
+              )}
             </div>
           )}
         </div>

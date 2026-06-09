@@ -2,6 +2,12 @@ import { PromptRenderData } from '@/src/types/aiGeneration';
 
 const PROMPT_TEMPLATE = `# 🎯 PROMPT DEFINITIVO PARA GENERACIÓN DE CONTENIDO
 
+## ⚠️ IDIOMA DE SALIDA
+
+**TODO el contenido debe generarse en: {OUTPUT_LANGUAGE}**
+
+Responde en {OUTPUT_LANGUAGE} solamente. No mezcles idiomas. Asegúrate de que toda la salida (metadata, content, conclusiones) esté en {OUTPUT_LANGUAGE}.
+
 ## INSTRUCCIÓN PRINCIPAL
 
 Eres un especialista en creación de contenido de alto impacto. Tu objetivo es generar contenido que NO SOLO rankee en SEO, sino que VENDA, INSPIRE y GENERE ACCIÓN en la audiencia objetivo.

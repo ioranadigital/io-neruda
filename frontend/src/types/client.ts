@@ -40,6 +40,7 @@ export interface Client {
   // Content & SEO
   keywords_niche?: string[];
   keywords_longtail?: string[];
+  keywords_producto?: string[];
   content_pillars?: string[];
   forbidden_keywords: string[];
   publication_frequency?: string;
@@ -84,6 +85,18 @@ export interface Client {
   email_platform?: string;
   integrations?: string[];
   tech_stack?: string;
+
+  // Publishing Integrations
+  linkedin_connected?: boolean;
+  linkedin_profile_id?: string;
+  wordpress_connected?: boolean;
+  wordpress_url?: string;
+  wordpress_username?: string;
+  publishing_integrations?: Array<{
+    platform: 'linkedin' | 'wordpress';
+    connected: boolean;
+    last_sync?: string;
+  }>;
 
   // Metrics & KPIs
   main_objective?: string;
@@ -140,6 +153,7 @@ export interface ClientCreateInput {
   forbidden_keywords?: string[];
   keywords_niche?: string[];
   keywords_longtail?: string[];
+  keywords_producto?: string[];
   content_pillars?: string[];
   publication_frequency?: string;
   supported_languages?: string[];
@@ -250,4 +264,9 @@ export interface KeywordsHierarchy {
   // Nivel 5: Keywords de Larga Cola
   level5_longtail_informational?: string[];
   level5_longtail_transactional?: string[];
+
+  // Nivel 6: Exclusiones y Restricciones
+  level6_banned_words?: string[];
+  level6_banned_tones?: string[];
+  level6_competing_keywords?: string[];
 }

@@ -16,6 +16,7 @@ export interface GeneratorFormData {
   selectedContentIntent?: string | null;
   selectedMainTone?: string | null;
   selectedTone?: string | null;
+  language?: string;
   h1Title?: string;
   h2Title?: string;
   urlSlug?: string;
@@ -62,7 +63,22 @@ export function buildPromptData(
   // Get tone from formData
   const tone = formData.selectedTone || formData.selectedMainTone || formData.tone || 'professional';
 
+  // Map language codes to full names for the prompt
+  const languageNames: Record<string, string> = {
+    es: 'Spanish',
+    en: 'English',
+    pt: 'Portuguese',
+    fr: 'French',
+    de: 'German',
+    it: 'Italian',
+  };
+
+  const outputLanguage = languageNames[formData.language || 'es'] || 'Spanish';
+
   return {
+    // Output language
+    outputLanguage,
+
     // Client context
     clientName: selectedClient.name,
     clientUsp: selectedClient.unique_proposition || 'We provide value to our customers',

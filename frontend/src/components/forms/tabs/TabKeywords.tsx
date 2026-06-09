@@ -4,6 +4,105 @@ import React, { useState } from 'react';
 import { Client } from '@/src/types/client';
 import { Plus, X } from 'lucide-react';
 
+interface KeywordSectionProps {
+  section: {
+    key: string;
+    name: string;
+    description: string;
+    example: string;
+  };
+  keywords: string[];
+  isExpanded: boolean;
+  onToggle: (key: string) => void;
+  onAdd: (key: string, keyword: string) => void;
+  onRemove: (key: string, index: number) => void;
+}
+
+function KeywordSection({
+  section,
+  keywords,
+  isExpanded,
+  onToggle,
+  onAdd,
+  onRemove,
+}: KeywordSectionProps) {
+  const [inputValue, setInputValue] = useState('');
+
+  return (
+    <div key={section.key} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <button
+        onClick={() => onToggle(section.key)}
+        className="w-full px-4 py-3 flex items-start justify-between hover:bg-gray-50 transition"
+      >
+        <div className="text-left">
+          <p className="font-semibold text-gray-800">{section.name}</p>
+          <p className="text-xs text-gray-600 mt-1">{section.description}</p>
+        </div>
+        <span className="text-xs font-medium text-blue-600 ml-2 flex-shrink-0">
+          {keywords.length} keywords
+        </span>
+      </button>
+
+      {isExpanded && (
+        <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 space-y-3">
+          <div className="text-xs text-gray-600 p-2 bg-white rounded border border-gray-200">
+            <p className="font-semibold mb-1">📌 Ejemplo:</p>
+            <p>{section.example}</p>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  onAdd(section.key, inputValue);
+                  setInputValue('');
+                }
+              }}
+              placeholder="Escribir y presionar Enter"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              onClick={() => {
+                onAdd(section.key, inputValue);
+                setInputValue('');
+              }}
+              className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-1"
+            >
+              <Plus size={16} />
+            </button>
+          </div>
+
+          {keywords.length > 0 && (
+            <div className="space-y-2">
+              {keywords.map((kw, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between bg-white p-2 rounded border border-gray-200"
+                >
+                  <span className="text-sm text-gray-800">{kw}</span>
+                  <button
+                    onClick={() => onRemove(section.key, idx)}
+                    className="p-1 hover:bg-red-100 rounded transition"
+                  >
+                    <X size={16} className="text-red-600" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {keywords.length === 0 && (
+            <p className="text-xs text-gray-500 text-center py-2">Sin keywords aún</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface TabKeywordsProps {
   formData: Partial<Client>;
   onChange: (field: string, value: any) => void;
@@ -124,6 +223,30 @@ const KEYWORD_LEVELS = [
       },
     ],
   },
+  {
+    level: 6,
+    title: '🚫 Nivel 6: Exclusiones y Restricciones',
+    sections: [
+      {
+        key: 'level6_banned_words',
+        name: 'Palabras Prohibidas',
+        description: 'Términos y frases que NO deben aparecer en el contenido. Evita clichés y palabras gastadas.',
+        example: 'En conclusión, Es crucial, Sumérgete, imprescindible, revolucionario',
+      },
+      {
+        key: 'level6_banned_tones',
+        name: 'Tonos Prohibidos',
+        description: 'Estilos de escritura que NO encajan con la marca. Evita inconsistencia de voz.',
+        example: 'clickbait, sensacionalista, spam, robótico, demasiado técnico',
+      },
+      {
+        key: 'level6_competing_keywords',
+        name: 'Keywords de Competencia a Evitar',
+        description: 'Búsquedas donde nuestros competidores dominan. Enfocarse en oportunidades propias.',
+        example: 'Amazon barbacoa, Leroy Merlin parrilla, Carrefour accesorios',
+      },
+    ],
+  },
 ];
 
 export default function TabKeywords({ formData, onChange }: TabKeywordsProps) {
@@ -170,85 +293,17 @@ export default function TabKeywords({ formData, onChange }: TabKeywordsProps) {
             {levelGroup.sections.map((section) => {
               const isExpanded = expandedSections[section.key];
               const keywords = (keywordsHierarchy[section.key as keyof typeof keywordsHierarchy] || []) as string[];
-              const [inputValue, setInputValue] = React.useState('');
 
               return (
-                <div key={section.key} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                  {/* Header */}
-                  <button
-                    onClick={() => toggleSection(section.key)}
-                    className="w-full px-4 py-3 flex items-start justify-between hover:bg-gray-50 transition"
-                  >
-                    <div className="text-left">
-                      <p className="font-semibold text-gray-800">{section.name}</p>
-                      <p className="text-xs text-gray-600 mt-1">{section.description}</p>
-                    </div>
-                    <span className="text-xs font-medium text-blue-600 ml-2 flex-shrink-0">
-                      {keywords.length} keywords
-                    </span>
-                  </button>
-
-                  {/* Content */}
-                  {isExpanded && (
-                    <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 space-y-3">
-                      {/* Example */}
-                      <div className="text-xs text-gray-600 p-2 bg-white rounded border border-gray-200">
-                        <p className="font-semibold mb-1">📌 Ejemplo:</p>
-                        <p>{section.example}</p>
-                      </div>
-
-                      {/* Input */}
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                              addKeyword(section.key, inputValue);
-                              setInputValue('');
-                            }
-                          }}
-                          placeholder="Escribir y presionar Enter"
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <button
-                          onClick={() => {
-                            addKeyword(section.key, inputValue);
-                            setInputValue('');
-                          }}
-                          className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-1"
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
-
-                      {/* Keywords List */}
-                      {keywords.length > 0 && (
-                        <div className="space-y-2">
-                          {keywords.map((kw, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center justify-between bg-white p-2 rounded border border-gray-200"
-                            >
-                              <span className="text-sm text-gray-800">{kw}</span>
-                              <button
-                                onClick={() => removeKeyword(section.key, idx)}
-                                className="p-1 hover:bg-red-100 rounded transition"
-                              >
-                                <X size={16} className="text-red-600" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {keywords.length === 0 && (
-                        <p className="text-xs text-gray-500 text-center py-2">Sin keywords aún</p>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <KeywordSection
+                  key={section.key}
+                  section={section}
+                  keywords={keywords}
+                  isExpanded={isExpanded}
+                  onToggle={toggleSection}
+                  onAdd={addKeyword}
+                  onRemove={removeKeyword}
+                />
               );
             })}
           </div>

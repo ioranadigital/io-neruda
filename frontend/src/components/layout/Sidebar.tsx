@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Zap, Sparkles, Users, Settings, BarChart3, FileText, Bolt, HelpCircle, Map
+  Zap, Sparkles, Users, Settings, BarChart3, FileText, Bolt, HelpCircle, Map, Archive
 } from 'lucide-react';
 
 const NAV_SECTIONS = [
@@ -18,6 +18,7 @@ const NAV_SECTIONS = [
     title: 'Gestión',
     items: [
       { href: '/clients', icon: Users, label: 'Clientes', desc: 'Fichas y perfiles' },
+      { href: '/contenidos', icon: Archive, label: 'Contenidos', desc: 'Generados y guardados' },
       { href: '/templates', icon: FileText, label: 'Plantillas', desc: 'Contenidos reutilizables' },
     ]
   },

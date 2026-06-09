@@ -109,7 +109,7 @@ export default function PlanGeneratorPanel({
         secondaryKeywords: '',
         objective: '',
         contentIntent: 'educational',
-        tone: selectedClient.default_tone || 'professional',
+        tone: (selectedClient.default_tone as any) || 'professional',
         differentiator: selectedClient.unique_proposition || '',
         h2Sections: [],
       });
@@ -123,8 +123,8 @@ export default function PlanGeneratorPanel({
       targetKeyword: insight.suggestedKeywords[0] || '',
       secondaryKeywords: insight.suggestedKeywords.slice(1).join(', '),
       objective: insight.description,
-      contentIntent: insight.intent,
-      tone: selectedClient?.default_tone || 'professional',
+      contentIntent: (insight.intent as any) || 'educational',
+      tone: (selectedClient?.default_tone as any) || 'professional',
       differentiator: selectedClient?.unique_proposition || '',
       h2Sections: insight.contentPillars.slice(0, 3),
     });

@@ -18,6 +18,7 @@ type GeneratorAction =
   | { type: 'SET_EMAIL_TEMPLATES'; payload: EmailTemplate[] }
   | { type: 'SET_CLIENTS'; payload: Client[] }
   | { type: 'ADD_CLIENT'; payload: Client }
+  | { type: 'DELETE_CLIENT'; payload: string }
   | { type: 'SELECT_CLIENT'; payload: Client | null }
   | { type: 'UPDATE_CLIENT'; payload: Client }
   | { type: 'ADD_CUSTOM_KEYWORD_TO_CLIENT'; payload: { clientId: string; keyword: string } }
@@ -114,8 +115,8 @@ const initialState: GeneratorState = {
   isLoading: false,
   error: null,
   clients: MOCK_CLIENTS,
-  currentClientId: MOCK_CLIENTS[0]?.id || null,
-  selectedClient: MOCK_CLIENTS[0] || null,
+  currentClientId: null,
+  selectedClient: null,
   contentResults: mockContentResults as any,
 };
 
@@ -148,6 +149,12 @@ function generatorReducer(state: GeneratorState, action: GeneratorAction): Gener
       return { ...state, clients: action.payload };
     case 'ADD_CLIENT':
       return { ...state, clients: [...state.clients, action.payload] };
+    case 'DELETE_CLIENT':
+      return {
+        ...state,
+        clients: state.clients.filter(c => c.id !== action.payload),
+        selectedClient: state.selectedClient?.id === action.payload ? null : state.selectedClient,
+      };
     case 'SELECT_CLIENT':
       return { ...state, selectedClient: action.payload, currentClientId: action.payload?.id || null };
     case 'UPDATE_CLIENT':
@@ -201,6 +208,7 @@ interface GeneratorContextType extends GeneratorState {
   setEmailTemplates: (templates: EmailTemplate[]) => void;
   setClients: (clients: Client[]) => void;
   addClient: (client: Client) => void;
+  deleteClient: (clientId: string) => void;
   selectClient: (client: Client | null) => void;
   updateClient: (client: Client) => void;
   addCustomKeywordToClient: (clientId: string, keyword: string) => void;
@@ -268,6 +276,10 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'ADD_CLIENT', payload: client });
   }, []);
 
+  const deleteClient = useCallback((clientId: string) => {
+    dispatch({ type: 'DELETE_CLIENT', payload: clientId });
+  }, []);
+
   const selectClient = useCallback((client: Client | null) => {
     dispatch({ type: 'SELECT_CLIENT', payload: client });
   }, []);
@@ -303,6 +315,7 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     setEmailTemplates,
     setClients,
     addClient,
+    deleteClient,
     selectClient,
     updateClient,
     addCustomKeywordToClient,

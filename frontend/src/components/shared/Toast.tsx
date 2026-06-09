@@ -5,6 +5,7 @@ import toast, { Toaster, Toast as ToastType } from 'react-hot-toast';
 
 export function ToastProvider() {
   return (
+    // @ts-expect-error - Toaster type compatibility
     <Toaster
       position="top-right"
       reverseOrder={false}

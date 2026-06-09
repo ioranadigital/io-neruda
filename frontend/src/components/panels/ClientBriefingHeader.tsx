@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Client } from '@/src/types/client';
-import { Globe, Zap, Languages, Radio, Building2, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { Globe, Zap, Languages, Radio, Building2, ChevronDown, ChevronUp, Users, FileText, Mail, Briefcase, Image, Video } from 'lucide-react';
 
 interface ClientBriefingHeaderProps {
   selectedClient: Client | null;
@@ -20,13 +20,13 @@ export default function ClientBriefingHeader({
   const getEnabledChannels = (): string[] => {
     if (!selectedClient) return [];
     const channels: string[] = [];
-    if (selectedClient.channel_blog) channels.push('📝 Blog');
-    if (selectedClient.channel_email) channels.push('📧 Email');
-    if (selectedClient.channel_linkedin) channels.push('💼 LinkedIn');
-    if (selectedClient.channel_instagram) channels.push('📸 Instagram');
-    if (selectedClient.channel_twitter) channels.push('𝕏 Twitter');
-    if (selectedClient.channel_tiktok) channels.push('🎬 TikTok');
-    if (selectedClient.channel_youtube) channels.push('▶️ YouTube');
+    if (selectedClient.channel_blog) channels.push('Blog');
+    if (selectedClient.channel_email) channels.push('Email');
+    if (selectedClient.channel_linkedin) channels.push('LinkedIn');
+    if (selectedClient.channel_instagram) channels.push('Instagram');
+    if (selectedClient.channel_twitter) channels.push('Twitter');
+    if (selectedClient.channel_tiktok) channels.push('TikTok');
+    if (selectedClient.channel_youtube) channels.push('YouTube');
     return channels;
   };
 

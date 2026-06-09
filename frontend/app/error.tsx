@@ -10,14 +10,23 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <html>
-      <body>
-        <div style={{ padding: '20px', fontFamily: 'system-ui' }}>
-          <h1>Error</h1>
-          <p>{error.message || 'Ocurrió un error'}</p>
-          <button onClick={() => reset()}>Reintentar</button>
-        </div>
-      </body>
-    </html>
+    <div style={{ padding: '20px', fontFamily: 'system-ui', textAlign: 'center' }}>
+      <h1>⚠️ Ocurrió un error</h1>
+      <p style={{ color: '#666' }}>{error.message || 'Algo salió mal'}</p>
+      <button
+        onClick={() => reset()}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#2563eb',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          marginTop: '10px'
+        }}
+      >
+        Reintentar
+      </button>
+    </div>
   );
 }

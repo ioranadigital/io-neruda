@@ -1,6 +1,7 @@
 export type GenerationStep = 'idle' | 'preparing' | 'generating' | 'validating' | 'complete' | 'error';
 
 export interface PromptRenderData {
+  outputLanguage: string;
   clientName: string;
   clientUsp: string;
   brandVoice: string;

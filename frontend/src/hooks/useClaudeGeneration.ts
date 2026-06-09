@@ -28,9 +28,8 @@ export function useClaudeGeneration(): UseClaudeGenerationReturn {
     try {
       setStep('generating');
 
-      const request: ClaudeApiRequest = {
+      const request = {
         prompt,
-        model: process.env.NEXT_PUBLIC_CLAUDE_MODEL || 'claude-3-5-sonnet-20241022',
         maxTokens: 4000,
         systemPrompt: `You are an expert content creator. Generate content that is high-quality,
           engaging, and optimized for both search engines and human readers. Always return valid JSON.`,
@@ -44,6 +43,11 @@ export function useClaudeGeneration(): UseClaudeGenerationReturn {
 
       if (!response.ok) {
         const errorData = await response.json();
+
+        if (response.status === 429) {
+          throw new Error('API rate limited. Please wait a moment and try again.');
+        }
+
         throw new Error(errorData.error || 'Failed to generate content');
       }
 
