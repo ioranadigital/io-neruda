@@ -10,7 +10,7 @@ import StepContainer from './StepContainer';
 interface PasoPersonalidadProps {
   selectedClient: Client | null;
   formData: {
-    targetAudience: string; // Nombre del buyer persona seleccionado
+    targetAudience: string;
     selectedContentIntent: string | null;
     selectedSubIntencion: string | null;
     selectedMainTone: string | null;
@@ -51,7 +51,6 @@ const NARRATIVE_ANGLES = [
   { id: 'storytelling', label: 'Storytelling', desc: 'Narrativa emocional', iconLucide: 'BookMarked' },
 ];
 
-// Mapeo de iconLucide a componentes
 const iconMap: Record<string, any> = {
   BookOpen,
   ShoppingCart,
@@ -74,6 +73,11 @@ export default function PasoPersonalidad({
 }: PasoPersonalidadProps) {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
+  // Condiciones para habilitar cada paso
+  const step1Complete = !!formData.targetAudience;
+  const step2Complete = step1Complete && formData.selectedContentIntent && formData.selectedSubIntencion;
+  const step3Complete = step2Complete && formData.selectedMainTone && formData.selectedSubtone;
+
   if (!selectedClient) {
     return (
       <div className="text-center py-12">
@@ -91,12 +95,8 @@ export default function PasoPersonalidad({
       gap="medium"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Público Objetivo - Buyer Persona Selection */}
-        <div className={`rounded-xl border p-6 hover:shadow-lg transition ${
-          formData.targetAudience
-            ? 'bg-white border-blue-200 ring-2 ring-blue-100'
-            : 'bg-white border-slate-200'
-        }`}>
+        {/* PASO 1: Público Objetivo - SIEMPRE ACTIVO (AZUL) */}
+        <div className="bg-blue-50 rounded-xl border border-blue-200 p-6 hover:shadow-lg transition">
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -107,20 +107,22 @@ export default function PasoPersonalidad({
             {formData.targetAudience ? (
               <span className="text-xl font-bold text-blue-600">✓</span>
             ) : (
-              <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">OBLIGATORIO</span>
+              <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded">PASO 1</span>
             )}
           </div>
-          <p className="text-xs text-slate-500 mb-4 leading-relaxed">Selecciona el perfil de audiencia que mejor representa a tu cliente ideal.</p>
+          {!formData.targetAudience && (
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs text-red-600">Falta seleccionar</span>
+            </div>
+          )}
 
-          {/* Información del cliente */}
           {selectedClient?.target_audience && (
-            <div className="mb-4 pb-4 border-b border-slate-200">
+            <div className="mb-4 pb-4 border-b border-blue-200">
               <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Del cliente</p>
               <p className="text-xs text-slate-900 font-medium">{selectedClient.target_audience}</p>
             </div>
           )}
 
-          {/* Buyer Personas - Selección Única */}
           {selectedClient?.buyer_personas_list && selectedClient.buyer_personas_list.length > 0 ? (
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wide mb-3 font-semibold">Selecciona un Buyer Persona</p>
@@ -131,8 +133,8 @@ export default function PasoPersonalidad({
                     onClick={() => onChange({ targetAudience: persona.name })}
                     className={`w-full text-left rounded-lg p-3 transition border-2 ${
                       formData.targetAudience === persona.name
-                        ? 'bg-blue-50 border-blue-400 ring-2 ring-blue-200'
-                        : 'bg-slate-50 border-slate-200 hover:border-blue-300'
+                        ? 'bg-blue-100 border-blue-400'
+                        : 'bg-white border-slate-200 hover:border-blue-300'
                     }`}
                   >
                     <p className={`text-xs font-semibold transition ${
@@ -147,7 +149,7 @@ export default function PasoPersonalidad({
                 ))}
               </div>
               {formData.targetAudience && (
-                <div className="mt-4 pt-4 border-t border-slate-200">
+                <div className="mt-4 pt-4 border-t border-blue-200">
                   <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Seleccionado</p>
                   <p className="text-xs font-semibold text-blue-700">✓ {formData.targetAudience}</p>
                 </div>
@@ -160,41 +162,45 @@ export default function PasoPersonalidad({
           )}
         </div>
 
-        {/* Intención + Sub-intención (Sistema Dual) */}
-        <div className={`rounded-xl border p-6 hover:shadow-lg transition col-span-1 ${
-          formData.selectedContentIntent && formData.selectedSubIntencion
-            ? 'bg-white border-green-200 ring-2 ring-green-100'
-            : 'bg-white border-slate-200'
+        {/* PASO 2: Intención del Funnel - Habilitado solo si PASO 1 completo */}
+        <div className={`rounded-xl border p-6 transition col-span-1 ${
+          step1Complete
+            ? step2Complete
+              ? 'bg-green-50 border-green-200 hover:shadow-lg'
+              : 'bg-slate-50 border-slate-200 hover:shadow-lg'
+            : 'bg-slate-100 border-slate-300 opacity-50 cursor-not-allowed'
         }`}>
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-                <Lightbulb size={24} className="text-green-600" />
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                step1Complete ? 'bg-green-100' : 'bg-slate-200'
+              }`}>
+                <Lightbulb size={24} className={step1Complete ? 'text-green-600' : 'text-slate-500'} />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900">Intención del Funnel</h3>
+              <h3 className={`text-lg font-semibold ${step1Complete ? 'text-slate-900' : 'text-slate-500'}`}>Intención del Funnel</h3>
             </div>
-            {formData.selectedContentIntent && formData.selectedSubIntencion ? (
+            {step2Complete ? (
               <span className="text-xl font-bold text-green-600">✓</span>
             ) : (
-              <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">OBLIGATORIO</span>
+              <span className={`text-xs font-bold px-2 py-1 rounded ${
+                step1Complete
+                  ? 'text-green-600 bg-green-100'
+                  : 'text-slate-500 bg-slate-200'
+              }`}>PASO 2</span>
             )}
           </div>
-          {(!formData.selectedContentIntent || !formData.selectedSubIntencion) && (
+          {step1Complete && (!formData.selectedContentIntent || !formData.selectedSubIntencion) && (
             <div className="flex items-center gap-2 mb-3">
-              {!formData.selectedContentIntent && (
-                <span className="text-xs text-red-600">Falta seleccionar intención</span>
-              )}
-              {formData.selectedContentIntent && !formData.selectedSubIntencion && (
-                <span className="text-xs text-red-600">Falta seleccionar sub-intención</span>
-              )}
+              <span className="text-xs text-red-600">Falta completar</span>
             </div>
           )}
-          {formData.selectedContentIntent && formData.selectedSubIntencion && (
-            <p className="text-xs text-slate-500 mb-4 leading-relaxed">Define el propósito del contenido y el enfoque específico dentro del funnel de ventas.</p>
+          {!step1Complete && (
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs text-slate-500">Completa el Paso 1 primero</span>
+            </div>
           )}
 
-          {/* Información del cliente */}
-          {selectedClient?.content_pillars && selectedClient.content_pillars.length > 0 && (
+          {selectedClient?.content_pillars && selectedClient.content_pillars.length > 0 && step1Complete && (
             <div className="mb-4 pb-4 border-b border-slate-200">
               <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Pilares del cliente</p>
               <div className="space-y-1">
@@ -205,220 +211,271 @@ export default function PasoPersonalidad({
             </div>
           )}
 
-          {/* Macro Intenciones con Sub-intenciones Anidadas */}
-          <div className="space-y-3">
-            <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Elige Intención</p>
-            {INTENCIONES_CONTEXTO.map((macroIntent) => {
-              const isExpanded = formData.selectedContentIntent === macroIntent.id;
-              return (
-                <div key={macroIntent.id}>
-                  {/* Botón de Intención */}
-                  <button
-                    onClick={() => {
-                      onChange({
-                        selectedContentIntent: macroIntent.id,
-                        selectedSubIntencion: null
-                      });
-                    }}
-                    className={`w-full text-left rounded-lg p-3 transition border-2 ${
-                      isExpanded
-                        ? 'bg-green-50 border-green-400 ring-2 ring-green-200'
-                        : 'bg-white border-slate-200 hover:border-green-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {macroIntent.iconLucide && iconMap[macroIntent.iconLucide] &&
-                        React.createElement(iconMap[macroIntent.iconLucide], { className: 'w-5 h-5' })
-                      }
-                      <span className={`text-sm font-semibold transition ${
-                        isExpanded ? 'text-green-700' : 'text-slate-900'
-                      }`}>{macroIntent.nombre}</span>
-                    </div>
-                  </button>
+          {step1Complete && (
+            <div className="space-y-3">
+              <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Elige Intención</p>
+              {INTENCIONES_CONTEXTO.map((macroIntent) => {
+                const isExpanded = formData.selectedContentIntent === macroIntent.id;
+                return (
+                  <div key={macroIntent.id}>
+                    <button
+                      onClick={() => {
+                        onChange({
+                          selectedContentIntent: macroIntent.id,
+                          selectedSubIntencion: null
+                        });
+                      }}
+                      className={`w-full text-left rounded-lg p-3 transition border-2 ${
+                        isExpanded
+                          ? 'bg-green-50 border-green-400'
+                          : 'bg-white border-slate-200 hover:border-green-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {macroIntent.iconLucide && iconMap[macroIntent.iconLucide] &&
+                          React.createElement(iconMap[macroIntent.iconLucide], { className: 'w-5 h-5' })
+                        }
+                        <span className={`text-sm font-semibold transition ${
+                          isExpanded ? 'text-green-700' : 'text-slate-900'
+                        }`}>{macroIntent.nombre}</span>
+                      </div>
+                    </button>
 
-                  {/* Sub-intenciones Anidadas */}
-                  {isExpanded && (
-                    <div className="mt-2 pl-3 space-y-2">
-                      <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona sub-intención:</p>
-                      {macroIntent.subIntenciones.map((subIntent) => (
-                        <button
-                          key={subIntent.id}
-                          onClick={() => onChange({ selectedSubIntencion: subIntent.id })}
-                          className={`w-full text-left p-3 rounded-lg border-2 transition ${
-                            formData.selectedSubIntencion === subIntent.id
-                              ? 'bg-green-100 border-green-400'
-                              : 'bg-slate-50 border-slate-200 hover:border-green-300'
-                          }`}
-                        >
-                          <p className={`text-xs font-semibold transition ${
-                            formData.selectedSubIntencion === subIntent.id ? 'text-green-700' : 'text-slate-900'
-                          }`}>{subIntent.nombre}</p>
-                          <p className="text-slate-500 text-[11px] mt-1">{subIntent.descripcion}</p>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                    {isExpanded && (
+                      <div className="mt-2 pl-3 space-y-2">
+                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona sub-intención:</p>
+                        {macroIntent.subIntenciones.map((subIntent) => (
+                          <button
+                            key={subIntent.id}
+                            onClick={() => onChange({ selectedSubIntencion: subIntent.id })}
+                            className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                              formData.selectedSubIntencion === subIntent.id
+                                ? 'bg-green-100 border-green-400'
+                                : 'bg-slate-50 border-slate-200 hover:border-green-300'
+                            }`}
+                          >
+                            <p className={`text-xs font-semibold transition ${
+                              formData.selectedSubIntencion === subIntent.id ? 'text-green-700' : 'text-slate-900'
+                            }`}>{subIntent.nombre}</p>
+                            <p className="text-slate-500 text-[11px] mt-1">{subIntent.descripcion}</p>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {/* Tono Principal + Subtonos (Sistema Dual) */}
-        <div className={`rounded-xl border p-6 hover:shadow-lg transition col-span-1 ${
-          formData.selectedMainTone && formData.selectedSubtone
-            ? 'bg-white border-purple-200 ring-2 ring-purple-100'
-            : 'bg-white border-slate-200'
+        {/* PASO 3: Tono y Subtono - Habilitado solo si PASO 2 completo */}
+        <div className={`rounded-xl border p-6 transition col-span-1 ${
+          step2Complete
+            ? step3Complete
+              ? 'bg-purple-50 border-purple-200 hover:shadow-lg'
+              : 'bg-slate-50 border-slate-200 hover:shadow-lg'
+            : 'bg-slate-100 border-slate-300 opacity-50 cursor-not-allowed'
         }`}>
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                <Volume2 size={24} className="text-purple-600" />
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                step2Complete ? 'bg-purple-100' : 'bg-slate-200'
+              }`}>
+                <Volume2 size={24} className={step2Complete ? 'text-purple-600' : 'text-slate-500'} />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900">Tono y Subtono</h3>
+              <h3 className={`text-lg font-semibold ${step2Complete ? 'text-slate-900' : 'text-slate-500'}`}>Tono y Subtono</h3>
             </div>
-            {formData.selectedMainTone && formData.selectedSubtone ? (
+            {step3Complete ? (
               <span className="text-xl font-bold text-purple-600">✓</span>
             ) : (
-              <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded">OBLIGATORIO</span>
+              <span className={`text-xs font-bold px-2 py-1 rounded ${
+                step2Complete
+                  ? 'text-purple-600 bg-purple-100'
+                  : 'text-slate-500 bg-slate-200'
+              }`}>PASO 3</span>
             )}
           </div>
-          {(!formData.selectedMainTone || !formData.selectedSubtone) && (
+          {step2Complete && (!formData.selectedMainTone || !formData.selectedSubtone) && (
             <div className="flex items-center gap-2 mb-3">
-              {!formData.selectedMainTone && (
-                <span className="text-xs text-red-600">Falta seleccionar tono</span>
-              )}
-              {formData.selectedMainTone && !formData.selectedSubtone && (
-                <span className="text-xs text-red-600">Falta seleccionar subtono</span>
-              )}
+              <span className="text-xs text-red-600">Falta completar</span>
             </div>
           )}
-          <p className="text-xs text-slate-500 mb-4 leading-relaxed">Elige la voz general y el subtono específico que refleja la personalidad de tu marca.</p>
+          {!step2Complete && (
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs text-slate-500">Completa el Paso 2 primero</span>
+            </div>
+          )}
 
-          {/* Tono del Cliente */}
-          {selectedClient?.default_tone && (
+          {selectedClient?.default_tone && step2Complete && (
             <div className="mb-4 pb-4 border-b border-slate-200">
               <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Tono del Cliente</p>
               <p className="text-xs text-slate-900 font-medium capitalize">{selectedClient.default_tone}</p>
             </div>
           )}
 
-          {/* Macro Tonos con Subtonos Anidados */}
-          <div className="space-y-3">
-            <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Elige Tono</p>
-            {TONOS_CONTEXTO.map((macroTono) => {
-              const isExpanded = formData.selectedMainTone === macroTono.id;
-              return (
-                <div key={macroTono.id}>
-                  {/* Botón del Tono */}
-                  <button
-                    onClick={() => {
-                      onChange({
-                        selectedMainTone: macroTono.id,
-                        selectedTone: macroTono.id,
-                        selectedSubtone: null
-                      });
-                    }}
-                    className={`w-full text-left rounded-lg p-3 transition border-2 ${
-                      isExpanded
-                        ? 'bg-purple-50 border-purple-400 ring-2 ring-purple-200'
-                        : 'bg-white border-slate-200 hover:border-purple-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {macroTono.iconLucide && iconMap[macroTono.iconLucide] &&
-                        React.createElement(iconMap[macroTono.iconLucide], { className: 'w-5 h-5' })
-                      }
-                      <span className={`text-sm font-semibold transition ${
-                        isExpanded ? 'text-purple-700' : 'text-slate-900'
-                      }`}>{macroTono.nombre}</span>
-                    </div>
-                  </button>
+          {step2Complete && (
+            <div className="space-y-3">
+              <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Elige Tono</p>
+              {TONOS_CONTEXTO.map((macroTono) => {
+                const isExpanded = formData.selectedMainTone === macroTono.id;
+                return (
+                  <div key={macroTono.id}>
+                    <button
+                      onClick={() => {
+                        onChange({
+                          selectedMainTone: macroTono.id,
+                          selectedTone: macroTono.id,
+                          selectedSubtone: null
+                        });
+                      }}
+                      className={`w-full text-left rounded-lg p-3 transition border-2 ${
+                        isExpanded
+                          ? 'bg-purple-50 border-purple-400'
+                          : 'bg-white border-slate-200 hover:border-purple-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {macroTono.iconLucide && iconMap[macroTono.iconLucide] &&
+                          React.createElement(iconMap[macroTono.iconLucide], { className: 'w-5 h-5' })
+                        }
+                        <span className={`text-sm font-semibold transition ${
+                          isExpanded ? 'text-purple-700' : 'text-slate-900'
+                        }`}>{macroTono.nombre}</span>
+                      </div>
+                    </button>
 
-                  {/* Subtonos Anidados */}
-                  {isExpanded && (
-                    <div className="mt-2 pl-3 space-y-2">
-                      <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona subtono:</p>
-                      {macroTono.subtonos.map((subtono) => (
-                        <button
-                          key={subtono.id}
-                          onClick={() => onChange({ selectedSubtone: subtono.id })}
-                          className={`w-full text-left p-3 rounded-lg border-2 transition ${
-                            formData.selectedSubtone === subtono.id
-                              ? 'bg-purple-100 border-purple-400'
-                              : 'bg-slate-50 border-slate-200 hover:border-purple-300'
-                          }`}
-                        >
-                          <p className={`text-xs font-semibold transition ${
-                            formData.selectedSubtone === subtono.id ? 'text-purple-700' : 'text-slate-900'
-                          }`}>{subtono.nombre}</p>
-                          <p className="text-slate-500 text-[11px] mt-1">{subtono.descripcion}</p>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                    {isExpanded && (
+                      <div className="mt-2 pl-3 space-y-2">
+                        <p className="text-xs font-semibold text-slate-600 mb-2">Selecciona subtono:</p>
+                        {macroTono.subtonos.map((subtono) => (
+                          <button
+                            key={subtono.id}
+                            onClick={() => onChange({ selectedSubtone: subtono.id })}
+                            className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                              formData.selectedSubtone === subtono.id
+                                ? 'bg-purple-100 border-purple-400'
+                                : 'bg-slate-50 border-slate-200 hover:border-purple-300'
+                            }`}
+                          >
+                            <p className={`text-xs font-semibold transition ${
+                              formData.selectedSubtone === subtono.id ? 'text-purple-700' : 'text-slate-900'
+                            }`}>{subtono.nombre}</p>
+                            <p className="text-slate-500 text-[11px] mt-1">{subtono.descripcion}</p>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {/* Ángulo / Enfoque Narrativo */}
-        <div className={`rounded-xl border p-6 hover:shadow-lg transition col-span-1 ${
-          formData.selectedNarrativeAngle
-            ? 'bg-white border-indigo-200 ring-2 ring-indigo-100'
-            : 'bg-white border-slate-200'
+        {/* PASO 4: Ángulo Narrativo - Habilitado solo si PASO 3 completo */}
+        <div className={`rounded-xl border p-6 transition col-span-1 ${
+          step3Complete
+            ? formData.selectedNarrativeAngle
+              ? 'bg-slate-900 border-slate-700 hover:shadow-lg'
+              : 'bg-slate-50 border-slate-200 hover:shadow-lg'
+            : 'bg-slate-100 border-slate-300 opacity-50 cursor-not-allowed'
         }`}>
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <Clapperboard size={24} className="text-indigo-600" />
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                step3Complete
+                  ? formData.selectedNarrativeAngle
+                    ? 'bg-slate-700'
+                    : 'bg-slate-100'
+                  : 'bg-slate-200'
+              }`}>
+                <Clapperboard size={24} className={
+                  step3Complete
+                    ? formData.selectedNarrativeAngle
+                      ? 'text-white'
+                      : 'text-slate-600'
+                    : 'text-slate-500'
+                } />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900">Ángulo Narrativo</h3>
+              <h3 className={`text-lg font-semibold ${
+                step3Complete
+                  ? formData.selectedNarrativeAngle
+                    ? 'text-white'
+                    : 'text-slate-900'
+                  : 'text-slate-500'
+              }`}>Ángulo Narrativo</h3>
             </div>
             {formData.selectedNarrativeAngle ? (
-              <span className="text-xl font-bold text-indigo-600">✓</span>
+              <span className={`text-xl font-bold ${
+                formData.selectedNarrativeAngle ? 'text-white' : 'text-slate-600'
+              }`}>✓</span>
             ) : (
-              <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">OBLIGATORIO</span>
+              <span className={`text-xs font-bold px-2 py-1 rounded ${
+                step3Complete
+                  ? 'text-slate-600 bg-slate-100'
+                  : 'text-slate-500 bg-slate-200'
+              }`}>PASO 4</span>
             )}
           </div>
-          {!formData.selectedNarrativeAngle && (
+          {step3Complete && !formData.selectedNarrativeAngle && (
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs text-red-600">Falta seleccionar un ángulo</span>
+              <span className="text-xs text-red-600">Falta seleccionar</span>
             </div>
           )}
-          <p className="text-xs text-slate-500 mb-4 leading-relaxed">Selecciona la perspectiva narrativa que mejor enganche a tu audiencia y comunique tu mensaje.</p>
+          {!step3Complete && (
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs text-slate-500">Completa el Paso 3 primero</span>
+            </div>
+          )}
+          <p className={`text-xs mb-4 leading-relaxed ${
+            step3Complete
+              ? formData.selectedNarrativeAngle
+                ? 'text-slate-200'
+                : 'text-slate-500'
+              : 'text-slate-500'
+          }`}>Selecciona la perspectiva narrativa que mejor enganche a tu audiencia.</p>
 
-          {/* Ángulos como Cajetines (Buyer Personas Style) */}
-          <div className="space-y-2">
-            <p className="text-xs text-slate-500 uppercase tracking-wide mb-2 font-semibold">Elige ángulo</p>
-            {NARRATIVE_ANGLES.map((angle) => (
-              <button
-                key={angle.id}
-                onClick={() => onChange({ selectedNarrativeAngle: angle.id })}
-                className={`w-full text-left rounded-lg p-2 transition border ${
-                  formData.selectedNarrativeAngle === angle.id
-                    ? 'bg-indigo-50 border-indigo-200'
-                    : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  {angle.iconLucide && iconMap[angle.iconLucide] &&
-                    React.createElement(iconMap[angle.iconLucide], { className: 'w-4 h-4' })
-                  }
-                  <span className="text-xs font-semibold text-slate-900">{angle.label}</span>
-                </div>
-                <p className="text-[10px] text-slate-500 mt-0.5">{angle.desc}</p>
-              </button>
-            ))}
-          </div>
+          {step3Complete && (
+            <div className="space-y-2">
+              <p className={`text-xs uppercase tracking-wide mb-2 font-semibold ${
+                formData.selectedNarrativeAngle ? 'text-slate-300' : 'text-slate-500'
+              }`}>Elige ángulo</p>
+              {NARRATIVE_ANGLES.map((angle) => (
+                <button
+                  key={angle.id}
+                  onClick={() => onChange({ selectedNarrativeAngle: angle.id })}
+                  className={`w-full text-left rounded-lg p-2 transition border ${
+                    formData.selectedNarrativeAngle === angle.id
+                      ? 'bg-slate-700 border-slate-600'
+                      : formData.selectedNarrativeAngle
+                      ? 'bg-slate-800 border-slate-700 hover:border-slate-600'
+                      : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    {angle.iconLucide && iconMap[angle.iconLucide] &&
+                      React.createElement(iconMap[angle.iconLucide], { className: `w-4 h-4 ${
+                        formData.selectedNarrativeAngle ? 'text-white' : 'text-slate-600'
+                      }` })
+                    }
+                    <span className={`text-xs font-semibold ${
+                      formData.selectedNarrativeAngle ? 'text-white' : 'text-slate-900'
+                    }`}>{angle.label}</span>
+                  </div>
+                  <p className={`text-[10px] mt-0.5 ${
+                    formData.selectedNarrativeAngle ? 'text-slate-300' : 'text-slate-500'
+                  }`}>{angle.desc}</p>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </StepContainer>
   );
 }
 
-// Función de validación exportable para el PASO 2
 export const isPasoPersonalidadValid = (formData: {
   targetAudience: string;
   selectedContentIntent: string | null;
