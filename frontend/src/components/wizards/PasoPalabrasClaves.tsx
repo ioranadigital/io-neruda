@@ -21,7 +21,21 @@ interface PasoPalabrasClaveProps {
 }
 
 // Obtiene todas las keywords del Nivel 6 por defecto
-const getDefaultLevel6Keywords = () => {
+const getDefaultLevel6Keywords = (selectedClient?: Client | null) => {
+  // Si el cliente tiene keywords jerárquicas, obtener Nivel 6 del cliente
+  if (selectedClient?.keywords_hierarchical) {
+    const hierarch = selectedClient.keywords_hierarchical;
+    const level6Keywords: string[] = [];
+
+    // Recolectar todas las palabras del Nivel 6 desde las diferentes secciones
+    if (hierarch.level6_banned_words) level6Keywords.push(...hierarch.level6_banned_words);
+    if (hierarch.level6_banned_tones) level6Keywords.push(...hierarch.level6_banned_tones);
+    if (hierarch.level6_competing_keywords) level6Keywords.push(...hierarch.level6_competing_keywords);
+
+    return level6Keywords;
+  }
+
+  // Fallback a estructura estática si no hay keywords jerárquicas
   const level6 = KEYWORD_STRUCTURE.find((l) => l.id === 'level-6-exclude');
   if (!level6) return [];
   return level6.items.flatMap((item) => item.keywords);
@@ -219,7 +233,7 @@ export default function PasoPalabrasClaves({
   }, [selectedClient?.keywords_hierarchical, selectedClient?.id]);
 
   // ===== HELPERS PARA SEPARACIÓN NIVEL 6 =====
-  const level6Keywords = React.useMemo(() => getDefaultLevel6Keywords(), []);
+  const level6Keywords = React.useMemo(() => getDefaultLevel6Keywords(selectedClient), [selectedClient]);
   const manualKeywords = React.useMemo(() => selectedKeywords.filter((kw) => !level6Keywords.includes(kw)), [selectedKeywords, level6Keywords]);
   const level6SelectedCount = React.useMemo(() => selectedKeywords.filter((kw) => level6Keywords.includes(kw)).length, [selectedKeywords, level6Keywords]);
 
@@ -382,7 +396,7 @@ export default function PasoPalabrasClaves({
 
   // Asegurar que Nivel 6 siempre esté seleccionado por defecto
   React.useEffect(() => {
-    const defaultLevel6 = getDefaultLevel6Keywords();
+    const defaultLevel6 = getDefaultLevel6Keywords(selectedClient);
     // Si no hay keywords seleccionadas, inicializar con el Nivel 6
     if (selectedKeywords.length === 0 && defaultLevel6.length > 0) {
       onKeywordChange(defaultLevel6);
