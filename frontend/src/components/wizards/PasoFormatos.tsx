@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Client } from '@/src/types/client';
 import LanguageSelector, { Language } from '../selectors/LanguageSelector';
 import StepContainer from './StepContainer';
-import { Globe, Share2, Mail, Languages, ChevronDown, Package, Rocket, Zap, Trophy, MapPin, Briefcase, ShoppingCart, Target, Layout, Camera, Video, Sparkles, Clapperboard, BookOpen, User, MessageCircle, Handshake, Gift, HelpCircle, Volume2, Smartphone, Newspaper, Check } from 'lucide-react';
+import { Globe, Share2, Mail, Languages, ChevronDown, Package, Rocket, Zap, Trophy, MapPin, Briefcase, ShoppingCart, Target, Layout, Camera, Video, Sparkles, Clapperboard, BookOpen, User, MessageCircle, Handshake, Gift, HelpCircle, Volume2, Smartphone, Newspaper, Check, FileText, Layers, TrendingUp, Award, Linkedin, Instagram, Music, MessageSquare, Facebook, Send } from 'lucide-react';
 
 interface PasoFormatosProps {
   selectedClient: Client | null;
@@ -32,10 +32,11 @@ const SECTIONS = [
         label: 'Blog Post / Artículo SEO',
         desc: '1,500-3,000 palabras',
         color: '#3b82f6',
+        icon: FileText,
         subFormats: [
-          { id: 'blog_pillar', label: 'Contenido Pilar', desc: '1500-2500 palabras' },
-          { id: 'blog_trend', label: 'Tendencia Rápida', desc: '500-800 palabras' },
-          { id: 'blog_success', label: 'Caso de Éxito', desc: '800-1200 palabras' },
+          { id: 'blog_pillar', label: 'Contenido Pilar', desc: '1500-2500 palabras', icon: Layers },
+          { id: 'blog_trend', label: 'Tendencia Rápida', desc: '500-800 palabras', icon: TrendingUp },
+          { id: 'blog_success', label: 'Caso de Éxito', desc: '800-1200 palabras', icon: Award },
         ],
       },
       {
@@ -43,11 +44,12 @@ const SECTIONS = [
         label: 'Landing Pages & Secciones Web',
         desc: 'Optimizada para conversión',
         color: '#3b82f6',
+        icon: Layout,
         subFormats: [
-          { id: 'landing_local', label: 'Landing Local / Captación Geo-Targeted', desc: 'Enfoque SEO Local' },
-          { id: 'landing_corporate', label: 'Landing de Servicio Corporativo', desc: 'B2B / Servicios profesionales' },
-          { id: 'landing_product', label: 'Landing de Producto / Ficha de Venta', desc: 'Avanzada y optimizada' },
-          { id: 'landing_squeeze', label: 'Squeeze Page / Captación de Leads', desc: 'Lead Magnet y conversion-focused' },
+          { id: 'landing_local', label: 'Landing Local / Captación Geo-Targeted', desc: 'Enfoque SEO Local', icon: MapPin },
+          { id: 'landing_corporate', label: 'Landing de Servicio Corporativo', desc: 'B2B / Servicios profesionales', icon: Briefcase },
+          { id: 'landing_product', label: 'Landing de Producto / Ficha de Venta', desc: 'Avanzada y optimizada', icon: ShoppingCart },
+          { id: 'landing_squeeze', label: 'Squeeze Page / Captación de Leads', desc: 'Lead Magnet y conversion-focused', icon: Target },
         ],
       },
     ],
@@ -62,10 +64,11 @@ const SECTIONS = [
         label: 'LinkedIn',
         desc: 'Contenido profesional',
         color: '#ec4899',
+        icon: Linkedin,
         subFormats: [
-          { id: 'linkedin_opinion', label: 'Post de Opinión / Liderazgo Intelectual', desc: 'Posicionamiento de autoridad' },
-          { id: 'linkedin_carousel', label: 'Carrusel de Valor (PDF Informativo)', desc: 'Contenido educativo en capas' },
-          { id: 'linkedin_launch', label: 'Post de Lanzamiento / Promoción', desc: 'Anuncio de producto/servicio' },
+          { id: 'linkedin_opinion', label: 'Post de Opinión / Liderazgo Intelectual', desc: 'Posicionamiento de autoridad', icon: Sparkles },
+          { id: 'linkedin_carousel', label: 'Carrusel de Valor (PDF Informativo)', desc: 'Contenido educativo en capas', icon: Layers },
+          { id: 'linkedin_launch', label: 'Post de Lanzamiento / Promoción', desc: 'Anuncio de producto/servicio', icon: Rocket },
         ],
       },
       {
@@ -73,10 +76,11 @@ const SECTIONS = [
         label: 'Instagram',
         desc: 'Contenido visual atractivo',
         color: '#ec4899',
+        icon: Instagram,
         subFormats: [
-          { id: 'instagram_carousel', label: 'Caption para Carrusel de Valor', desc: 'Historias visuales impactantes' },
-          { id: 'instagram_reel', label: 'Guion de Reel de Alta Retención', desc: 'Video corto viralizador' },
-          { id: 'instagram_copy', label: 'Copy Estético + Hashtags', desc: 'Texto visual y discovery' },
+          { id: 'instagram_carousel', label: 'Caption para Carrusel de Valor', desc: 'Historias visuales impactantes', icon: Layout },
+          { id: 'instagram_reel', label: 'Guion de Reel de Alta Retención', desc: 'Video corto viralizador', icon: Video },
+          { id: 'instagram_copy', label: 'Copy Estético + Hashtags', desc: 'Texto visual y discovery', icon: FileText },
         ],
       },
       {
@@ -84,10 +88,11 @@ const SECTIONS = [
         label: 'TikTok',
         desc: 'Contenido viral corto',
         color: '#ec4899',
+        icon: Music,
         subFormats: [
-          { id: 'tiktok_educational', label: 'Guion Educativo / Curiosidades', desc: '30-60 segundos informativos' },
-          { id: 'tiktok_ugc', label: 'Guion Reseña Estilo UGC', desc: 'Contenido generado por usuario' },
-          { id: 'tiktok_reply', label: 'Respuesta a Comentario / Objeción', desc: 'Engagement comunitario' },
+          { id: 'tiktok_educational', label: 'Guion Educativo / Curiosidades', desc: '30-60 segundos informativos', icon: BookOpen },
+          { id: 'tiktok_ugc', label: 'Guion Reseña Estilo UGC', desc: 'Contenido generado por usuario', icon: User },
+          { id: 'tiktok_reply', label: 'Respuesta a Comentario / Objeción', desc: 'Engagement comunitario', icon: MessageCircle },
         ],
       },
       {
@@ -95,9 +100,10 @@ const SECTIONS = [
         label: 'Facebook',
         desc: 'Interacción comunitaria',
         color: '#ec4899',
+        icon: Facebook,
         subFormats: [
-          { id: 'facebook_community', label: 'Post Comunitario / Interacción Local', desc: 'Engagement con audiencia' },
-          { id: 'facebook_offer', label: 'Post de Oferta Directa / Social Selling', desc: 'Conversión y venta' },
+          { id: 'facebook_community', label: 'Post Comunitario / Interacción Local', desc: 'Engagement con audiencia', icon: Handshake },
+          { id: 'facebook_offer', label: 'Post de Oferta Directa / Social Selling', desc: 'Conversión y venta', icon: ShoppingCart },
         ],
       },
     ],
@@ -112,10 +118,11 @@ const SECTIONS = [
         label: 'Email Marketing',
         desc: 'Newsletter efectiva',
         color: '#f59e0b',
+        icon: Mail,
         subFormats: [
-          { id: 'email_newsletter', label: 'Newsletter Estándar', desc: 'Contenido e información semanal' },
-          { id: 'email_promotional', label: 'Email Promocional / Oferta', desc: 'Convertir con descuentos' },
-          { id: 'email_educational', label: 'Email Educativo / Secuencia', desc: 'Automatización de valor' },
+          { id: 'email_newsletter', label: 'Newsletter Estándar', desc: 'Contenido e información semanal', icon: Newspaper },
+          { id: 'email_promotional', label: 'Email Promocional / Oferta', desc: 'Convertir con descuentos', icon: Gift },
+          { id: 'email_educational', label: 'Email Educativo / Secuencia', desc: 'Automatización de valor', icon: BookOpen },
         ],
       },
       {
@@ -123,10 +130,11 @@ const SECTIONS = [
         label: 'WhatsApp',
         desc: 'Mensaje directo y personal',
         color: '#f59e0b',
+        icon: Send,
         subFormats: [
-          { id: 'whatsapp_broadcast', label: 'Mensaje Broadcast / Anuncio', desc: 'Noticia a todos los contactos' },
-          { id: 'whatsapp_support', label: 'Script de Soporte / FAQ', desc: 'Atención al cliente automático' },
-          { id: 'whatsapp_sales', label: 'Mensaje de Venta Consultivo', desc: 'Cierre directo y personal' },
+          { id: 'whatsapp_broadcast', label: 'Mensaje Broadcast / Anuncio', desc: 'Noticia a todos los contactos', icon: Share2 },
+          { id: 'whatsapp_support', label: 'Script de Soporte / FAQ', desc: 'Atención al cliente automático', icon: HelpCircle },
+          { id: 'whatsapp_sales', label: 'Mensaje de Venta Consultivo', desc: 'Cierre directo y personal', icon: Target },
         ],
       },
     ],
@@ -276,12 +284,21 @@ export default function PasoFormatos({
                           : 'bg-white border-slate-200 hover:border-purple-300'
                       }`}
                     >
-                      <p className={`font-semibold text-sm transition ${
-                        isExpanded ? 'text-purple-700' : 'text-slate-900'
-                      }`}>{format.label}</p>
-                      <p className={`text-xs mt-1 transition ${
-                        isExpanded ? 'text-purple-600' : 'text-slate-500'
-                      }`}>{format.desc}</p>
+                      <div className="flex items-start gap-3">
+                        {(format as any).icon && React.createElement((format as any).icon, {
+                          className: `w-5 h-5 mt-0.5 flex-shrink-0 transition ${
+                            isExpanded ? 'text-purple-600' : 'text-slate-600'
+                          }`
+                        })}
+                        <div className="flex-1">
+                          <p className={`font-semibold text-sm transition ${
+                            isExpanded ? 'text-purple-700' : 'text-slate-900'
+                          }`}>{format.label}</p>
+                          <p className={`text-xs mt-1 transition ${
+                            isExpanded ? 'text-purple-600' : 'text-slate-500'
+                          }`}>{format.desc}</p>
+                        </div>
+                      </div>
                     </button>
 
                     {/* Nivel 2: Sub-formatos (tarjetas clicables sin checkbox) */}
@@ -303,12 +320,21 @@ export default function PasoFormatos({
                                   : 'bg-slate-50 border-slate-200 hover:border-purple-300'
                               }`}
                             >
-                              <p className={`text-xs font-medium transition ${
-                                subIsSelected ? 'text-purple-700' : 'text-slate-700'
-                              }`}>{sub.label}</p>
-                              <p className={`text-[11px] mt-1 transition ${
-                                subIsSelected ? 'text-purple-600' : 'text-slate-500'
-                              }`}>{sub.desc}</p>
+                              <div className="flex items-start gap-3">
+                                {sub.icon && React.createElement(sub.icon, {
+                                  className: `w-4 h-4 mt-0.5 flex-shrink-0 transition ${
+                                    subIsSelected ? 'text-purple-600' : 'text-slate-600'
+                                  }`
+                                })}
+                                <div className="flex-1">
+                                  <p className={`text-xs font-medium transition ${
+                                    subIsSelected ? 'text-purple-700' : 'text-slate-700'
+                                  }`}>{sub.label}</p>
+                                  <p className={`text-[11px] mt-1 transition ${
+                                    subIsSelected ? 'text-purple-600' : 'text-slate-500'
+                                  }`}>{sub.desc}</p>
+                                </div>
+                              </div>
                             </button>
                           );
                         })}
@@ -344,12 +370,21 @@ export default function PasoFormatos({
                           : 'bg-white border-slate-200 hover:border-pink-300'
                       }`}
                     >
-                      <p className={`font-semibold text-sm transition ${
-                        isExpanded ? 'text-pink-700' : 'text-slate-900'
-                      }`}>{format.label}</p>
-                      <p className={`text-xs mt-1 transition ${
-                        isExpanded ? 'text-pink-600' : 'text-slate-500'
-                      }`}>{format.desc}</p>
+                      <div className="flex items-start gap-3">
+                        {(format as any).icon && React.createElement((format as any).icon, {
+                          className: `w-5 h-5 mt-0.5 flex-shrink-0 transition ${
+                            isExpanded ? 'text-pink-600' : 'text-slate-600'
+                          }`
+                        })}
+                        <div className="flex-1">
+                          <p className={`font-semibold text-sm transition ${
+                            isExpanded ? 'text-pink-700' : 'text-slate-900'
+                          }`}>{format.label}</p>
+                          <p className={`text-xs mt-1 transition ${
+                            isExpanded ? 'text-pink-600' : 'text-slate-500'
+                          }`}>{format.desc}</p>
+                        </div>
+                      </div>
                     </button>
 
                     {/* Nivel 2: Tipos de contenido (tarjetas clicables sin checkbox) */}
@@ -371,12 +406,21 @@ export default function PasoFormatos({
                                   : 'bg-slate-50 border-slate-200 hover:border-pink-300'
                               }`}
                             >
-                              <p className={`text-xs font-medium transition ${
-                                subIsSelected ? 'text-pink-700' : 'text-slate-700'
-                              }`}>{sub.label}</p>
-                              <p className={`text-[11px] mt-1 transition ${
-                                subIsSelected ? 'text-pink-600' : 'text-slate-500'
-                              }`}>{sub.desc}</p>
+                              <div className="flex items-start gap-3">
+                                {sub.icon && React.createElement(sub.icon, {
+                                  className: `w-4 h-4 mt-0.5 flex-shrink-0 transition ${
+                                    subIsSelected ? 'text-pink-600' : 'text-slate-600'
+                                  }`
+                                })}
+                                <div className="flex-1">
+                                  <p className={`text-xs font-medium transition ${
+                                    subIsSelected ? 'text-pink-700' : 'text-slate-700'
+                                  }`}>{sub.label}</p>
+                                  <p className={`text-[11px] mt-1 transition ${
+                                    subIsSelected ? 'text-pink-600' : 'text-slate-500'
+                                  }`}>{sub.desc}</p>
+                                </div>
+                              </div>
                             </button>
                           );
                         })}
@@ -412,12 +456,21 @@ export default function PasoFormatos({
                           : 'bg-white border-slate-200 hover:border-amber-300'
                       }`}
                     >
-                      <p className={`font-semibold text-sm transition ${
-                        isExpanded ? 'text-amber-700' : 'text-slate-900'
-                      }`}>{format.label}</p>
-                      <p className={`text-xs mt-1 transition ${
-                        isExpanded ? 'text-amber-600' : 'text-slate-500'
-                      }`}>{format.desc}</p>
+                      <div className="flex items-start gap-3">
+                        {(format as any).icon && React.createElement((format as any).icon, {
+                          className: `w-5 h-5 mt-0.5 flex-shrink-0 transition ${
+                            isExpanded ? 'text-amber-600' : 'text-slate-600'
+                          }`
+                        })}
+                        <div className="flex-1">
+                          <p className={`font-semibold text-sm transition ${
+                            isExpanded ? 'text-amber-700' : 'text-slate-900'
+                          }`}>{format.label}</p>
+                          <p className={`text-xs mt-1 transition ${
+                            isExpanded ? 'text-amber-600' : 'text-slate-500'
+                          }`}>{format.desc}</p>
+                        </div>
+                      </div>
                     </button>
 
                     {/* Nivel 2: Variantes de email (tarjetas clicables sin checkbox) */}
@@ -439,12 +492,21 @@ export default function PasoFormatos({
                                   : 'bg-slate-50 border-slate-200 hover:border-amber-300'
                               }`}
                             >
-                              <p className={`text-xs font-medium transition ${
-                                subIsSelected ? 'text-amber-700' : 'text-slate-700'
-                              }`}>{sub.label}</p>
-                              <p className={`text-[11px] mt-1 transition ${
-                                subIsSelected ? 'text-amber-600' : 'text-slate-500'
-                              }`}>{sub.desc}</p>
+                              <div className="flex items-start gap-3">
+                                {sub.icon && React.createElement(sub.icon, {
+                                  className: `w-4 h-4 mt-0.5 flex-shrink-0 transition ${
+                                    subIsSelected ? 'text-amber-600' : 'text-slate-600'
+                                  }`
+                                })}
+                                <div className="flex-1">
+                                  <p className={`text-xs font-medium transition ${
+                                    subIsSelected ? 'text-amber-700' : 'text-slate-700'
+                                  }`}>{sub.label}</p>
+                                  <p className={`text-[11px] mt-1 transition ${
+                                    subIsSelected ? 'text-amber-600' : 'text-slate-500'
+                                  }`}>{sub.desc}</p>
+                                </div>
+                              </div>
                             </button>
                           );
                         })}
