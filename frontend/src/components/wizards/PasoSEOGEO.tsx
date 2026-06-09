@@ -175,41 +175,34 @@ export default function PasoSEOGEO({
     };
 
     return (
-      <div className={`border ${colorClasses[color as keyof typeof colorClasses]} rounded-xl p-5 shadow-sm hover:shadow-md transition ${
+      <div className={`border ${colorClasses[color as keyof typeof colorClasses]} rounded-xl p-5 shadow-sm hover:shadow-md transition relative ${
         isVerified ? backgroundColors[color as keyof typeof backgroundColors] : 'bg-white'
       }`}>
-        {/* Header con icono y título */}
-        <div className="flex items-center gap-2 mb-4">
-          <Icon size={20} className={iconColors[color as keyof typeof iconColors]} />
-          <h4 className="text-sm font-bold text-slate-900">{title}</h4>
+        {/* Header con icono, título y checkbox */}
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <div className="flex items-center gap-2">
+            <Icon size={20} className={iconColors[color as keyof typeof iconColors]} />
+            <h4 className="text-sm font-bold text-slate-900">{title}</h4>
+          </div>
+
+          {/* Checkbox verificador - Arriba a la derecha */}
+          <button
+            onClick={onToggleVerified}
+            className={`flex-shrink-0 w-6 h-6 rounded border-2 transition flex items-center justify-center ${
+              isVerified
+                ? `border-${color}-500 bg-${color}-500`
+                : `border-slate-400 hover:border-${color}-500`
+            }`}
+            title={isVerified ? 'Desmarcar como verificado' : 'Marcar como verificado'}
+          >
+            {isVerified && <Check size={16} className="text-white" />}
+          </button>
         </div>
 
         {/* Contenido */}
-        <div className="space-y-3 mb-4">
+        <div className="space-y-3">
           {children}
         </div>
-
-        {/* Botón verificador */}
-        <button
-          onClick={onToggleVerified}
-          className={`w-full py-2 px-3 rounded-lg border transition flex items-center justify-center gap-2 text-xs font-semibold ${
-            isVerified
-              ? `border-${color}-500 bg-${color}-50 text-${color}-700`
-              : buttonColors[color as keyof typeof buttonColors]
-          }`}
-        >
-          {isVerified ? (
-            <>
-              <Check size={16} />
-              <span>Verificado</span>
-            </>
-          ) : (
-            <>
-              <div className="w-4 h-4 border-2 rounded border-current" />
-              <span>Verificar</span>
-            </>
-          )}
-        </button>
       </div>
     );
   };
