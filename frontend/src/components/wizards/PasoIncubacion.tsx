@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Client } from '@/src/types/client';
-import { ChevronRight, Lightbulb, TrendingUp, BookOpen, Zap, Trophy, Target } from 'lucide-react';
+import { ChevronRight, Lightbulb, TrendingUp, BookOpen, Zap, Trophy, Target, RefreshCw } from 'lucide-react';
 import { generarPropuestasIncubacion, generarSlug } from '@/src/data/incubacionPropuestas';
 import StepContainer from './StepContainer';
+import SkeletonLoader from './SkeletonLoader';
 
 interface PasoIncubacionProps {
   selectedClient: Client | null;
@@ -22,13 +23,19 @@ interface PasoIncubacionProps {
     metaTitle?: string;
     metaDescription?: string;
   }) => void;
+  variacionIndex?: number;
+  onVariacionChange?: (index: number) => void;
 }
 
 export default function PasoIncubacion({
   selectedClient,
   formData,
   onChange,
+  variacionIndex = 0,
+  onVariacionChange,
 }: PasoIncubacionProps) {
+  const [isRegenerating, setIsRegenerating] = useState(false);
+
   if (!selectedClient) {
     return (
       <div className="text-center py-12">
@@ -37,8 +44,8 @@ export default function PasoIncubacion({
     );
   }
 
-  // Generar propuestas dinámicas según el cliente
-  const propuestas = generarPropuestasIncubacion(selectedClient);
+  // Generar propuestas dinámicas según el cliente y variación
+  const propuestas = generarPropuestasIncubacion(selectedClient, variacionIndex);
 
   const handleSelectPropuesta = (propuestaId: string) => {
     const propuesta = propuestas.find((p) => p.id === propuestaId);
@@ -49,12 +56,42 @@ export default function PasoIncubacion({
     onChange({
       propuestaElegida: propuestaId,
       seoH1: propuesta.titulo,
-      seoH2: propuesta.puntosClave[0], // Primer punto clave como H2 sugerido
+      seoH2: propuesta.puntosClave[0],
       seoSlug: slug,
       metaTitle: propuesta.metaTitle,
       metaDescription: propuesta.metaDescription,
     });
   };
+
+  const handleRegenerarIdeas = useCallback(async () => {
+    setIsRegenerating(true);
+    // Limpiar selección actual
+    onChange({ propuestaElegida: null });
+
+    // Simular llamada a API - 1.5 segundos
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Alternar variación
+    const newVariacion = variacionIndex + 1;
+    onVariacionChange?.(newVariacion);
+
+    setIsRegenerating(false);
+  }, [variacionIndex, onChange, onVariacionChange]);
+
+  const regenerarButton = (
+    <button
+      onClick={handleRegenerarIdeas}
+      disabled={isRegenerating}
+      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 font-medium text-sm transition ${
+        isRegenerating
+          ? 'border-slate-300 bg-slate-100 text-slate-500 cursor-not-allowed'
+          : 'border-green-400 bg-green-50 text-green-700 hover:bg-green-100 cursor-pointer'
+      }`}
+    >
+      <RefreshCw size={14} className={isRegenerating ? 'animate-spin' : ''} />
+      Regenerar Ideas
+    </button>
+  );
 
   return (
     <StepContainer
@@ -63,9 +100,17 @@ export default function PasoIncubacion({
       iconColor="green"
       columns={1}
       gap="medium"
+      actionButton={regenerarButton}
     >
 
-      {/* Grid de 6 Tarjetas */}
+      {/* Grid de Tarjetas - Con Skeleton Loaders */}
+      {isRegenerating ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonLoader key={i} />
+          ))}
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
         {propuestas.map((propuesta) => {
           const isSelected = formData.propuestaElegida === propuesta.id;
@@ -86,10 +131,26 @@ export default function PasoIncubacion({
             <button
               key={propuesta.id}
               onClick={() => handleSelectPropuesta(propuesta.id)}
-              className={`relative text-left rounded-xl p-6 transition-all duration-300 border bg-white ${
+              className={`relative text-left rounded-xl p-6 transition-all duration-300 border ${
                 isSelected
-                  ? 'border-purple-500 shadow-[0_0_20px_rgba(139,92,246,0.3)]'
-                  : 'border-slate-200 hover:border-slate-300'
+                  ? colors.accentColor === 'blue'
+                    ? 'bg-blue-50 border-blue-300 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+                    : colors.accentColor === 'green'
+                    ? 'bg-green-50 border-green-300 shadow-[0_0_20px_rgba(34,197,94,0.3)]'
+                    : colors.accentColor === 'purple'
+                    ? 'bg-purple-50 border-purple-300 shadow-[0_0_20px_rgba(139,92,246,0.3)]'
+                    : colors.accentColor === 'orange'
+                    ? 'bg-orange-50 border-orange-300 shadow-[0_0_20px_rgba(249,115,22,0.3)]'
+                    : 'bg-red-50 border-red-300 shadow-[0_0_20px_rgba(239,68,68,0.3)]'
+                  : colors.accentColor === 'blue'
+                  ? 'bg-white border-slate-200 hover:bg-blue-50 hover:border-blue-300'
+                  : colors.accentColor === 'green'
+                  ? 'bg-white border-slate-200 hover:bg-green-50 hover:border-green-300'
+                  : colors.accentColor === 'purple'
+                  ? 'bg-white border-slate-200 hover:bg-purple-50 hover:border-purple-300'
+                  : colors.accentColor === 'orange'
+                  ? 'bg-white border-slate-200 hover:bg-orange-50 hover:border-orange-300'
+                  : 'bg-white border-slate-200 hover:bg-red-50 hover:border-red-300'
               }`}
             >
               {/* Badge */}
@@ -265,11 +326,12 @@ export default function PasoIncubacion({
           );
         })}
       </div>
+      )}
 
       {/* Info Panel */}
       {formData.propuestaElegida && (
-        <div className="bg-green-950/30 border border-green-800/50 rounded-lg p-4 mt-4">
-          <p className="text-green-300 text-sm flex items-center gap-2">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+          <p className="text-green-700 text-sm flex items-center gap-2">
             <span className="text-lg">✅</span>
             <strong>Enfoque seleccionado.</strong> Tus datos se han inyectado en el siguiente paso SEO/GEO.
           </p>
