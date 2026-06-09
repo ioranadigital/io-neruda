@@ -104,19 +104,19 @@ export default function PasoPersonalidad({
               </div>
               <h3 className="text-lg font-semibold text-slate-900">Público Objetivo</h3>
             </div>
-            {formData.targetAudience && (
-              <span className="text-xl">✓</span>
+            {formData.targetAudience ? (
+              <span className="text-xl font-bold text-blue-600">✓</span>
+            ) : (
+              <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">OBLIGATORIO</span>
             )}
           </div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">OBLIGATORIO</span>
-          </div>
+          <p className="text-xs text-slate-500 mb-4 leading-relaxed">Selecciona el perfil de audiencia que mejor representa a tu cliente ideal.</p>
 
           {/* Información del cliente */}
           {selectedClient?.target_audience && (
             <div className="mb-4 pb-4 border-b border-slate-200">
               <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Del cliente</p>
-              <p className="text-sm text-slate-900 font-medium">{selectedClient.target_audience}</p>
+              <p className="text-xs text-slate-900 font-medium">{selectedClient.target_audience}</p>
             </div>
           )}
 
@@ -135,7 +135,7 @@ export default function PasoPersonalidad({
                         : 'bg-slate-50 border-slate-200 hover:border-blue-300'
                     }`}
                   >
-                    <p className={`text-sm font-semibold transition ${
+                    <p className={`text-xs font-semibold transition ${
                       formData.targetAudience === persona.name
                         ? 'text-blue-700'
                         : 'text-slate-900'
@@ -149,7 +149,7 @@ export default function PasoPersonalidad({
               {formData.targetAudience && (
                 <div className="mt-4 pt-4 border-t border-slate-200">
                   <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Seleccionado</p>
-                  <p className="text-sm font-semibold text-blue-700">✓ {formData.targetAudience}</p>
+                  <p className="text-xs font-semibold text-blue-700">✓ {formData.targetAudience}</p>
                 </div>
               )}
             </div>
@@ -173,19 +173,25 @@ export default function PasoPersonalidad({
               </div>
               <h3 className="text-lg font-semibold text-slate-900">Intención del Funnel</h3>
             </div>
-            {formData.selectedContentIntent && formData.selectedSubIntencion && (
-              <span className="text-xl">✓</span>
+            {formData.selectedContentIntent && formData.selectedSubIntencion ? (
+              <span className="text-xl font-bold text-green-600">✓</span>
+            ) : (
+              <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">OBLIGATORIO</span>
             )}
           </div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">OBLIGATORIO</span>
-            {!formData.selectedContentIntent && (
-              <span className="text-xs text-red-600">Falta seleccionar intención</span>
-            )}
-            {formData.selectedContentIntent && !formData.selectedSubIntencion && (
-              <span className="text-xs text-red-600">Falta seleccionar sub-intención</span>
-            )}
-          </div>
+          {(!formData.selectedContentIntent || !formData.selectedSubIntencion) && (
+            <div className="flex items-center gap-2 mb-3">
+              {!formData.selectedContentIntent && (
+                <span className="text-xs text-red-600">Falta seleccionar intención</span>
+              )}
+              {formData.selectedContentIntent && !formData.selectedSubIntencion && (
+                <span className="text-xs text-red-600">Falta seleccionar sub-intención</span>
+              )}
+            </div>
+          )}
+          {formData.selectedContentIntent && formData.selectedSubIntencion && (
+            <p className="text-xs text-slate-500 mb-4 leading-relaxed">Define el propósito del contenido y el enfoque específico dentro del funnel de ventas.</p>
+          )}
 
           {/* Información del cliente */}
           {selectedClient?.content_pillars && selectedClient.content_pillars.length > 0 && (
@@ -271,19 +277,31 @@ export default function PasoPersonalidad({
               </div>
               <h3 className="text-lg font-semibold text-slate-900">Tono y Subtono</h3>
             </div>
-            {formData.selectedMainTone && formData.selectedSubtone && (
-              <span className="text-xl">✓</span>
+            {formData.selectedMainTone && formData.selectedSubtone ? (
+              <span className="text-xl font-bold text-purple-600">✓</span>
+            ) : (
+              <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded">OBLIGATORIO</span>
             )}
           </div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded">OBLIGATORIO</span>
-            {!formData.selectedMainTone && (
-              <span className="text-xs text-red-600">Falta seleccionar tono</span>
-            )}
-            {formData.selectedMainTone && !formData.selectedSubtone && (
-              <span className="text-xs text-red-600">Falta seleccionar subtono</span>
-            )}
-          </div>
+          {(!formData.selectedMainTone || !formData.selectedSubtone) && (
+            <div className="flex items-center gap-2 mb-3">
+              {!formData.selectedMainTone && (
+                <span className="text-xs text-red-600">Falta seleccionar tono</span>
+              )}
+              {formData.selectedMainTone && !formData.selectedSubtone && (
+                <span className="text-xs text-red-600">Falta seleccionar subtono</span>
+              )}
+            </div>
+          )}
+          <p className="text-xs text-slate-500 mb-4 leading-relaxed">Elige la voz general y el subtono específico que refleja la personalidad de tu marca.</p>
+
+          {/* Tono del Cliente */}
+          {selectedClient?.default_tone && (
+            <div className="mb-4 pb-4 border-b border-slate-200">
+              <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Tono del Cliente</p>
+              <p className="text-xs text-slate-900 font-medium capitalize">{selectedClient.default_tone}</p>
+            </div>
+          )}
 
           {/* Macro Tonos con Subtonos Anidados */}
           <div className="space-y-3">
@@ -358,19 +376,22 @@ export default function PasoPersonalidad({
               </div>
               <h3 className="text-lg font-semibold text-slate-900">Ángulo Narrativo</h3>
             </div>
-            {formData.selectedNarrativeAngle && (
-              <span className="text-xl">✓</span>
+            {formData.selectedNarrativeAngle ? (
+              <span className="text-xl font-bold text-indigo-600">✓</span>
+            ) : (
+              <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">OBLIGATORIO</span>
             )}
           </div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">OBLIGATORIO</span>
-            {!formData.selectedNarrativeAngle && (
+          {!formData.selectedNarrativeAngle && (
+            <div className="flex items-center gap-2 mb-3">
               <span className="text-xs text-red-600">Falta seleccionar un ángulo</span>
-            )}
-          </div>
+            </div>
+          )}
+          <p className="text-xs text-slate-500 mb-4 leading-relaxed">Selecciona la perspectiva narrativa que mejor enganche a tu audiencia y comunique tu mensaje.</p>
 
           {/* Ángulos como Cajetines (Buyer Personas Style) */}
           <div className="space-y-2">
+            <p className="text-xs text-slate-500 uppercase tracking-wide mb-2 font-semibold">Elige ángulo</p>
             {NARRATIVE_ANGLES.map((angle) => (
               <button
                 key={angle.id}
