@@ -137,25 +137,32 @@ const FORMATS = {
 
 const BLOG_TYPES = [
   {
-    id: 'short',
-    name: 'Post Corto / Actualización',
+    id: 'blog-post',
+    name: 'Blog Post / Artículo SEO',
+    range: '1,500 - 3,000 palabras',
+    description: 'Artículo completo optimizado para SEO con estructura H2-H3, ejemplos y CTAs',
+    icon: '📝',
+  },
+  {
+    id: 'pillar-content',
+    name: 'Contenido Pilar',
+    range: '1,500 - 2,500 palabras',
+    description: 'Contenido maestro que agrupa varios temas relacionados con referencias cruzadas',
+    icon: '🏛️',
+  },
+  {
+    id: 'trending-quick',
+    name: 'Tendencia Rápida',
     range: '500 - 800 palabras',
-    description: 'Directo, máximo 3 H2',
+    description: 'Artículo rápido sobre tendencias actuales con análisis conciso y ejemplos',
     icon: '⚡',
   },
   {
-    id: 'standard',
-    name: 'Post Estándar',
-    range: '1000 - 1200 palabras',
-    description: 'Optimizado para Topic Clusters',
+    id: 'case-study',
+    name: 'Caso de Éxito',
+    range: '800 - 1,200 palabras',
+    description: 'Historia de cliente: Problema → Solución → Resultados con métricas reales',
     icon: '🎯',
-  },
-  {
-    id: 'ultimate',
-    name: 'Guía Definitiva / Contenido Pilar',
-    range: '1500 - 2500 palabras',
-    description: 'FAQs jerarquizadas y tablas comparativas',
-    icon: '🏆',
   },
 ];
 
@@ -363,8 +370,13 @@ export default function FormatOutputSelector({
                   {/* Sub-Selectors */}
                   {isSelected && hasSub && format.subType === 'blog-types' && (
                     <div className="ml-4 space-y-2 overflow-hidden transition-all duration-300">
-                      <div className="text-xs font-semibold text-gray-700 mb-2">
-                        📏 Tipo de Blog Post
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-gray-700">
+                          📏 Selecciona un tipo (solo 1 permitido):
+                        </span>
+                        <span className="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded">
+                          Restringido
+                        </span>
                       </div>
                       {BLOG_TYPES.map((blogType) => (
                         <label
