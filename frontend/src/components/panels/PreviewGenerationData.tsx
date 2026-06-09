@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { Eye } from 'lucide-react';
 import { Client } from '@/src/types/client';
 import { renderPrompt, getPromptTemplate } from '@/src/services/promptRenderer';
 import { buildPromptData } from '@/src/utils/promptDataBuilder';
@@ -49,7 +50,10 @@ export default function PreviewGenerationData({
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-900">📋 PASO 6: Previsualizar Prompt y Generar</h2>
+          <div className="flex items-center gap-3">
+            <Eye size={28} className="text-blue-600" />
+            <h2 className="text-2xl font-bold text-slate-900">PASO 6: Previsualizar Prompt y Generar</h2>
+          </div>
           <button
             onClick={onCancel}
             className="text-slate-500 hover:text-slate-700 text-2xl font-bold"
