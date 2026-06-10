@@ -75,6 +75,13 @@ export default function PasoSEOGEO({
     }
   }, [formData.seoH1, formData.seoSlug, onChange]);
 
+  // Sincronizar estado de verificación con el padre
+  React.useEffect(() => {
+    onChange({
+      seoFieldsVerified: JSON.stringify(verified)
+    } as any);
+  }, [verified]);
+
   if (!selectedClient) {
     return (
       <div className="text-center py-12">
@@ -105,13 +112,6 @@ export default function PasoSEOGEO({
       return { ...prev, [key]: !prev[key] };
     });
   };
-
-  // Sincronizar estado de verificación con el padre
-  React.useEffect(() => {
-    onChange({
-      seoFieldsVerified: JSON.stringify(verified)
-    } as any);
-  }, [verified]);
 
   const h1Length = formData.seoH1.length;
   const h1Exceeded = h1Length > 60;
@@ -215,7 +215,7 @@ export default function PasoSEOGEO({
       gap="medium"
     >
       {/* Grid 2 columnas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
 
         {/* COLUMNA IZQUIERDA */}
         <div className="space-y-6">

@@ -1,5 +1,9 @@
-import { redirect } from 'next/navigation';
-
 export default function Home() {
-  redirect('/dashboard');
+  return (
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h1>IO Neruda</h1>
+      <p>Redirigiendo...</p>
+      <script>{`window.location.href = '/generators';`}</script>
+    </div>
+  );
 }

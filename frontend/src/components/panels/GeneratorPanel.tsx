@@ -7,6 +7,8 @@ import { Configuration, EnabledFormats } from '../../types/generator';
 import { useCreateConfiguration } from '../../hooks/useConfigurations';
 import { useGenerateContent } from '../../hooks/useGenerator';
 import { useClaudeGeneration } from '@/src/hooks/useClaudeGeneration';
+import { usePlannerInjection } from '@/src/hooks/usePlannerInjection';
+import { useTemplateInjection } from '@/src/hooks/useTemplateInjection';
 import { GenerationResponse, GenerationStep } from '@/src/types/aiGeneration';
 import PlanGeneratorInteligente, { InsightOrigin } from './PlanGeneratorInteligente';
 import type { ContentIntent } from '../selectors/ContentDefinition';
@@ -16,6 +18,7 @@ import PreviewPanel from './PreviewPanel';
 import ClientBriefingHeader from './ClientBriefingHeader';
 import ContentGenerationStep from './ContentGenerationStep';
 import PreviewGenerationData from './PreviewGenerationData';
+import OperationsCenter from './OperationsCenter';
 import { showToast } from '../shared/Toast';
 import { renderPrompt, getPromptTemplate } from '@/src/services/promptRenderer';
 import { buildPromptData, validatePromptData } from '@/src/utils/promptDataBuilder';
@@ -34,15 +37,15 @@ import PasoClienteWelcome from '../wizards/PasoClienteWelcome';
 import ClientBriefingPanel from './ClientBriefingPanel';
 
 const STEP_LABELS = [
-  'Cliente',           // PASO 0
-  'Formatos',          // PASO 1
-  'Personalidad',      // PASO 2
-  'Propuestas',        // PASO 3
-  'Keywords',          // PASO 4
-  'Incubación',        // PASO 5
-  'SEO/GEO',           // PASO 6
-  'Previsualizar',     // PASO 7 (Prompt Preview)
-  'Generando',         // PASO 8 (Content Generation)
+  'Cliente',              // PASO 0
+  'Formatos',             // PASO 1
+  'Personalidad',         // PASO 2
+  'Propuestas',           // PASO 3
+  'Keywords',             // PASO 4
+  'Incubación',           // PASO 5
+  'SEO/GEO',              // PASO 6
+  'Previsualizar',        // PASO 7
+  'Resultado',            // PASO 8 (Final)
 ];
 
 export default function GeneratorPanel() {
@@ -51,6 +54,8 @@ export default function GeneratorPanel() {
   const { createConfig } = useCreateConfiguration();
   const { generateContent, isGenerating } = useGenerateContent();
   const { generateContent: generateAIContent, isGenerating: isAIGenerating, step: aiStep, qualityScore, error: aiError } = useClaudeGeneration();
+  const { injectionData, isFromPlanner, applyInjection } = usePlannerInjection();
+  const { injectionData: templateData, isFromTemplate, applyInjection: applyTemplateInjection } = useTemplateInjection();
 
   // Wizard state (0-8: 9 pasos totales)
   const [currentStep, setCurrentStep] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8>(0);
@@ -58,6 +63,7 @@ export default function GeneratorPanel() {
   const [showGenerationStep, setShowGenerationStep] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<GenerationResponse | null>(null);
   const [variacionIndex, setVariacionIndex] = useState(0);
+  const [contentVersions, setContentVersions] = useState<Array<{ id: string; content: string; timestamp: number }>>([]);
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -346,6 +352,36 @@ export default function GeneratorPanel() {
     }
   }, [selectedClient]);
 
+  // Handle planner injection: Apply injected data and jump to PASO 6
+  React.useEffect(() => {
+    if (isFromPlanner && injectionData && selectedClient) {
+      // Apply injected data to formData
+      const injectedFormData = applyInjection(formData);
+      setFormData(injectedFormData);
+
+      // Jump to PASO 6 (SEO/GEO)
+      setCurrentStep(6);
+
+      // Show success notification
+      showToast.success('✨ Datos del planificador inyectados. Vamos al PASO 6: SEO/GEO');
+    }
+  }, [isFromPlanner, selectedClient]);
+
+  // Handle template injection: Apply injected template data
+  React.useEffect(() => {
+    if (isFromTemplate && templateData && selectedClient) {
+      // Apply injected template data to formData
+      const injectedFormData = applyTemplateInjection(formData);
+      setFormData(injectedFormData);
+
+      // Stay in PASO 0 so user can confirm client selection
+      setCurrentStep(0);
+
+      // Show success notification
+      showToast.success('🏭 Plantilla inyectada. Selecciona un cliente para continuar');
+    }
+  }, [isFromTemplate, selectedClient]);
+
   // Validación por paso
   const getStepValidation = (step: number): boolean => {
     switch (step) {
@@ -388,7 +424,7 @@ export default function GeneratorPanel() {
       case 7:
         return true; // PASO 7: Previsualizar siempre disponible
       case 8:
-        return !!generatedContent; // PASO 8: Generado
+        return !!generatedContent; // PASO 8: Resultado final
       default:
         return false;
     }
@@ -427,6 +463,8 @@ export default function GeneratorPanel() {
       const result = await generateAIContent(renderedPrompt);
       setGeneratedContent(result);
       showToast.success('Contenido generado exitosamente');
+      // Navegar al Resultado después de generar
+      setCurrentStep(8);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error generating content';
       setError(message);
@@ -452,6 +490,35 @@ export default function GeneratorPanel() {
       const message = err instanceof Error ? err.message : 'Error regenerating';
       setError(message);
       showToast.error(`${message}`);
+    }
+  };
+
+  const handleRegenerateWithModifier = async (modifier: string): Promise<GenerationResponse> => {
+    if (!selectedClient || !selectedKeyword) {
+      throw new Error('Datos del cliente o keyword faltantes');
+    }
+
+    try {
+      const promptData = buildPromptData(formData, selectedClient, selectedKeyword);
+      const template = getPromptTemplate();
+      const renderedPrompt = renderPrompt(template, promptData);
+
+      // Map common regeneration modifiers to detailed instructions
+      const modifierInstructions: Record<string, string> = {
+        complete_rewrite: 'Reescribe completamente el contenido con un enfoque completamente diferente. Mantén el tema pero cambia la estructura, ejemplos y perspectiva.',
+        deeper_technical: 'Amplía significativamente el contenido con análisis técnico profundo, datos especializados y explicaciones avanzadas.',
+        seasonal_focus: 'Adapta el contenido para la temporada actual, añadiendo referencias estacionales relevantes y ajustes contextuales.',
+        keyword_density: 'Aumenta la densidad de palabras clave principales en todo el contenido mientras mantienes la fluidez y legibilidad natural.',
+      };
+
+      const instruction = modifierInstructions[modifier] || modifier;
+      const enhancedPrompt = `${renderedPrompt}\n\nINSTRUCCIÓN DE REGENERACIÓN: ${instruction}`;
+
+      const result = await generateAIContent(enhancedPrompt);
+      return result;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error regenerating content';
+      throw new Error(message);
     }
   };
 
@@ -534,9 +601,9 @@ export default function GeneratorPanel() {
         .filter(([, format]) => format.selected)
         .map(([key]) => key as any);
 
-      selectedFormats.forEach(format => {
+      selectedFormats.forEach((format, index) => {
         addContentResult({
-          id: `result_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+          id: generatedContent?.metadata.id || `result_${Date.now()}_${index}_${Math.random().toString(36).substring(2, 15)}`,
           clientId: selectedClient.id,
           clientName: selectedClient.name,
           postTitle: formData.name,
@@ -615,12 +682,12 @@ export default function GeneratorPanel() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: '#f5f5f5' }}>
+    <div className="w-full h-full flex flex-col overflow-hidden" style={{ background: '#f5f5f5' }}>
       {/* ===== STICKY HEADER CONTAINER ===== */}
-      <div className="sticky top-0 z-30 w-full flex flex-col gap-4 backdrop-blur-md px-6">
+      <div className="sticky top-0 z-30 w-full flex flex-col gap-2 backdrop-blur-md px-4">
 
         {/* BLOQUE 1: Selector de Cliente (PASO 0) */}
-        <div className="w-full bg-white border border-slate-200 rounded-lg py-6 px-6">
+        <div className="w-full bg-white border border-slate-200 rounded-lg py-3 px-4">
           <WizardClientHeader
             selectedClient={selectedClient}
             clients={clients}
@@ -629,14 +696,14 @@ export default function GeneratorPanel() {
         </div>
 
         {/* BLOQUE 2: Barra de Progreso con Pasos - CONTENEDOR INDEPENDIENTE SIN ROUNDED */}
-        <div className="w-full bg-white border border-slate-300 py-6 px-6">
+        <div className="w-full bg-white border border-slate-300 py-3 px-4">
           <ProgressBar currentStep={currentStep} totalSteps={9} stepLabels={STEP_LABELS} />
         </div>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="px-6 pt-4 pb-0">
+        <div className="px-4 pt-2 pb-0">
           <div
             className="p-4 rounded-lg w-full"
             style={{ backgroundColor: '#fee2e2', borderColor: '#fca5a5', color: '#991b1b', border: '1px solid' }}
@@ -647,7 +714,7 @@ export default function GeneratorPanel() {
       )}
 
       {/* Main Content - Pasos Dinámicos (con margen superior para sticky header) */}
-      <div className="flex-1 overflow-y-auto w-full pt-4">
+      <div className="flex-1 overflow-y-auto w-full pt-2">
         {/* PASO 0: Cliente Welcome - Full Height */}
         {currentStep === 0 && !selectedClient && (
           <PasoClienteWelcome />
@@ -655,7 +722,7 @@ export default function GeneratorPanel() {
 
         {/* Resto de pasos */}
         {currentStep !== 0 && (
-          <div className="w-full px-6 py-6">
+          <div className="w-full px-4 py-4">
             {/* PASO 1: Formatos */}
             {currentStep === 1 && (
             <PasoFormatos
@@ -763,44 +830,146 @@ export default function GeneratorPanel() {
                 selectedClient={selectedClient}
                 selectedKeyword={selectedKeyword}
                 formData={formData}
+                isGenerating={isAIGenerating}
+                step={aiStep}
                 onConfirm={async () => {
-                  await handleStartAIGeneration();
-                  setCurrentStep(8);
                   setShowGenerationStep(true);
+                  await handleStartAIGeneration();
                 }}
                 onCancel={() => setCurrentStep(6)}
               />
             </div>
           )}
 
-          {/* PASO 8: Generado */}
-          {currentStep === 8 && showGenerationStep && (
-            <ContentGenerationStep
-              isGenerating={isAIGenerating}
-              step={aiStep}
-              qualityScore={qualityScore}
-              content={generatedContent}
-              error={aiError}
-              onRegenerate={handleRegenerateContent}
-              onSave={handleSaveGeneratedContent}
-              onClose={handleCloseGeneration}
-            />
+
+          {/* PASO 8: Centro de Operaciones */}
+          {currentStep === 8 && generatedContent && (
+            <div className="w-full h-full flex flex-col">
+              <OperationsCenter
+                generatedContent={generatedContent}
+                selectedClient={selectedClient?.name || null}
+                selectedClientId={selectedClient?.id || null}
+                selectedKeyword={selectedKeyword}
+                selectedFormats={formData.selectedFormats}
+                targetAudience={formData.targetAudience}
+                selectedContentIntent={formData.selectedContentIntent}
+                keywordsNiche={formData.keywordsNiche}
+                onSaveVersion={(content) => {
+                  // Agregar a contentVersions si lo necesitas
+                  const newVersion = {
+                    id: `version-${Date.now()}`,
+                    content,
+                    timestamp: Date.now(),
+                  };
+                  setContentVersions([...contentVersions, newVersion]);
+                }}
+                onContentUpdate={(newContent) => {
+                  setGeneratedContent(newContent);
+                }}
+                onRegenerateWithModifier={handleRegenerateWithModifier}
+                onCreateNewArticle={() => {
+                  // Volver al PASO 0 para crear otro artículo
+                  setCurrentStep(0);
+                  setGeneratedContent(null);
+                }}
+                onFinalize={() => {
+                  // Reset the wizard
+                  setCurrentStep(0);
+                  setFormData({
+                    name: '',
+                    selectedProposal: null,
+                    keywordsNiche: [],
+                    keywordsLongtail: [],
+                    tone: 'professional',
+                    enabledFormats: {
+                      blog: false,
+                      email: false,
+                      social_linkedin: false,
+                      social_instagram: false,
+                      whatsapp: false,
+                      pdf: false,
+                    },
+                    insightOrigin: 'direct_idea',
+                    contentIntent: 'educational',
+                    localGeoEnabled: false,
+                    localGeoValue: '',
+                    blogLength: 'standard',
+                    language: 'es',
+                    targetAudience: '',
+                    selectedContentIntent: null,
+                    selectedSubIntencion: null,
+                    selectedMainTone: null,
+                    selectedTone: null,
+                    selectedSubtone: null,
+                    selectedNarrativeAngle: null,
+                    h1Title: '',
+                    h2Title: '',
+                    urlSlug: '',
+                    internalLink1: '',
+                    internalLink2: '',
+                    semanticElements: new Set(),
+                    subcategoriaPropuesta: null,
+                    propuestaElegida: null,
+                    seoH1: '',
+                    seoH2: '',
+                    seoSlug: '',
+                    metaTitle: '',
+                    metaDescription: '',
+                    isLocalSEO: false,
+                    geoRegion: '',
+                    geoCiudad: '',
+                    seoFieldsVerified: JSON.stringify({
+                      metaTitle: false,
+                      metaDescription: false,
+                      h1: false,
+                      h2: false,
+                      slug: false,
+                      links: false,
+                      localSeo: false,
+                    }),
+                    keywordsSeleccionadas: [],
+                    selectedFormats: {},
+                    subSelectorValues: {},
+                  });
+                  setGeneratedContent(null);
+                  setShowGenerationStep(false);
+                  showToast.success('Proceso completado. Puedes crear un nuevo contenido.');
+                }}
+              />
+            </div>
           )}
           </div>
         )}
       </div>
 
-      {/* Navigation Footer */}
-      <NavigationFooter
-        currentStep={currentStep}
-        totalSteps={9}
-        onPrevious={() => setCurrentStep((Math.max(0, currentStep - 1)) as any)}
-        onNext={() => setCurrentStep((Math.min(8, currentStep + 1)) as any)}
-        isNextDisabled={!canProceedToNext && currentStep !== 8}
-        isPreviousDisabled={currentStep === 0}
-        nextLabel={currentStep === 8 ? 'Finalizar' : 'Siguiente'}
-        previousLabel="Anterior"
-      />
+      {/* Navigation Footer - No show in PASO 7, 8, 9 */}
+      {currentStep !== 7 && currentStep !== 8 && (
+        <NavigationFooter
+          currentStep={currentStep}
+          totalSteps={9}
+          onPrevious={() => setCurrentStep((Math.max(0, currentStep - 1)) as any)}
+          onNext={() => setCurrentStep((Math.min(7, currentStep + 1)) as any)}
+          isNextDisabled={!canProceedToNext}
+          isPreviousDisabled={currentStep === 0}
+          nextLabel="Siguiente"
+          previousLabel="Anterior"
+        />
+      )}
+
+      {/* Paso 7: Solo Anterior - Sin Siguiente */}
+      {currentStep === 7 && (
+        <div className="w-full px-4 py-3 bg-white border-t border-gray-200 flex items-center gap-3">
+          <button
+            onClick={() => setCurrentStep(6)}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700 hover:bg-gray-200"
+          >
+            ← Anterior
+          </button>
+          <div className="flex-1 flex items-center justify-center text-sm text-gray-600">
+            Paso 7 de 9
+          </div>
+        </div>
+      )}
     </div>
   );
 }

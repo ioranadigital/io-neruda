@@ -10,6 +10,7 @@ interface StepContainerProps {
   iconColor?: string;
   columns?: 1 | 2 | 3 | '1-2' | '2-1';
   gap?: 'small' | 'medium' | 'large';
+  actionButton?: ReactNode;
   children: ReactNode;
 }
 
@@ -34,16 +35,20 @@ export default function StepContainer({
   iconColor = 'blue',
   columns = 1,
   gap = 'medium',
+  actionButton,
   children,
 }: StepContainerProps) {
   return (
     <div className="space-y-6 w-full">
       {/* Header Container - Unified Green Theme */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
-        {IconComponent && (
-          <IconComponent size={28} className="flex-shrink-0 text-green-600" />
-        )}
-        <h2 className="text-xl font-bold text-green-700">{title}</h2>
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          {IconComponent && (
+            <IconComponent size={28} className="flex-shrink-0 text-green-600" />
+          )}
+          <h2 className="text-xl font-bold text-green-700">{title}</h2>
+        </div>
+        {actionButton && <div>{actionButton}</div>}
       </div>
 
       {/* Content Grid */}

@@ -45,6 +45,22 @@ export default function PasoIncubacion({
 }: PasoIncubacionProps) {
   const [isRegenerating, setIsRegenerating] = useState(false);
 
+  // Todos los hooks ANTES de cualquier condicional
+  const handleRegenerarIdeas = useCallback(async () => {
+    setIsRegenerating(true);
+    // Limpiar selección actual
+    onChange({ propuestaElegida: null });
+
+    // Simular llamada a API - 1.5 segundos
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Alternar variación
+    const newVariacion = variacionIndex + 1;
+    onVariacionChange?.(newVariacion);
+
+    setIsRegenerating(false);
+  }, [variacionIndex, onChange, onVariacionChange]);
+
   if (!selectedClient) {
     return (
       <div className="text-center py-12">
@@ -77,21 +93,6 @@ export default function PasoIncubacion({
     });
   };
 
-  const handleRegenerarIdeas = useCallback(async () => {
-    setIsRegenerating(true);
-    // Limpiar selección actual
-    onChange({ propuestaElegida: null });
-
-    // Simular llamada a API - 1.5 segundos
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Alternar variación
-    const newVariacion = variacionIndex + 1;
-    onVariacionChange?.(newVariacion);
-
-    setIsRegenerating(false);
-  }, [variacionIndex, onChange, onVariacionChange]);
-
   const regenerarButton = (
     <button
       onClick={handleRegenerarIdeas}
@@ -119,13 +120,13 @@ export default function PasoIncubacion({
 
       {/* Grid de Tarjetas - Con Skeleton Loaders */}
       {isRegenerating ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
           {Array.from({ length: 5 }).map((_, i) => (
             <SkeletonLoader key={i} />
           ))}
         </div>
       ) : (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
         {propuestas.map((propuesta) => {
           const isSelected = formData.propuestaElegida === propuesta.id;
 
@@ -145,7 +146,7 @@ export default function PasoIncubacion({
             <button
               key={propuesta.id}
               onClick={() => handleSelectPropuesta(propuesta.id)}
-              className={`relative text-left rounded-xl p-6 transition-all duration-300 border ${
+              className={`relative text-left rounded-xl p-4 transition-all duration-300 border ${
                 isSelected
                   ? colors.accentColor === 'blue'
                     ? 'bg-blue-50 border-blue-300 shadow-[0_0_20px_rgba(59,130,246,0.3)]'

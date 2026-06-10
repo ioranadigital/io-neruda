@@ -247,9 +247,9 @@ export default function PasoFormatos({
       columns={1}
       gap="medium"
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* CONTENEDOR 1: Idioma Contenido */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 hover:bg-blue-50 hover:shadow-md transition cursor-pointer">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 hover:bg-blue-50 hover:shadow-md transition cursor-pointer">
           <div className="flex items-center gap-3 mb-2">
             <Languages className="w-6 h-6 text-blue-600" />
             <h3 className="text-lg font-semibold text-blue-700">Idioma Contenido</h3>
@@ -262,7 +262,7 @@ export default function PasoFormatos({
         </div>
 
         {/* CONTENEDOR 2: Web & SEO */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 hover:bg-purple-50 hover:shadow-md transition cursor-pointer">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 hover:bg-purple-50 hover:shadow-md transition cursor-pointer">
           <div className="flex items-center gap-3 mb-2">
             <Globe className="w-6 h-6 text-purple-600" />
             <h3 className="text-lg font-semibold text-purple-700">Web & SEO</h3>
@@ -349,7 +349,7 @@ export default function PasoFormatos({
         </div>
 
         {/* CONTENEDOR 3: Social Media */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 hover:bg-pink-50 hover:shadow-md transition cursor-pointer">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 hover:bg-pink-50 hover:shadow-md transition cursor-pointer">
           <div className="flex items-center gap-3 mb-2">
             <Share2 className="w-6 h-6 text-pink-600" />
             <h3 className="text-lg font-semibold text-pink-700">Social Media</h3>
@@ -436,7 +436,7 @@ export default function PasoFormatos({
         </div>
 
         {/* CONTENEDOR 4: Email Mensajería */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 hover:bg-amber-50 hover:shadow-md transition cursor-pointer">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 hover:bg-amber-50 hover:shadow-md transition cursor-pointer">
           <div className="flex items-center gap-3 mb-2">
             <Mail className="w-6 h-6 text-amber-600" />
             <h3 className="text-lg font-semibold text-amber-700">Email Mensajería</h3>

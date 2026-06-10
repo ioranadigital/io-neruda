@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, ShoppingCart, Mail, MessageSquare, Calendar, FileText,
-  Users, Settings, HelpCircle, BarChart3, Zap, Menu as MenuIcon, FileStack, Plug
+  Users, Settings, HelpCircle, BarChart3, Zap, Menu as MenuIcon, FileStack, Plug, ClipboardList
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -36,6 +36,7 @@ const NAV_ITEMS = [
     title: 'HERRAMIENTAS',
     items: [
       { href: '/contenidos', icon: FileStack, label: 'Contenidos' },
+      { href: '/planner', icon: ClipboardList, label: 'Planificador - Crear planes' },
       { href: '/integraciones', icon: Plug, label: 'Integraciones' },
     ]
   },

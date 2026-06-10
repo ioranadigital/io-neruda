@@ -55,7 +55,7 @@ export default function ContentGenerationStep({
   return (
     <div className="bg-white rounded-lg border border-slate-200 p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">✨ PASO 7: Contenido Generado</h2>
+        <h2 className="text-2xl font-bold text-slate-900">✨ PASO 8: Contenido Generado</h2>
         {step === 'complete' && !isGenerating && (
           <button
             onClick={onClose}
@@ -136,34 +136,10 @@ export default function ContentGenerationStep({
           </button>
 
           <button
-            onClick={() => onSave('draft')}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-          >
-            Guardar como Borrador
-          </button>
-
-          <button
-            onClick={() => onSave('version')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              content.qualityMetrics.passesQualityThreshold
-                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                : 'bg-slate-300 text-slate-500 cursor-not-allowed'
-            }`}
-            disabled={!content.qualityMetrics.passesQualityThreshold}
-            title={
-              !content.qualityMetrics.passesQualityThreshold
-                ? 'La puntuación debe ser ≥80 para guardar como versión'
-                : ''
-            }
-          >
-            Guardar Versión
-          </button>
-
-          <button
             onClick={onClose}
-            className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-lg font-medium transition-colors ml-auto"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors ml-auto"
           >
-            Cerrar
+            Crear Contenido
           </button>
         </div>
       )}

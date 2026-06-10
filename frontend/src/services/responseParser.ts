@@ -93,5 +93,13 @@ export function calculateQualityMetrics(metrics: any): QualityMetrics {
 }
 
 export function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  // Usar crypto.randomUUID si está disponible, sino usar fallback
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback: combinar Date.now, Math.random y secuencia de timestamp
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).substring(2, 15);
+  const randomPart2 = Math.random().toString(36).substring(2, 15);
+  return `${timestamp}-${randomPart}${randomPart2}`;
 }

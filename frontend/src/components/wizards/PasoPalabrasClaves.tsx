@@ -391,38 +391,7 @@ export default function PasoPalabrasClaves({
     return true;
   };
 
-  // Asegurar que Nivel 6 siempre esté seleccionado por defecto
-  React.useEffect(() => {
-    const defaultLevel6 = getDefaultLevel6Keywords(selectedClient);
-    // Si no hay keywords seleccionadas, inicializar con el Nivel 6
-    if (selectedKeywords.length === 0 && defaultLevel6.length > 0) {
-      onKeywordChange(defaultLevel6);
-    }
-  }, [selectedClient?.id]);
-
-  if (!selectedClient) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">Selecciona un cliente primero</p>
-      </div>
-    );
-  }
-
-  const handleAddKeyword = (keyword: string) => {
-    if (keyword.trim() && !selectedKeywords.includes(keyword.trim())) {
-      // Respeta el límite máximo de SOLO keywords manuales (Niveles 1-5, excluye Nivel 6)
-      if (manualKeywords.length < maxKeywordsAllowed) {
-        onKeywordChange([...selectedKeywords, keyword.trim()]);
-        setNewKeyword('');
-      }
-    }
-  };
-
-  const handleRemoveKeyword = (keyword: string) => {
-    onKeywordChange(selectedKeywords.filter((kw) => kw !== keyword));
-  };
-
-  // Mapea cada keyword a su nivel (usando la estructura enriquecida)
+  // Mapea cada keyword a su nivel (usando la estructura enriquecida) - ANTES de cualquier if
   const getKeywordLevel = React.useCallback((keyword: string) => {
     if (!keyword) return null;
     try {
@@ -480,6 +449,37 @@ export default function PasoPalabrasClaves({
     }
   }, [selectedKeywords, getKeywordLevel]);
 
+  // Asegurar que Nivel 6 siempre esté seleccionado por defecto
+  React.useEffect(() => {
+    const defaultLevel6 = getDefaultLevel6Keywords(selectedClient);
+    // Si no hay keywords seleccionadas, inicializar con el Nivel 6
+    if (selectedKeywords.length === 0 && defaultLevel6.length > 0) {
+      onKeywordChange(defaultLevel6);
+    }
+  }, [selectedClient?.id]);
+
+  if (!selectedClient) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">Selecciona un cliente primero</p>
+      </div>
+    );
+  }
+
+  const handleAddKeyword = (keyword: string) => {
+    if (keyword.trim() && !selectedKeywords.includes(keyword.trim())) {
+      // Respeta el límite máximo de SOLO keywords manuales (Niveles 1-5, excluye Nivel 6)
+      if (manualKeywords.length < maxKeywordsAllowed) {
+        onKeywordChange([...selectedKeywords, keyword.trim()]);
+        setNewKeyword('');
+      }
+    }
+  };
+
+  const handleRemoveKeyword = (keyword: string) => {
+    onKeywordChange(selectedKeywords.filter((kw) => kw !== keyword));
+  };
+
   return (
     <StepContainer
       title="Palabras Claves del Contenido"
@@ -493,7 +493,7 @@ export default function PasoPalabrasClaves({
 
         {/* Banner Informativo Según Contexto */}
         {isKeywordsBypassed && (
-          <div className="px-6 md:px-8 py-4 border-t border-blue-200 bg-blue-50 flex items-start gap-3">
+          <div className="px-4 md:px-8 py-4 border-t border-blue-200 bg-blue-50 flex items-start gap-3">
             <CheckCircle2 size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-blue-900">Formato Mensajería Detectado</p>
@@ -503,7 +503,7 @@ export default function PasoPalabrasClaves({
         )}
 
         {isKeywordsOptional && formatType === 'social_only' && (
-          <div className="px-6 md:px-8 py-4 border-t border-amber-200 bg-amber-50 flex items-start gap-3">
+          <div className="px-4 md:px-8 py-4 border-t border-amber-200 bg-amber-50 flex items-start gap-3">
             <AlertCircle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
               <div className="flex items-center gap-2">
@@ -516,10 +516,10 @@ export default function PasoPalabrasClaves({
         )}
 
         {/* Contenido Fijo */}
-        <div className="px-6 md:px-8 py-6 border-t border-slate-200 bg-white">
+        <div className="px-4 md:px-8 py-3 border-t border-slate-200 bg-white">
 
             {/* REJILLA DE DOBLE COLUMNA SIMÉTRICA */}
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
               {/* COLUMNA IZQUIERDA - Panel de Selección (50%) */}
               <div>
                 {/* Acordeones Independientes Apilados */}

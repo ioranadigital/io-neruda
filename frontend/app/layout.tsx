@@ -5,6 +5,8 @@ export const metadata = {
   description: 'Platform de generación de contenidos',
 };
 
+export const revalidate = 0;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">

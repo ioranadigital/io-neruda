@@ -13,9 +13,9 @@ export default function ProgressBar({ currentStep, totalSteps, stepLabels }: Pro
   const progress = ((currentStep) / totalSteps) * 100;
 
   return (
-    <div className="w-full px-6">
+    <div className="w-full px-0">
       {/* Progress Bar - Linear Indicator */}
-      <div className="mb-4">
+      <div className="mb-2">
         <div className="w-full bg-gray-200/60 rounded-full h-2">
           <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-300"

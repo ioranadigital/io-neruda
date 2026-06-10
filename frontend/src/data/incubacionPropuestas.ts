@@ -12,6 +12,46 @@ export interface IncubacionPropuesta {
   slug: string;
 }
 
+export interface Subcategoria {
+  id: string;
+  nombre: string;
+  descripcion: string;
+}
+
+// MAPEO DE SUBCATEGORÍAS POR PROPUESTA (PASO 3)
+export const SUBCATEGORIAS_POR_PROPUESTA: Record<string, Subcategoria[]> = {
+  'guide': [
+    { id: 'introduccion-principiantes', nombre: 'Introducción para Principiantes', descripcion: 'Enfocado en conceptos base desde cero.' },
+    { id: 'manual-avanzado', nombre: 'Manual Avanzado / Deep Dive', descripcion: 'Contenido técnico y profundo para expertos.' },
+    { id: 'guia-compra-seleccion', nombre: 'Guía de Compra y Selección', descripcion: 'Criterios clave antes de adquirir el producto.' },
+  ],
+  'comparison': [
+    { id: 'modelo-vs-modelo', nombre: 'Modelo Vs Modelo (Directa)', descripcion: 'Enfrentamiento técnico de dos productos específicos.' },
+    { id: 'tecnologia-concepto', nombre: 'Tecnología o Concepto', descripcion: 'Comparación de dos soluciones o enfoques alternativos.' },
+    { id: 'marca-vs-marca', nombre: 'Marca A vs Marca B', descripcion: 'Análisis de catálogos y filosofías de fabricantes rivales.' },
+  ],
+  'tips': [
+    { id: 'quick-fix', nombre: 'Solución Rápida (Quick Fix)', descripcion: 'Consejos inmediatos para resolver un contratiempo.' },
+    { id: 'optimizacion-rendimiento', nombre: 'Optimización y Rendimiento', descripcion: 'Trucos para exprimir al máximo el rendimiento.' },
+    { id: 'errores-comunes', nombre: 'Errores Comunes a Evitar', descripcion: 'Lista de fallos típicos y cómo prevenirlos.' },
+  ],
+  'case_study': [
+    { id: 'restauracion-recuperacion', nombre: 'Restauración o Recuperación Real', descripcion: 'Proceso artesanal de rescate de un producto.' },
+    { id: 'transformacion-antes-despues', nombre: 'Transformación Antes y Después', descripcion: 'Análisis del impacto o cambio en un entorno.' },
+    { id: 'logro-hito-tecnico', nombre: 'Logro o Hito Técnico', descripcion: 'Cómo se resolvió un desafío complejo paso a paso.' },
+  ],
+  'tutorial': [
+    { id: 'montaje-instalacion', nombre: 'Montaje e Instalación (DIY)', descripcion: 'Instrucciones de armado y configuración inicial.' },
+    { id: 'mantenimiento-limpieza', nombre: 'Mantenimiento y Limpieza Profunda', descripcion: 'Pasos para cuidar y extender la vida útil.' },
+    { id: 'conservacion-materiales', nombre: 'Conservación de Materiales', descripcion: 'Técnicas avanzadas para preservar componentes.' },
+  ],
+  'trends': [
+    { id: 'tendencia-temporada', nombre: 'Informe de Temporada / Estación', descripcion: 'Lo que viene con fuerza en el mercado actual.' },
+    { id: 'disrupcion-tecnologia', nombre: 'Disrupción y Nuevas Tecnologías', descripcion: 'Análisis de innovaciones emergentes.' },
+    { id: 'predicciones-consumo', nombre: 'Predicciones de Consumo', descripcion: 'Hacia dónde se dirigen el interés y los valores de los usuarios.' },
+  ],
+};
+
 // PROPUESTAS DINÁMICAS POR CLIENTE
 const PROPUESTAS_SURFVINTAGE: IncubacionPropuesta[] = [
   {
@@ -247,15 +287,215 @@ const PROPUESTAS_ESGARDEN: IncubacionPropuesta[] = [
   },
 ];
 
-// FUNCIÓN PRINCIPAL: Generar propuestas según el cliente
-export const generarPropuestasIncubacion = (client: Client | null): IncubacionPropuesta[] => {
+// SETS ALTERNATIVOS - Variación B para evitar repetición
+const PROPUESTAS_SURFVINTAGE_ALT: IncubacionPropuesta[] = [
+  {
+    id: 'hot_take',
+    badge: 'Hot Take / Contra-corriente',
+    icon: 'Zap',
+    titulo: 'Por qué los pantalones de pana vintage de los 70 son la inversión de moda más inteligente de 2024',
+    metaTitle: 'Pantalones Pana Vintage 70s: La Mejor Inversión en Moda | Surfvintage',
+    metaDescription: 'Análisis detallado de por qué los pantalones de pana de los 70 representan lujo asequible y durabilidad versus el fast-fashion actual.',
+    puntosClave: [
+      'Durabilidad comprobada: tejidos que aguantan 40+ años.',
+      'Sostenibilidad real: una prenda vs 100 camisetas de hoy.',
+      'Valorización: estos pantalones suben de precio cada año.',
+    ],
+    puntosEstructura: [
+      'Tesis provocadora: La opinión contraria que defenderás',
+      'Argumentos sólidos: 3-4 razones respaldadas con datos',
+      'Conclusión: Por qué tu visión es el futuro',
+    ],
+    slug: 'pantalones-pana-vintage-inversion-moda',
+  },
+  {
+    id: 'comparison',
+    badge: 'Comparativa / Análisis Técnico',
+    icon: 'BarChart3',
+    titulo: 'Chaquetas Levi\'s auténticas de los 80 vs réplicas chinas: análisis técnico y forense',
+    metaTitle: 'Levi\'s Vintage 80s: Auténticas vs Falsificaciones | Surfvintage',
+    metaDescription: 'Guía forense para diferenciar Levi\'s vintage auténticas de los 80 de las falsificaciones modernas. Costuras, etiquetas y detalles ocultos.',
+    puntosClave: [
+      'Análisis de etiquetas vintage vs reproducciones.',
+      'Detalles de costura que revelan autenticidad.',
+      'Patina natural vs envejecimiento artificial.',
+    ],
+    puntosEstructura: [
+      'Contexto: Historia de las Levi\'s en los 80',
+      'Comparación técnica: Auténticas vs falsas',
+      'Checklist forense: Cómo identificar en 30 segundos',
+    ],
+    slug: 'levis-80s-autenticas-vs-falsas',
+  },
+  {
+    id: 'tutorial',
+    badge: 'Tutorial / Restauración',
+    icon: 'Wrench',
+    titulo: 'Cómo restaurar y tingir camisetas vintage de los 90 sin dañar el tejido',
+    metaTitle: 'Restauración de Camisetas Vintage 90s: Guía Completa | Surfvintage',
+    metaDescription: 'Tutorial paso a paso para limpiar, restaurar y teñir camisetas vintage de algodón sin perder calidad ni color original.',
+    puntosClave: [
+      'Técnicas de limpieza segura para tejidos antiguos.',
+      'Métodos de teñido natural vs químicos.',
+      'Reparación de grietas en impresiones vintage.',
+    ],
+    puntosEstructura: [
+      'Introducción: Por qué debería aprender esto',
+      'Pasos secuenciales: 7-8 pasos claros y accionables',
+      'Conclusión + descargables: Recursos para profundizar',
+    ],
+    slug: 'restauracion-camisetas-vintage-90s',
+  },
+  {
+    id: 'case_study',
+    badge: 'Caso de Éxito / Colección Récord',
+    icon: 'Trophy',
+    titulo: 'Cómo una colección de sudaderas vintage de los 80 alcanzó el valor de un coche en 3 años',
+    metaTitle: 'Colección Vintage Récord: De €500 a €25.000 | Surfvintage',
+    metaDescription: 'Historia real de un coleccionista que convirtió €500 iniciales en una colección de sudaderas de diseñador vintage por €25.000 en menos de 3 años.',
+    puntosClave: [
+      'Estrategia de adquisición inteligente y timing.',
+      'Identificación temprana de diseñadores emergentes.',
+      'Documentación y certificación para valorización.',
+    ],
+    puntosEstructura: [
+      'Situación inicial: El coleccionista y su primer hallazgo',
+      'Intervención: Qué hizo diferente, decisiones clave',
+      'Resultados cuantificables: El viaje hasta €25.000',
+    ],
+    slug: 'coleccion-sudaderas-vintage-25mil',
+  },
+  {
+    id: 'storytelling',
+    badge: 'Storytelling / Memoria Textil',
+    icon: 'BookMarked',
+    titulo: 'La chaqueta de cuero de un músico de grunge: cómo una prenda guarda 30 años de historias',
+    metaTitle: 'Chaqueta Grunge: 30 Años de Historia en una Prenda | Surfvintage',
+    metaDescription: 'Narrativa emocional sobre una chaqueta de cuero auténtica de los 90 que perteneció a un músico de Seattle y su viaje hasta hoy.',
+    puntosClave: [
+      'La identidad que porta una prenda: más allá del tejido.',
+      'Conexión emocional del coleccionista con cada pieza.',
+      'Cómo el vintage preserva memorias de épocas.',
+    ],
+    puntosEstructura: [
+      'Contexto histórico: Seattle, los 90, la música grunge.',
+      'Viaje narrativo: Los dueños anteriores y sus historias.',
+      'Conclusión emocional: Por qué esta chaqueta importa hoy.',
+    ],
+    slug: 'chaqueta-grunge-historia-30-anos',
+  },
+];
+
+const PROPUESTAS_ESGARDEN_ALT: IncubacionPropuesta[] = [
+  {
+    id: 'tips',
+    badge: 'Tips & Trucos / Mantenimiento',
+    icon: 'Lightbulb',
+    titulo: '7 trucos de mantenimiento estival para que tu jardín prospere sin riego diario en agosto',
+    metaTitle: 'Trucos Jardín Verano: Sin Riego Diario | Esgarden',
+    metaDescription: 'Consejos inmediatos para mantener plantas vivas en agosto sin riego diario. Mulching, orientación solar y plantas resilientes.',
+    puntosClave: [
+      'Técnica de mulching para retener humedad.',
+      'Reorientación de plantas según sombra estival.',
+      'Plantas que sobreviven al abandono de verano.',
+    ],
+    puntosEstructura: [
+      'Introducción: Por qué debería aprender esto',
+      'Pasos secuenciales: 5-7 trucos claros y accionables',
+      'Conclusión + descargables: Recursos para profundizar',
+    ],
+    slug: 'trucos-jardin-verano-sin-riego',
+  },
+  {
+    id: 'hot_take',
+    badge: 'Análisis / Tendencias',
+    icon: 'Zap',
+    titulo: 'Por qué los jardines verticales son un mito de sostenibilidad (y qué hacer en su lugar)',
+    metaTitle: 'Jardines Verticales: Mito vs Realidad | Esgarden',
+    metaDescription: 'Análisis crítico de los jardines verticales modernos: por qué fallan, costos ocultos, y alternativas realmente sostenibles.',
+    puntosClave: [
+      'Costos de mantenimiento real de sistemas verticales.',
+      'Problemas de drenaje y humedad en muros.',
+      'Alternativas más efectivas y económicas.',
+    ],
+    puntosEstructura: [
+      'Tesis provocadora: La opinión contraria que defenderás',
+      'Argumentos sólidos: 3-4 razones respaldadas con datos',
+      'Conclusión: Por qué tu visión es el futuro',
+    ],
+    slug: 'jardines-verticales-mito-sostenibilidad',
+  },
+  {
+    id: 'commercial',
+    badge: 'Oferta Especial / Summer Pack',
+    icon: 'Target',
+    titulo: 'Pack jardinería de verano: Plantas resistentes + riego automático + asesoramiento premium (descuento 30%)',
+    metaTitle: 'Pack Verano: Plantas + Riego Automático -30% | Esgarden',
+    metaDescription: 'Paquete completo para preparar tu jardín en verano: 10 plantas resistentes + sistema de riego automático + 3 asesorías con experto.',
+    puntosClave: [
+      'Descuento 30% válido solo este mes.',
+      'Plantas seleccionadas para clima veraniego.',
+      'Instalación de riego automático incluida.',
+    ],
+    puntosEstructura: [
+      'Problema urgente: La brecha de dolor que resuelves',
+      'Tu solución: Por qué eres la mejor opción (diferenciadores)',
+      'Cierre urgente: CTA con escasez, tiempo limitado o exclusividad',
+    ],
+    slug: 'pack-jardin-verano-descuento-30',
+  },
+  {
+    id: 'case_study',
+    badge: 'Transformación Real / Antes y Después',
+    icon: 'Trophy',
+    titulo: 'De balcón gris a mini-huerto productivo: cómo un apartamento pequeño produjo 40kg de hortalizas en 4 meses',
+    metaTitle: 'Mini-Huerto Balcón: 40kg de Hortalizas | Esgarden',
+    metaDescription: 'Caso real de cómo convertir un balcón de 6m² en un huerto productivo que genera 40kg de hortalizas en 4 meses sin experiencia previa.',
+    puntosClave: [
+      'Selección de cultivos para espacios pequeños.',
+      'Rendimiento real con inversión mínima.',
+      'Ahorro mensual vs compra en mercado.',
+    ],
+    puntosEstructura: [
+      'Situación inicial: El desafío del espacio pequeño',
+      'Intervención: Qué se hizo exactamente, paso a paso',
+      'Resultados cuantificables: 40kg, ahorro, satisfacción',
+    ],
+    slug: 'balcon-huerto-40kg-hortalizas',
+  },
+  {
+    id: 'storytelling',
+    badge: 'Narrativa / Generacional',
+    icon: 'BookMarked',
+    titulo: 'Cómo una abuela transmite sus conocimientos de jardinería a través de un huerto compartido con su nieto',
+    metaTitle: 'Huerto Generacional: Abuela y Nieto | Esgarden',
+    metaDescription: 'Historia emocional de cómo tres generaciones se conectan a través de la jardinería en un espacio de 8m² que une a la familia.',
+    puntosClave: [
+      'La jardinería como puente intergeneracional.',
+      'Transmisión de conocimientos ancestrales.',
+      'Impacto en la salud mental y conexión familiar.',
+    ],
+    puntosEstructura: [
+      'Contexto familiar: Presentación de los personajes.',
+      'Viaje narrativo: El huerto como catalizador de encuentros.',
+      'Conclusión emocional: Cómo cambió sus vidas.',
+    ],
+    slug: 'huerto-abuela-nieto-generacional',
+  },
+];
+
+// FUNCIÓN PRINCIPAL: Generar propuestas según el cliente y variación
+export const generarPropuestasIncubacion = (client: Client | null, variacion: number = 0): IncubacionPropuesta[] => {
   if (!client) return [];
+
+  // Alterna entre set A (variacion par) y set B (variacion impar)
+  const useAlternative = variacion % 2 === 1;
 
   switch (client.id) {
     case '5': // Surfvintage
-      return PROPUESTAS_SURFVINTAGE;
+      return useAlternative ? PROPUESTAS_SURFVINTAGE_ALT : PROPUESTAS_SURFVINTAGE;
     case '6': // Esgarden
-      return PROPUESTAS_ESGARDEN;
+      return useAlternative ? PROPUESTAS_ESGARDEN_ALT : PROPUESTAS_ESGARDEN;
     default:
       return [];
   }

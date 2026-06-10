@@ -5,7 +5,7 @@ import { ArrowRight, Sparkles, Target, Zap, BookOpen } from 'lucide-react';
 
 export default function PasoClienteWelcome() {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center py-12 px-6 bg-gradient-to-b from-white to-slate-50">
+    <div className="w-full h-full flex flex-col items-center justify-center py-12 px-4 bg-gradient-to-b from-white to-slate-50">
       {/* Main Welcome Section */}
       <div className="max-w-2xl text-center space-y-8">
         {/* Hero Icon */}
@@ -29,7 +29,7 @@ export default function PasoClienteWelcome() {
         <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
 
         {/* Key Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3">
           <div className="bg-white rounded-lg border border-slate-200 p-4 flex items-start gap-3">
             <Target size={20} className="text-blue-600 flex-shrink-0 mt-1" />
             <div className="text-left">
@@ -75,7 +75,7 @@ export default function PasoClienteWelcome() {
         </div>
 
         {/* Process Steps */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6 text-left">
+        <div className="bg-white rounded-lg border border-slate-200 p-4 text-left">
           <p className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">
             Proceso de 9 Pasos
           </p>

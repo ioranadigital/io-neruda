@@ -94,9 +94,9 @@ export default function PasoPersonalidad({
       columns={1}
       gap="medium"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* PASO 1: Público Objetivo - SIEMPRE ACTIVO (AZUL) */}
-        <div className="bg-blue-50 rounded-xl border border-blue-200 p-6 hover:shadow-lg transition">
+        <div className="bg-blue-50 rounded-xl border border-blue-200 p-4 hover:shadow-lg transition">
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -156,14 +156,14 @@ export default function PasoPersonalidad({
               )}
             </div>
           ) : (
-            <div className="text-center py-6">
+            <div className="text-center py-3">
               <p className="text-sm text-slate-500">El cliente no tiene buyer personas configurados</p>
             </div>
           )}
         </div>
 
         {/* PASO 2: Intención del Funnel - Habilitado solo si PASO 1 completo */}
-        <div className={`rounded-xl border p-6 transition col-span-1 ${
+        <div className={`rounded-xl border p-4 transition col-span-1 ${
           step1Complete
             ? step2Complete
               ? 'bg-green-50 border-green-200 hover:shadow-lg'
@@ -270,7 +270,7 @@ export default function PasoPersonalidad({
         </div>
 
         {/* PASO 3: Tono y Subtono - Habilitado solo si PASO 2 completo */}
-        <div className={`rounded-xl border p-6 transition col-span-1 ${
+        <div className={`rounded-xl border p-4 transition col-span-1 ${
           step2Complete
             ? step3Complete
               ? 'bg-purple-50 border-purple-200 hover:shadow-lg'
@@ -374,7 +374,7 @@ export default function PasoPersonalidad({
         </div>
 
         {/* PASO 4: Ángulo Narrativo - Habilitado solo si PASO 3 completo */}
-        <div className={`rounded-xl border p-6 transition col-span-1 ${
+        <div className={`rounded-xl border p-4 transition col-span-1 ${
           step3Complete
             ? formData.selectedNarrativeAngle
               ? 'bg-amber-50 border-amber-200 hover:shadow-lg'

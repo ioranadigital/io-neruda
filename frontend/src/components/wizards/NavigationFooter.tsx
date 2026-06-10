@@ -27,7 +27,7 @@ export default function NavigationFooter({
   const isLastStep = currentStep === totalSteps - 1;
 
   return (
-    <div className="w-full px-6 py-4 bg-white border-t border-gray-200 flex gap-3">
+    <div className="w-full px-4 py-3 bg-white border-t border-gray-200 flex gap-3">
       {/* Anterior Button */}
       <button
         onClick={onPrevious}

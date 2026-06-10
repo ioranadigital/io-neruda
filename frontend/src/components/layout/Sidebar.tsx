@@ -9,7 +9,7 @@ const NAV_SECTIONS = [
   {
     title: 'Generador',
     items: [
-      { href: '/generador', icon: Map, label: 'Planificador', desc: 'Crear planes de contenido' },
+      { href: '/planner', icon: Map, label: 'Planificador', desc: 'Crear planes de contenido' },
       { href: '/generators', icon: Sparkles, label: 'Generador', desc: 'Crear contenido' },
       { href: '/dashboard', icon: BarChart3, label: 'Dashboard', desc: 'Análisis y métricas' },
     ]
