@@ -33,7 +33,7 @@ const mockContentResults = [
     postTitle: 'Cómo implementar Machine Learning en tu negocio',
     outputFormat: 'blog' as const,
     keywordsUsed: ['machine learning', 'IA empresarial', 'transformación digital'],
-    generatedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    generatedDate: '2026-06-09T10:00:00.000Z',
     targetAudience: 'CTOs y directores de IT',
     contentIntent: 'educational',
     status: 'published' as const,
@@ -46,7 +46,7 @@ const mockContentResults = [
     postTitle: 'Newsletter: Últimas tendencias en Cloud Computing',
     outputFormat: 'email' as const,
     keywordsUsed: ['cloud computing', 'infraestructura', 'AWS'],
-    generatedDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    generatedDate: '2026-06-10T08:00:00.000Z',
     targetAudience: 'Ejecutivos de tecnología',
     contentIntent: 'thought_leadership',
     status: 'draft' as const,
@@ -59,7 +59,7 @@ const mockContentResults = [
     postTitle: '10 beneficios de adoptar DevOps',
     outputFormat: 'social_linkedin' as const,
     keywordsUsed: ['DevOps', 'desarrollo ágil', 'CI/CD'],
-    generatedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    generatedDate: '2026-06-08T14:00:00.000Z',
     targetAudience: 'Equipos de desarrollo',
     contentIntent: 'social_proof',
     status: 'published' as const,
@@ -72,7 +72,7 @@ const mockContentResults = [
     postTitle: 'Estrategia SEO 2024: Guía completa',
     outputFormat: 'blog' as const,
     keywordsUsed: ['SEO 2024', 'posicionamiento', 'Google'],
-    generatedDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    generatedDate: '2026-06-06T09:00:00.000Z',
     targetAudience: 'Agencias de marketing',
     contentIntent: 'educational',
     status: 'published' as const,
@@ -85,7 +85,7 @@ const mockContentResults = [
     postTitle: 'Instagram Reels: Cómo crear contenido viral',
     outputFormat: 'social_instagram' as const,
     keywordsUsed: ['reels', 'viral content', 'engagement'],
-    generatedDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    generatedDate: '2026-06-10T11:00:00.000Z',
     targetAudience: 'Content creators',
     contentIntent: 'transactional',
     status: 'draft' as const,
@@ -98,7 +98,7 @@ const mockContentResults = [
     postTitle: 'Guía de Email Marketing: Conversiones garantizadas',
     outputFormat: 'pdf' as const,
     keywordsUsed: ['email marketing', 'conversión', 'ROI'],
-    generatedDate: new Date(Date.now() - 0.5 * 24 * 60 * 60 * 1000).toISOString(),
+    generatedDate: '2026-06-10T16:00:00.000Z',
     targetAudience: 'Marketers',
     contentIntent: 'transactional',
     status: 'published' as const,
@@ -107,6 +107,24 @@ const mockContentResults = [
 ];
 
 // ===== INICIALIZAR ESTADO CON PERSISTENCIA =====
+// Cargar clientes desde localStorage
+const loadClientsFromStorage = (): Client[] => {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const stored = localStorage.getItem('io-neruda-clients');
+    if (stored) {
+      console.log('✅ Loaded clients from localStorage');
+      return JSON.parse(stored);
+    }
+    console.log('📦 No clients in localStorage, using empty array');
+    return [];
+  } catch (error) {
+    console.error('Error loading clients from localStorage:', error);
+    return [];
+  }
+};
+
 // Cargar contentResults desde localStorage si existen, sino usar mocks
 const loadContentResultsFromStorage = (): ContentResult[] => {
   if (typeof window === 'undefined') return mockContentResults as any;
@@ -128,10 +146,10 @@ const initialState: GeneratorState = {
   emailTemplates: [],
   isLoading: false,
   error: null,
-  clients: MOCK_CLIENTS,
+  clients: [],
   currentClientId: null,
   selectedClient: null,
-  contentResults: loadContentResultsFromStorage(),
+  contentResults: mockContentResults as any,
 };
 
 function generatorReducer(state: GeneratorState, action: GeneratorAction): GeneratorState {
@@ -248,6 +266,14 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('io-neruda-content-results', JSON.stringify(state.contentResults));
     }
   }, [state.contentResults]);
+
+  // Load clients from localStorage after hydration (client-only)
+  useEffect(() => {
+    const clients = loadClientsFromStorage();
+    if (clients.length > 0) {
+      dispatch({ type: 'SET_CLIENTS', payload: clients });
+    }
+  }, []);
 
   const setLoading = useCallback((loading: boolean) => {
     dispatch({ type: 'SET_LOADING', payload: loading });
