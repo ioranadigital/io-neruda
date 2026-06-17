@@ -71,7 +71,7 @@ export default function ClientSelectorChip({ onAfterChange }: ClientSelectorChip
           color: '#374151',
         }}
       >
-        <option value="" disabled key="placeholder">
+        <option value="" disabled>
           Selecciona cliente
         </option>
         {clients.map(c => (
