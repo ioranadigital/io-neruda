@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react';
 import { Download, Upload } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 interface KeywordsImportExportProps {
   clientName: string;
@@ -11,35 +12,52 @@ interface KeywordsImportExportProps {
 export default function KeywordsImportExport({ clientName, onImport }: KeywordsImportExportProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Template CSV structure
-  const CSV_TEMPLATE = `nivel,bloque,keyword1,keyword2,keyword3,keyword4,keyword5
-1,Core de Negocio,ejemplo1,ejemplo2,ejemplo3,,
-1,Branded Keywords,${clientName},${clientName} online,${clientName} España,,
-1,Fabricantes de Terceros,marca1,marca2,marca3,,
-1,Head Terms,categoría1,categoría2,categoría3,,
-2,Local,ciudad1,ciudad2,región1,,
-2,Audience Profile,perfil1,perfil2,perfil3,,
-3,Educational How-to,guía1,guía2,guía3,,
-3,Problem/Symptom,problema1,problema2,problema3,,
-3,Seasonal,temporada1,temporada2,temporada3,,
-4,Comparative,comparación1,comparación2,comparación3,,
-4,Lists & Roundups,lista1,lista2,lista3,,
-4,Reviews & Opinions,review1,review2,review3,,
-5,Longtail Informational,longtail1,longtail2,longtail3,,
-5,Longtail Transactional,transaccional1,transaccional2,transaccional3,,
-6,Banned Words,palabra_evitar1,palabra_evitar2,palabra_evitar3,,
-6,Banned Tones,tono_evitar1,tono_evitar2,tono_evitar3,,
-6,Competing Keywords,competidor1,competidor2,competidor3,,`;
+  // Template data for Excel
+  const TEMPLATE_DATA = [
+    { nivel: 1, bloque: 'Core de Negocio', keyword1: 'ejemplo1', keyword2: 'ejemplo2', keyword3: 'ejemplo3', keyword4: '', keyword5: '' },
+    { nivel: 1, bloque: 'Branded Keywords', keyword1: clientName, keyword2: `${clientName} online`, keyword3: `${clientName} España`, keyword4: '', keyword5: '' },
+    { nivel: 1, bloque: 'Fabricantes de Terceros', keyword1: 'marca1', keyword2: 'marca2', keyword3: 'marca3', keyword4: '', keyword5: '' },
+    { nivel: 1, bloque: 'Head Terms', keyword1: 'categoría1', keyword2: 'categoría2', keyword3: 'categoría3', keyword4: '', keyword5: '' },
+    { nivel: 2, bloque: 'Local', keyword1: 'ciudad1', keyword2: 'ciudad2', keyword3: 'región1', keyword4: '', keyword5: '' },
+    { nivel: 2, bloque: 'Audience Profile', keyword1: 'perfil1', keyword2: 'perfil2', keyword3: 'perfil3', keyword4: '', keyword5: '' },
+    { nivel: 3, bloque: 'Educational How-to', keyword1: 'guía1', keyword2: 'guía2', keyword3: 'guía3', keyword4: '', keyword5: '' },
+    { nivel: 3, bloque: 'Problem/Symptom', keyword1: 'problema1', keyword2: 'problema2', keyword3: 'problema3', keyword4: '', keyword5: '' },
+    { nivel: 3, bloque: 'Seasonal', keyword1: 'temporada1', keyword2: 'temporada2', keyword3: 'temporada3', keyword4: '', keyword5: '' },
+    { nivel: 4, bloque: 'Comparative', keyword1: 'comparación1', keyword2: 'comparación2', keyword3: 'comparación3', keyword4: '', keyword5: '' },
+    { nivel: 4, bloque: 'Lists & Roundups', keyword1: 'lista1', keyword2: 'lista2', keyword3: 'lista3', keyword4: '', keyword5: '' },
+    { nivel: 4, bloque: 'Reviews & Opinions', keyword1: 'review1', keyword2: 'review2', keyword3: 'review3', keyword4: '', keyword5: '' },
+    { nivel: 5, bloque: 'Longtail Informational', keyword1: 'longtail1', keyword2: 'longtail2', keyword3: 'longtail3', keyword4: '', keyword5: '' },
+    { nivel: 5, bloque: 'Longtail Transactional', keyword1: 'transaccional1', keyword2: 'transaccional2', keyword3: 'transaccional3', keyword4: '', keyword5: '' },
+    { nivel: 6, bloque: 'Banned Words', keyword1: 'palabra_evitar1', keyword2: 'palabra_evitar2', keyword3: 'palabra_evitar3', keyword4: '', keyword5: '' },
+    { nivel: 6, bloque: 'Banned Tones', keyword1: 'tono_evitar1', keyword2: 'tono_evitar2', keyword3: 'tono_evitar3', keyword4: '', keyword5: '' },
+    { nivel: 6, bloque: 'Competing Keywords', keyword1: 'competidor1', keyword2: 'competidor2', keyword3: 'competidor3', keyword4: '', keyword5: '' },
+  ];
 
-  // Download template
+  // Download template as XLS
   const downloadTemplate = () => {
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(CSV_TEMPLATE));
-    element.setAttribute('download', `keywords_template_${clientName}.csv`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    try {
+      const ws = XLSX.utils.json_to_sheet(TEMPLATE_DATA);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Keywords');
+
+      // Set column widths
+      const colWidths = [
+        { wch: 8 },  // nivel
+        { wch: 25 }, // bloque
+        { wch: 20 }, // keyword1
+        { wch: 20 }, // keyword2
+        { wch: 20 }, // keyword3
+        { wch: 20 }, // keyword4
+        { wch: 20 }, // keyword5
+      ];
+      ws['!cols'] = colWidths;
+
+      XLSX.writeFile(wb, `keywords_template_${clientName}.xlsx`);
+      console.log('✅ Template descargado');
+    } catch (error) {
+      console.error('❌ Error generating template:', error);
+      alert('Error al descargar la plantilla');
+    }
   };
 
   // Parse CSV and import
@@ -63,7 +81,7 @@ export default function KeywordsImportExport({ clientName, onImport }: KeywordsI
 
         // Skip header row
         for (let i = 1; i < lines.length; i++) {
-          const [nivel, bloque, ...keywords] = lines[i].split(',').map(k => k.trim()).filter(Boolean);
+          const [nivel, bloque, ...keywords] = lines[i].split(',').map(k => k.trim()).filter(k => k.length > 0);
 
           if (!nivel || !bloque) continue;
 
@@ -124,10 +142,10 @@ export default function KeywordsImportExport({ clientName, onImport }: KeywordsI
         }}
         onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#d4ece0'; }}
         onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#e8f5ee'; }}
-        title="Descargar plantilla CSV para cargar palabras clave"
+        title="Descargar plantilla Excel para cargar palabras clave"
       >
         <Download size={16} />
-        Descargar Plantilla
+        Descargar Plantilla (.xlsx)
       </button>
 
       {/* Import CSV Button */}
