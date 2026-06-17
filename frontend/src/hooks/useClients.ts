@@ -105,18 +105,32 @@ export function useClients() {
   const [isFetching, setIsFetching] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
-  // Fetch all active clients from localStorage
+  // Fetch all active clients from Supabase
   const getClients = useCallback(async () => {
     setIsFetching(true);
     setError(null);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const activeClients = getStoredClients().filter(c => c.is_active);
+      console.log('📡 Fetching clients from Supabase...');
+      const { data, error } = await supabase
+        .from('io_neruda_clients')
+        .select('*')
+        .eq('is_active', true);
+
+      if (error) {
+        console.warn('⚠️ Supabase error, falling back to localStorage:', error.message);
+        const fallback = getStoredClients().filter(c => c.is_active);
+        setClients(fallback);
+        return fallback;
+      }
+
+      const activeClients = (data as Client[]) || [];
+      console.log('✅ Fetched', activeClients.length, 'active clients from Supabase');
       setClients(activeClients);
       return activeClients;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch clients';
+      console.error('❌ Error fetching clients:', message);
       setError(message);
       throw err;
     } finally {

@@ -4,6 +4,7 @@ import React, { createContext, useContext, useReducer, ReactNode, useCallback, u
 import { Configuration, GeneratedContent, BatchJob, EmailTemplate, GeneratorState, ContentResult } from '../types/generator';
 import { Client } from '../types/client';
 import { MOCK_CLIENTS } from '../data/mockClients';
+import { supabase } from '../lib/supabase';
 
 type GeneratorAction =
   | { type: 'SET_LOADING'; payload: boolean }
@@ -267,15 +268,42 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     }
   }, [state.contentResults]);
 
-  // Load clients from localStorage after hydration (client-only)
+  // Load clients from Supabase after hydration (client-only)
   useEffect(() => {
-    const clients = loadClientsFromStorage();
-    if (clients.length > 0) {
-      dispatch({ type: 'SET_CLIENTS', payload: clients });
-    } else {
-      // Use mock clients on first load if localStorage is empty
-      dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
-    }
+    const loadClientsFromSupabase = async () => {
+      try {
+        console.log('📡 Loading clients from Supabase...');
+        const { data, error } = await supabase
+          .from('io_neruda_clients')
+          .select('*');
+
+        if (error) {
+          console.warn('⚠️ Error loading from Supabase:', error.message);
+          // Fallback to localStorage if Supabase fails
+          const stored = loadClientsFromStorage();
+          if (stored.length > 0) {
+            dispatch({ type: 'SET_CLIENTS', payload: stored });
+          } else {
+            dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
+          }
+          return;
+        }
+
+        if (data && data.length > 0) {
+          console.log('✅ Loaded', data.length, 'clients from Supabase');
+          dispatch({ type: 'SET_CLIENTS', payload: data as Client[] });
+        } else {
+          console.log('📦 No clients in Supabase, using MOCK_CLIENTS');
+          dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
+        }
+      } catch (err) {
+        console.error('❌ Exception loading clients:', err);
+        // Fallback to mock data
+        dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
+      }
+    };
+
+    loadClientsFromSupabase();
   }, []);
 
   const setLoading = useCallback((loading: boolean) => {
