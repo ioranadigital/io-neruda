@@ -272,6 +272,9 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     const clients = loadClientsFromStorage();
     if (clients.length > 0) {
       dispatch({ type: 'SET_CLIENTS', payload: clients });
+    } else {
+      // Use mock clients on first load if localStorage is empty
+      dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
     }
   }, []);
 
