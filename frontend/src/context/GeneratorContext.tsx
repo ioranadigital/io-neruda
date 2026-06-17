@@ -108,7 +108,7 @@ const mockContentResults = [
 ];
 
 // ===== INICIALIZAR ESTADO CON PERSISTENCIA =====
-// Cargar clientes desde localStorage
+// Cargar clientes desde localStorage (deprecated - now loading from Supabase)
 const loadClientsFromStorage = (): Client[] => {
   if (typeof window === 'undefined') return [];
 
@@ -126,16 +126,42 @@ const loadClientsFromStorage = (): Client[] => {
   }
 };
 
-// Cargar contentResults desde localStorage si existen, sino usar mocks
-const loadContentResultsFromStorage = (): ContentResult[] => {
-  if (typeof window === 'undefined') return mockContentResults as any;
-
+// Cargar contentResults desde Supabase (nueva fuente)
+const loadContentResultsFromSupabase = async (): Promise<ContentResult[]> => {
   try {
-    const stored = localStorage.getItem('io-neruda-content-results');
-    return stored ? JSON.parse(stored) : (mockContentResults as any);
-  } catch (error) {
-    console.error('Error loading content results from localStorage:', error);
-    return mockContentResults as any;
+    console.log('📡 Loading content results from Supabase...');
+    const { data, error } = await supabase
+      .from('io_neruda_generated_contents')
+      .select('*');
+
+    if (error) {
+      console.warn('⚠️ Error loading from Supabase:', error.message);
+      return [];
+    }
+
+    if (data && data.length > 0) {
+      console.log('✅ Loaded', data.length, 'content results from Supabase');
+      // Map Supabase structure to ContentResult structure
+      return data.map((item: any) => ({
+        id: item.id,
+        clientId: item.client_id || '',
+        clientName: item.client_name || '',
+        postTitle: item.post_title || '',
+        outputFormat: item.format || 'blog',
+        keywordsUsed: item.keywords_used || [],
+        generatedDate: item.created_at || '',
+        targetAudience: item.target_audience || '',
+        contentIntent: item.content_intent || '',
+        status: item.status || 'draft',
+        tags: item.tags || [],
+      })) as ContentResult[];
+    }
+
+    console.log('📦 No content results in Supabase');
+    return [];
+  } catch (err) {
+    console.error('❌ Exception loading content results:', err);
+    return [];
   }
 };
 
@@ -150,7 +176,7 @@ const initialState: GeneratorState = {
   clients: [],
   currentClientId: null,
   selectedClient: null,
-  contentResults: mockContentResults as any,
+  contentResults: [], // Load from Supabase in useEffect
 };
 
 function generatorReducer(state: GeneratorState, action: GeneratorAction): GeneratorState {
@@ -268,42 +294,43 @@ export function GeneratorProvider({ children }: { children: ReactNode }) {
     }
   }, [state.contentResults]);
 
-  // Load clients from Supabase after hydration (client-only)
+  // Load clients and content results from Supabase after hydration (client-only)
   useEffect(() => {
-    const loadClientsFromSupabase = async () => {
+    const loadDataFromSupabase = async () => {
       try {
+        // Load clients
         console.log('📡 Loading clients from Supabase...');
-        const { data, error } = await supabase
+        const { data: clientsData, error: clientsError } = await supabase
           .from('io_neruda_clients')
           .select('*');
 
-        if (error) {
-          console.warn('⚠️ Error loading from Supabase:', error.message);
-          // Fallback to localStorage if Supabase fails
+        if (clientsError) {
+          console.warn('⚠️ Error loading clients from Supabase:', clientsError.message);
           const stored = loadClientsFromStorage();
           if (stored.length > 0) {
             dispatch({ type: 'SET_CLIENTS', payload: stored });
           } else {
             dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
           }
-          return;
-        }
-
-        if (data && data.length > 0) {
-          console.log('✅ Loaded', data.length, 'clients from Supabase');
-          dispatch({ type: 'SET_CLIENTS', payload: data as Client[] });
+        } else if (clientsData && clientsData.length > 0) {
+          console.log('✅ Loaded', clientsData.length, 'clients from Supabase');
+          dispatch({ type: 'SET_CLIENTS', payload: clientsData as Client[] });
         } else {
           console.log('📦 No clients in Supabase, using MOCK_CLIENTS');
           dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
         }
+
+        // Load content results
+        const contentResults = await loadContentResultsFromSupabase();
+        dispatch({ type: 'SET_CONTENT_RESULTS', payload: contentResults });
       } catch (err) {
-        console.error('❌ Exception loading clients:', err);
-        // Fallback to mock data
+        console.error('❌ Exception loading data:', err);
         dispatch({ type: 'SET_CLIENTS', payload: MOCK_CLIENTS });
+        dispatch({ type: 'SET_CONTENT_RESULTS', payload: [] });
       }
     };
 
-    loadClientsFromSupabase();
+    loadDataFromSupabase();
   }, []);
 
   const setLoading = useCallback((loading: boolean) => {
