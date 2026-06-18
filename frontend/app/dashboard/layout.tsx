@@ -1,14 +1,10 @@
 import { Sidebar } from '@/src/components/layout/Sidebar';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full overflow-hidden bg-[#f4fbf7]">
       <Sidebar />
-      <main className="ml-60 flex-1 min-w-0 p-8 overflow-y-auto overflow-x-hidden min-h-screen" style={{ backgroundColor: '#f4fbf7' }}>
+      <main className="flex-1 min-w-0 overflow-y-auto p-8">
         {children}
       </main>
     </div>

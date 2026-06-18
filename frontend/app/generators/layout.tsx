@@ -1,14 +1,10 @@
 import { Sidebar } from '@/src/components/layout/Sidebar';
 
-export default function GeneratorsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function GeneratorsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full overflow-hidden bg-[#f4fbf7]">
       <Sidebar />
-      <main className="ml-60 flex-1 min-w-0 overflow-hidden min-h-screen flex flex-col" style={{ backgroundColor: '#f4fbf7' }}>
+      <main className="flex-1 min-w-0 overflow-hidden flex flex-col">
         {children}
       </main>
     </div>
