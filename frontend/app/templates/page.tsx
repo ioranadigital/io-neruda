@@ -4,8 +4,9 @@ import TemplatesListView from '@/src/components/templates/TemplatesListView';
 
 export default function TemplatesPage() {
   return (
-    <div className="max-w-7xl">
+    <div className="w-full">
       <TemplatesListView />
     </div>
   );
 }
+

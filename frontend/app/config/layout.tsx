@@ -1,10 +1,6 @@
 import { Sidebar } from '@/src/components/layout/Sidebar';
 
-export default function IntegracionesLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ConfigLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen w-full overflow-x-hidden">
       <Sidebar />
