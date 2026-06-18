@@ -18,66 +18,123 @@ function saveClientsToStorage(clients: Client[]): void {
   localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(clients));
 }
 
-// Save client to Supabase - only persist the fields that exist in the table
+// Save client to Supabase - all fields mapped
 async function saveClientToSupabase(client: Client): Promise<void> {
   try {
-    console.log('🔄 Saving to Supabase table: io_neruda_clients');
-    console.log('Client ID:', client.id);
-    console.log('Client Name:', client.name);
-
-    // Map only the fields that exist in the Supabase table
     const clientData = {
+      // Identity
       id: client.id,
       name: client.name,
       slug: client.slug,
       description: client.description || null,
+      long_description: client.long_description || null,
+      business_type: client.business_type || null,
+      website_url: client.website_url || null,
+      country: client.country || null,
+      phone: client.phone || null,
+      email: client.email || null,
+      // Audience
       target_audience: client.target_audience || null,
-      default_tone: client.default_tone || 'professional',
-      forbidden_keywords: (client.forbidden_keywords && client.forbidden_keywords.length > 0)
-        ? client.forbidden_keywords
-        : null,
-      competitor_urls: (client.competitor_urls && client.competitor_urls.length > 0)
-        ? client.competitor_urls
-        : null,
+      buyer_personas: client.buyer_personas || null,
+      buyer_personas_list: client.buyer_personas_list || [],
+      avg_age: client.avg_age || null,
+      income_level: client.income_level || null,
+      target_industries: client.target_industries || [],
+      problems_solved: client.problems_solved || [],
+      unique_proposition: client.unique_proposition || null,
+      success_case: client.success_case || null,
+      // Brand
+      brand_name: client.brand_name || null,
+      tagline: client.tagline || null,
       logo_url: client.logo_url || null,
       color_primary: client.color_primary || null,
       color_secondary: client.color_secondary || null,
-      buyer_personas_list: (client.buyer_personas_list && client.buyer_personas_list.length > 0)
-        ? client.buyer_personas_list
-        : null,
+      color_palette: client.color_palette || [],
+      typography: client.typography || null,
+      brand_voice: client.brand_voice || null,
+      default_tone: client.default_tone || 'professional',
+      brand_story: client.brand_story || null,
+      brand_values: client.brand_values || [],
+      // Content
+      keywords_niche: client.keywords_niche || [],
+      keywords_longtail: client.keywords_longtail || [],
+      keywords_producto: client.keywords_producto || [],
+      keywords_hierarchical: client.keywords_hierarchical || {},
+      content_pillars: client.content_pillars || [],
+      forbidden_keywords: client.forbidden_keywords || [],
+      publication_frequency: client.publication_frequency || null,
+      supported_languages: client.supported_languages || [],
+      meta_description_template: client.meta_description_template || null,
+      avg_word_count: client.avg_word_count || null,
+      tone_varies_by_channel: client.tone_varies_by_channel || false,
+      // Competition
+      competitor_urls: client.competitor_urls || [],
+      competitive_advantages: client.competitive_advantages || [],
+      differentiators: client.differentiators || [],
+      market_positioning: client.market_positioning || null,
+      monitor_competitors: client.monitor_competitors !== undefined ? client.monitor_competitors : true,
+      // Channels
+      channel_blog: client.channel_blog || false,
+      channel_email: client.channel_email || false,
+      channel_linkedin: client.channel_linkedin || false,
+      channel_instagram: client.channel_instagram || false,
+      channel_twitter: client.channel_twitter || false,
+      channel_tiktok: client.channel_tiktok || false,
+      channel_youtube: client.channel_youtube || false,
+      newsletter_enabled: client.newsletter_enabled || false,
+      newsletter_subscribers: client.newsletter_subscribers || null,
+      social_media_handles: client.social_media_handles || {},
+      preferred_formats: client.preferred_formats || [],
+      // References
+      reference_sites: client.reference_sites || [],
+      competitor_study_urls: client.competitor_study_urls || [],
+      successful_content_urls: client.successful_content_urls || [],
+      resources_urls: client.resources_urls || [],
+      internal_docs_url: client.internal_docs_url || null,
+      // Integration
+      crm_platform: client.crm_platform || null,
+      analytics_tool: client.analytics_tool || null,
+      email_platform: client.email_platform || null,
+      integrations: client.integrations || [],
+      tech_stack: client.tech_stack || null,
+      linkedin_connected: client.linkedin_connected || false,
+      linkedin_profile_id: client.linkedin_profile_id || null,
+      wordpress_connected: client.wordpress_connected || false,
+      wordpress_url: client.wordpress_url || null,
+      wordpress_username: client.wordpress_username || null,
+      publishing_integrations: client.publishing_integrations || [],
+      // Metrics
+      main_objective: client.main_objective || null,
+      main_kpi: client.main_kpi || null,
+      conversion_goal: client.conversion_goal || null,
+      monthly_budget: client.monthly_budget || null,
+      team_size: client.team_size || null,
+      project_timeline: client.project_timeline || null,
+      // Management
+      internal_notes: client.internal_notes || null,
+      client_status: client.client_status || 'active',
+      start_date: client.start_date || null,
+      next_review: client.next_review || null,
+      primary_contact_name: client.primary_contact_name || null,
+      primary_contact_email: client.primary_contact_email || null,
+      account_manager_id: client.account_manager_id || null,
+      // System
       is_active: client.is_active !== undefined ? client.is_active : true,
       created_at: client.created_at,
       updated_at: new Date().toISOString(),
     };
 
-    console.log('📤 Sending request to Supabase...');
-    console.log('Data being sent:', JSON.stringify(clientData, null, 2));
-
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('io_neruda_clients')
       .upsert(clientData, { onConflict: 'id' });
 
-    console.log('Response received. Data:', data, 'Error:', error);
-
     if (error) {
-      console.error('❌ Error saving client to Supabase:');
-      console.error('  Error object:', error);
-      console.error('  Message:', error?.message);
-      console.error('  Code:', error?.code);
-      console.error('  Details:', error?.details);
-      console.error('  Hint:', error?.hint);
-      console.error('  Full error:', JSON.stringify(error, null, 2));
+      console.error('❌ Error saving client to Supabase:', error.message);
     } else {
-      console.log('✅ Client saved to io_neruda_clients:', client.name);
-      console.log('Response data:', data);
+      console.log('✅ Client saved to Supabase:', client.name);
     }
   } catch (err) {
-    console.error('❌ Exception in saveClientToSupabase:');
-    console.error('Exception:', err);
-    if (err instanceof Error) {
-      console.error('Message:', err.message);
-      console.error('Stack:', err.stack);
-    }
+    console.error('❌ Exception in saveClientToSupabase:', err);
   }
 }
 
@@ -178,11 +235,12 @@ export function useClients() {
           updated_at: new Date().toISOString(),
         };
 
-        // Save to localStorage
+        // Save to Supabase (source of truth)
+        await saveClientToSupabase(newClient);
+
+        // Also cache in localStorage as fallback
         const updatedClients = [...storedClients, newClient];
         saveClientsToStorage(updatedClients);
-
-        // Update context with all clients
         setClients(updatedClients);
         return newClient;
       } catch (err) {
