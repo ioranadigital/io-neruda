@@ -7,7 +7,7 @@ export function DashminHeader() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b shadow-sm z-50" style={{ borderColor: '#e0e0e0' }}>
+    <header className="h-16 bg-white border-b shadow-sm flex-shrink-0 w-full" style={{ borderColor: '#e0e0e0' }}>
       <div className="h-full px-6 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2">
