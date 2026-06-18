@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Client } from '@/src/types/client';
-import { Linkedin, Globe, CheckCircle, Circle, AlertCircle } from 'lucide-react';
+import { Linkedin2 as Linkedin, Globe, CheckCircle, Circle, AlertCircle } from 'lucide-react';
 
 interface TabProps {
   formData: Partial<Client>;
