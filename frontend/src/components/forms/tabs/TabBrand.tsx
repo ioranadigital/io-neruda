@@ -98,11 +98,11 @@ export default function TabBrand({ formData, onChange }: TabProps) {
           onChange={(e) => onChange('default_tone', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
         >
-          <option value="professional">💼 Profesional / Corporativo - Líder de opinión, formal y objetivo</option>
-          <option value="friendly">🤝 Cercano / Coloquial - Confianza, energía y empatía</option>
-          <option value="technical">🎓 Técnico / Académico - Divulgativo y analítico</option>
-          <option value="persuasive">🧲 Persuasivo / Comercial - Urgencia, conversión e inspiración</option>
-          <option value="creative">⚡ Creativo / Informal - Nostálgico, irreverente y lúdico</option>
+          <option value="professional">Profesional / Corporativo - Líder de opinión, formal y objetivo</option>
+          <option value="friendly">Cercano / Coloquial - Confianza, energía y empatía</option>
+          <option value="technical">Técnico / Académico - Divulgativo y analítico</option>
+          <option value="persuasive">Persuasivo / Comercial - Urgencia, conversión e inspiración</option>
+          <option value="creative">Creativo / Informal - Nostálgico, irreverente y lúdico</option>
         </select>
       </div>
 

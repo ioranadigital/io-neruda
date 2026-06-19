@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Client } from '@/src/types/client';
-import { Linkedin, Globe, CheckCircle, Circle, AlertCircle } from 'lucide-react';
+import { Linkedin, Globe, CheckCircle, Circle, AlertCircle, Rocket } from 'lucide-react';
 
 interface TabProps {
   formData: Partial<Client>;
@@ -26,7 +26,7 @@ export default function TabIntegration({ formData, onChange }: TabProps) {
 
       {/* Publishing Integrations */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-gray-800 mb-4">🚀 Plataformas de Publicación</h4>
+        <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"><Rocket size={16} /> Plataformas de Publicación</h4>
 
         {/* LinkedIn */}
         <div className="mb-4 border border-gray-300 rounded-lg p-4 bg-white">

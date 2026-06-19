@@ -1,5 +1,6 @@
 import React from 'react';
 import { Client } from '@/src/types/client';
+import { Users } from 'lucide-react';
 
 interface TabProps {
   formData: Partial<Client>;
@@ -51,7 +52,7 @@ export default function TabAudience({ formData, onChange }: TabProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-gray-800 mb-4">👥 Buyer Personas</label>
+        <label className="block text-sm font-bold text-gray-800 mb-4 flex items-center gap-1.5"><Users size={14} /> Buyer Personas</label>
         <div className="grid grid-cols-1 gap-6">
           {[0, 1, 2, 3].map((index) => {
             const persona = (formData.buyer_personas_list?.[index] as any) || { name: '', description: '' };

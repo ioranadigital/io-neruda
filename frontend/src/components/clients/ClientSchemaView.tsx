@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Client, KeywordsHierarchy } from '@/src/types/client';
-import { ChevronDown, ChevronRight, X, Info } from 'lucide-react';
+import { ChevronDown, ChevronRight, X, Info, Layers, MapPin, BookOpen, Scale, Crosshair, Ban } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ interface FieldDef {
 
 interface LevelDef {
   id: number;
-  emoji: string;
+  icon: LucideIcon;
   title: string;
   subtitle: string;
   borderColor: string;
@@ -35,7 +36,7 @@ interface LevelDef {
 const LEVELS: LevelDef[] = [
   {
     id: 1,
-    emoji: '🟢',
+    icon: Layers,
     title: 'Nivel 1: Entidad y Core Semántico',
     subtitle: 'Define QUÉ eres y en qué mercado compites',
     borderColor: '#4aa87a',
@@ -74,7 +75,7 @@ const LEVELS: LevelDef[] = [
   },
   {
     id: 2,
-    emoji: '🗺️',
+    icon: MapPin,
     title: 'Nivel 2: Segmentación y Geolocalización',
     subtitle: 'Segmenta por ubicación geográfica y perfil de audiencia',
     borderColor: '#3b82f6',
@@ -99,7 +100,7 @@ const LEVELS: LevelDef[] = [
   },
   {
     id: 3,
-    emoji: '🎓',
+    icon: BookOpen,
     title: 'Nivel 3: Informacional y Editorial',
     subtitle: 'Contenidos educativos que demuestran autoridad técnica',
     borderColor: '#f59e0b',
@@ -131,7 +132,7 @@ const LEVELS: LevelDef[] = [
   },
   {
     id: 4,
-    emoji: '⚖️',
+    icon: Scale,
     title: 'Nivel 4: Investigación Comercial',
     subtitle: 'El usuario ya sabe qué quiere y está comparando opciones',
     borderColor: '#8b5cf6',
@@ -163,7 +164,7 @@ const LEVELS: LevelDef[] = [
   },
   {
     id: 5,
-    emoji: '🎯',
+    icon: Crosshair,
     title: 'Nivel 5: Larga Cola (Long-Tail)',
     subtitle: 'Consultas muy específicas con alta intención y baja competencia',
     borderColor: '#14b8a6',
@@ -188,7 +189,7 @@ const LEVELS: LevelDef[] = [
   },
   {
     id: 6,
-    emoji: '🚫',
+    icon: Ban,
     title: 'Nivel 6: Exclusiones y Restricciones',
     subtitle: 'Lo que NUNCA debe aparecer en los contenidos de este cliente',
     borderColor: '#ef4444',
@@ -359,7 +360,9 @@ function LevelAccordion({ level, hierarchy, isOpen, onToggle, onUpdate }: LevelA
         style={{ backgroundColor: isOpen ? level.headerBg : '#ffffff' }}
       >
         <div className="flex items-start gap-3 min-w-0">
-          <span className="text-xl flex-shrink-0 mt-0.5">{level.emoji}</span>
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: level.headerBg, color: level.borderColor }}>
+            <level.icon size={16} />
+          </div>
           <div className="min-w-0">
             <p className="font-semibold text-slate-900 text-sm leading-snug">{level.title}</p>
             <p className="text-[11px] text-slate-500 mt-0.5 truncate">{level.subtitle}</p>
