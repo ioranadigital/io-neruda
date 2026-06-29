@@ -1,0 +1,179 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e5]:
+        - img [ref=e7]
+        - generic [ref=e9]:
+          - paragraph [ref=e10]: IO Neruda
+          - paragraph [ref=e11]: Content Hub
+      - navigation [ref=e12]:
+        - generic [ref=e13]:
+          - paragraph [ref=e14]: Contenidos
+          - generic [ref=e15]:
+            - link "Dashboard Análisis y métricas" [ref=e16] [cursor=pointer]:
+              - /url: /dashboard
+              - img [ref=e17]
+              - generic [ref=e19]:
+                - paragraph [ref=e20]: Dashboard
+                - paragraph [ref=e21]: Análisis y métricas
+            - link "Generador Crear contenido" [ref=e22] [cursor=pointer]:
+              - /url: /generators
+              - img [ref=e23]
+              - generic [ref=e25]:
+                - paragraph [ref=e26]: Generador
+                - paragraph [ref=e27]: Crear contenido
+            - link "Planificador Crear planes de contenido" [ref=e28] [cursor=pointer]:
+              - /url: /planner
+              - img [ref=e29]
+              - generic [ref=e31]:
+                - paragraph [ref=e32]: Planificador
+                - paragraph [ref=e33]: Crear planes de contenido
+        - generic [ref=e35]:
+          - paragraph [ref=e36]: Gestión
+          - generic [ref=e37]:
+            - link "Mis contenidos Generados y guardados" [ref=e38] [cursor=pointer]:
+              - /url: /contenidos
+              - img [ref=e39]
+              - generic [ref=e42]:
+                - paragraph [ref=e43]: Mis contenidos
+                - paragraph [ref=e44]: Generados y guardados
+            - link "Clientes Fichas y perfiles" [ref=e45] [cursor=pointer]:
+              - /url: /clients
+              - img [ref=e46]
+              - generic [ref=e51]:
+                - paragraph [ref=e52]: Clientes
+                - paragraph [ref=e53]: Fichas y perfiles
+            - link "Plantillas Contenidos reutilizables" [ref=e54] [cursor=pointer]:
+              - /url: /templates
+              - img [ref=e55]
+              - generic [ref=e58]:
+                - paragraph [ref=e59]: Plantillas
+                - paragraph [ref=e60]: Contenidos reutilizables
+        - generic [ref=e62]:
+          - paragraph [ref=e63]: Sistema
+          - generic [ref=e64]:
+            - link "Configuración Ajustes globales" [ref=e65] [cursor=pointer]:
+              - /url: /config
+              - img [ref=e66]
+              - generic [ref=e69]:
+                - paragraph [ref=e70]: Configuración
+                - paragraph [ref=e71]: Ajustes globales
+            - link "Integraciones APIs y conectores" [ref=e72] [cursor=pointer]:
+              - /url: /integraciones
+              - img [ref=e73]
+              - generic [ref=e76]:
+                - paragraph [ref=e77]: Integraciones
+                - paragraph [ref=e78]: APIs y conectores
+        - generic [ref=e80]:
+          - paragraph [ref=e81]: Ayuda
+          - link "Guía Instrucciones de uso" [ref=e83] [cursor=pointer]:
+            - /url: /help
+            - img [ref=e84]
+            - generic [ref=e87]:
+              - paragraph [ref=e88]: Guía
+              - paragraph [ref=e89]: Instrucciones de uso
+      - paragraph [ref=e91]: v2.0.0 · Production
+    - main [ref=e92]:
+      - generic [ref=e93]:
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - img [ref=e98]
+            - generic [ref=e100]:
+              - heading "Generador" [level=1] [ref=e101]
+              - paragraph [ref=e102]: Crea contenido optimizado para tus clientes paso a paso
+          - generic [ref=e197]:
+            - generic [ref=e199]:
+              - paragraph [ref=e200]: Esgarden
+              - paragraph [ref=e201]: E-Commerce | Tienda de Artículos para Exterior y Jardinería
+            - button "Cambiar Cliente" [ref=e203] [cursor=pointer]
+        - generic [ref=e108]:
+          - generic [ref=e109]:
+            - img [ref=e204]
+            - generic [ref=e111]: Cliente
+          - generic [ref=e112]:
+            - img [ref=e387]
+            - generic [ref=e114]: Formatos
+          - generic [ref=e115]:
+            - generic [ref=e116]: "3"
+            - generic [ref=e117]: Personalidad
+          - generic [ref=e118]:
+            - generic [ref=e119]: "4"
+            - generic [ref=e120]: Propuestas
+          - generic [ref=e121]:
+            - generic [ref=e122]: "5"
+            - generic [ref=e123]: Keywords
+          - generic [ref=e124]:
+            - generic [ref=e125]: "6"
+            - generic [ref=e126]: Incubación
+          - generic [ref=e127]:
+            - generic [ref=e128]: "7"
+            - generic [ref=e129]: SEO/GEO
+          - generic [ref=e130]:
+            - generic [ref=e131]: "8"
+            - generic [ref=e132]: Previsualizar
+          - generic [ref=e133]:
+            - generic [ref=e134]: "9"
+            - generic [ref=e135]: Resultado
+        - generic [ref=e389]:
+          - generic [ref=e391]:
+            - img [ref=e392]
+            - heading "Personalidad, Estrategia, Tono y Enfoque" [level=2] [ref=e394]
+          - generic [ref=e396]:
+            - generic [ref=e397]:
+              - generic [ref=e398]:
+                - generic [ref=e399]:
+                  - img [ref=e401]
+                  - heading "Público Objetivo" [level=3] [ref=e406]
+                - generic [ref=e407]: PASO 1
+              - generic [ref=e409]: Falta seleccionar
+              - generic [ref=e410]:
+                - paragraph [ref=e411]: Del cliente
+                - paragraph [ref=e412]: Propietarios de vivienda, gestores de comunidades, profesionales del interiorismo y paisajismo, restauradores y dueños de hostelería, constructoras, diseñadores
+              - generic [ref=e413]:
+                - paragraph [ref=e414]: Selecciona un Buyer Persona
+                - generic [ref=e415]:
+                  - button "Propietario de Casa Premium Edad 38-55, con casa propia de €400k+, busca mejorar y embellecer jardín/terraza, presupuesto €3k-€15k/proyecto, valora calidad y longevidad, presente en Redes (Facebook, Pinterest), influenciable por fotografías antes/después" [ref=e416] [cursor=pointer]:
+                    - paragraph [ref=e417]: Propietario de Casa Premium
+                    - paragraph [ref=e418]: Edad 38-55, con casa propia de €400k+, busca mejorar y embellecer jardín/terraza, presupuesto €3k-€15k/proyecto, valora calidad y longevidad, presente en Redes (Facebook, Pinterest), influenciable por fotografías antes/después
+                  - button "Gestor de Comunidad Residencial Edad 45-65, responsable de espacios comunes en fincas, requiere proveedores B2B, presupuesto €10k-€50k/año, valora servicio profesional y garantías, requiere facturación y soporte técnico continuo" [ref=e419] [cursor=pointer]:
+                    - paragraph [ref=e420]: Gestor de Comunidad Residencial
+                    - paragraph [ref=e421]: Edad 45-65, responsable de espacios comunes en fincas, requiere proveedores B2B, presupuesto €10k-€50k/año, valora servicio profesional y garantías, requiere facturación y soporte técnico continuo
+                  - button "Profesional Interiorista / Paisajista Edad 28-50, recomienda a clientes, busca catálogo pro, márgenes mayoristas, presupuesto €5k-€50k/proyecto, requiere asesoramiento técnico, certificaciones y posible partnership a largo plazo" [ref=e422] [cursor=pointer]:
+                    - paragraph [ref=e423]: Profesional Interiorista / Paisajista
+                    - paragraph [ref=e424]: Edad 28-50, recomienda a clientes, busca catálogo pro, márgenes mayoristas, presupuesto €5k-€50k/proyecto, requiere asesoramiento técnico, certificaciones y posible partnership a largo plazo
+                  - button "Restaurador / Dueño Hostelería Edad 35-60, equipa terrazas de bares/restaurantes, necesita durabilidad y fácil mantenimiento, presupuesto €2k-€20k/local, presiona en rentabilidad, requiere soluciones quick-install y bajo mantenimiento" [ref=e425] [cursor=pointer]:
+                    - paragraph [ref=e426]: Restaurador / Dueño Hostelería
+                    - paragraph [ref=e427]: Edad 35-60, equipa terrazas de bares/restaurantes, necesita durabilidad y fácil mantenimiento, presupuesto €2k-€20k/local, presiona en rentabilidad, requiere soluciones quick-install y bajo mantenimiento
+            - generic [ref=e428]:
+              - generic [ref=e429]:
+                - generic [ref=e430]:
+                  - img [ref=e432]
+                  - heading "Intención del Funnel" [level=3] [ref=e434]
+                - generic [ref=e435]: PASO 2
+              - generic [ref=e437]: Completa el Paso 1 primero
+            - generic [ref=e438]:
+              - generic [ref=e439]:
+                - generic [ref=e440]:
+                  - img [ref=e442]
+                  - heading "Tono y Subtono" [level=3] [ref=e446]
+                - generic [ref=e447]: PASO 3
+              - generic [ref=e449]: Completa el Paso 2 primero
+            - generic [ref=e450]:
+              - generic [ref=e451]:
+                - generic [ref=e452]:
+                  - img [ref=e454]
+                  - heading "Ángulo Narrativo" [level=3] [ref=e459]
+                - generic [ref=e460]: PASO 4
+              - generic [ref=e462]: Completa el Paso 3 primero
+              - paragraph [ref=e463]: Selecciona la perspectiva narrativa que mejor enganche a tu audiencia.
+        - generic [ref=e177]:
+          - button "Anterior" [ref=e178] [cursor=pointer]:
+            - img [ref=e179]
+            - text: Anterior
+          - generic [ref=e181]: Paso 3 de 9
+          - button "Siguiente" [disabled] [ref=e182]:
+            - text: Siguiente
+            - img [ref=e183]
+  - alert [ref=e185]
+  - button "Open Next.js Dev Tools" [ref=e191] [cursor=pointer]:
+    - img [ref=e192]

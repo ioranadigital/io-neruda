@@ -1,0 +1,120 @@
+{
+  "promptVersion": "1.0",
+  "description": "Arquitectura definitiva de prompt para generación de contenido con IA",
+  "generationFlow": {
+    "input": {
+      "clientContext": {
+        "name": "string (required)",
+        "usp": "string - Unique Selling Proposition",
+        "brandVoice": "professional|casual|technical|friendly|custom",
+        "brandValues": ["string"],
+        "targetIndustry": "string",
+        "competitorDifferentiation": "string"
+      },
+      "audienceContext": {
+        "buyerPersona": "string (required) - Rol específico del lector",
+        "painPoint": "string (required) - Problema principal",
+        "goal": "string - Qué quiere conseguir",
+        "knowledgeLevel": "beginner|intermediate|expert",
+        "psychographics": "string - Motivaciones, valores, aspiraciones"
+      },
+      "contentContext": {
+        "primaryKeyword": "string (required)",
+        "secondaryKeywords": ["string"],
+        "contentIntent": "educational|transactional|social_proof|thought_leadership",
+        "contentFormat": "blog|email|social_linkedin|social_instagram|whatsapp|pdf",
+        "estimatedLength": "number - palabras target",
+        "marketPositioning": "string - Cómo nos posicionamos",
+        "seasonalContext": "string - Contexto temporal/estacional"
+      },
+      "styleGuide": {
+        "tone": "string - Descripción específica del tono",
+        "vocabulary": {
+          "use": ["string"],
+          "avoid": ["string"]
+        },
+        "forbiddenKeywords": ["string"],
+        "phrasePatterns": ["string - Frases que funcionan"],
+        "referenceContent": "string - URL o descripción de contenido exitoso"
+      },
+      "outputRequirements": {
+        "sections": ["string - H2 o secciones requeridas"],
+        "callToAction": "string - CTA específica",
+        "metaDescription": "boolean - Incluir meta description",
+        "includeExamples": "boolean",
+        "includeStatistics": "boolean",
+        "structure": "string - Format: intro, body_sections[], conclusion, cta"
+      }
+    },
+    "output": {
+      "contentMetadata": {
+        "title": "string - Title tag (60 chars)",
+        "metaDescription": "string - Meta description (160 chars)",
+        "h1": "string - H1 principal",
+        "estimatedReadTime": "number - minutos"
+      },
+      "contentStructure": {
+        "intro": {
+          "hook": "string - Frase de apertura impactante",
+          "context": "string - Por qué esto importa",
+          "promise": "string - Qué aprenderá el lector"
+        },
+        "sections": [
+          {
+            "h2": "string",
+            "content": "string - Párrafos markdown",
+            "keyTakeaway": "string"
+          }
+        ],
+        "conclusion": "string - Resumen + transición a CTA",
+        "cta": "string - Call to action específica"
+      },
+      "seo": {
+        "primaryKeywordPlacement": "intro|h1|first_paragraph",
+        "keywordsUsed": ["string"],
+        "keywordDensity": "number - %",
+        "internalLinkSuggestions": ["string"],
+        "readabilityScore": "number - 0-100"
+      },
+      "engagement": {
+        "sentimentTone": "positive|neutral|urgent|inspirational",
+        "personalityIndex": "number - 0-100 (cuán personal es)",
+        "trustBuilders": ["string - elementos que generan confianza"],
+        "emotionalTriggers": ["string - elementos emocionales usados"]
+      }
+    }
+  },
+  "promptTemplate": {
+    "system": "Eres un especialista en creación de contenido de alto impacto. Tu objetivo es generar contenido que NO SOLO rankee en SEO, sino que VENDA, INSPIRE y GENERE ACCIÓN en la audiencia objetivo. Cada palabra debe cumplir múltiples propósitos: SEO, persuasión y valor.",
+    "structure": [
+      "CONTEXTO DEL CLIENTE",
+      "PERFIL DEL LECTOR",
+      "OBJETIVO DEL CONTENIDO",
+      "GUÍA DE TONO Y ESTILO",
+      "ESTRUCTURA REQUERIDA",
+      "RESTRICCIONES Y PROHIBICIONES",
+      "FORMATO DE SALIDA ESPERADO"
+    ]
+  },
+  "qualityMetrics": {
+    "critical": [
+      "Buyer Persona Alignment (40% of quality)",
+      "Content Intent Match (25% of quality)",
+      "Brand Voice Consistency (20% of quality)"
+    ],
+    "important": [
+      "Keyword Integration (10% of quality)",
+      "Format Optimization (5% of quality)"
+    ],
+    "validation": {
+      "checks": [
+        "¿Lee como si fuera escrito para ESTA persona específica?",
+        "¿Resuelve el pain point mencionado?",
+        "¿La voz de marca es consistente?",
+        "¿El CTA es claro y motivador?",
+        "¿Los keywords están naturales?"
+      ],
+      "minimumScore": 80
+    }
+  }
+}

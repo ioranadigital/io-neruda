@@ -1,0 +1,24 @@
+{
+  "createdAt": "2026-06-05T22:45:41.0140991Z",
+  "sessionId": "session_test",
+  "tone": "professional",
+  "enabledFormats": {
+    "social_instagram": false,
+    "whatsapp": false,
+    "email": false,
+    "blog": true,
+    "pdf": false,
+    "social_linkedin": true
+  },
+  "clientId": "test-client-1",
+  "keywords": {
+    "longtail": [
+      "long tail keyword 1"
+    ],
+    "niche": [
+      "keyword1",
+      "keyword2"
+    ]
+  },
+  "configurationName": "Test Config"
+}

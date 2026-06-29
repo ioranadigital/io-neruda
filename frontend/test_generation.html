@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test</title></head>
+<body>
+<script>
+const checkGenerator = async () => {
+  const html = await fetch('http://localhost:3003/generators').then(r => r.text());
+  console.log('✓ Generators page loads');
+  console.log('✓ Has client selector:', html.includes('Selecciona cliente'));
+  console.log('✓ Has form fields:', html.includes('Nombre de configuración'));
+  console.log('✓ Has tone selector:', html.includes('Select Tone'));
+};
+checkGenerator();
+</script>
+</body>
+</html>

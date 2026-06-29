@@ -1,0 +1,177 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e5]:
+        - img [ref=e7]
+        - generic [ref=e9]:
+          - paragraph [ref=e10]: IO Neruda
+          - paragraph [ref=e11]: Content Hub
+      - navigation [ref=e12]:
+        - generic [ref=e13]:
+          - paragraph [ref=e14]: Contenidos
+          - generic [ref=e15]:
+            - link "Dashboard Análisis y métricas" [ref=e16] [cursor=pointer]:
+              - /url: /dashboard
+              - img [ref=e17]
+              - generic [ref=e19]:
+                - paragraph [ref=e20]: Dashboard
+                - paragraph [ref=e21]: Análisis y métricas
+            - link "Generador Crear contenido" [ref=e22] [cursor=pointer]:
+              - /url: /generators
+              - img [ref=e23]
+              - generic [ref=e25]:
+                - paragraph [ref=e26]: Generador
+                - paragraph [ref=e27]: Crear contenido
+            - link "Planificador Crear planes de contenido" [ref=e28] [cursor=pointer]:
+              - /url: /planner
+              - img [ref=e29]
+              - generic [ref=e31]:
+                - paragraph [ref=e32]: Planificador
+                - paragraph [ref=e33]: Crear planes de contenido
+        - generic [ref=e35]:
+          - paragraph [ref=e36]: Gestión
+          - generic [ref=e37]:
+            - link "Mis contenidos Generados y guardados" [ref=e38] [cursor=pointer]:
+              - /url: /contenidos
+              - img [ref=e39]
+              - generic [ref=e42]:
+                - paragraph [ref=e43]: Mis contenidos
+                - paragraph [ref=e44]: Generados y guardados
+            - link "Clientes Fichas y perfiles" [ref=e45] [cursor=pointer]:
+              - /url: /clients
+              - img [ref=e46]
+              - generic [ref=e51]:
+                - paragraph [ref=e52]: Clientes
+                - paragraph [ref=e53]: Fichas y perfiles
+            - link "Plantillas Contenidos reutilizables" [ref=e54] [cursor=pointer]:
+              - /url: /templates
+              - img [ref=e55]
+              - generic [ref=e58]:
+                - paragraph [ref=e59]: Plantillas
+                - paragraph [ref=e60]: Contenidos reutilizables
+        - generic [ref=e62]:
+          - paragraph [ref=e63]: Sistema
+          - generic [ref=e64]:
+            - link "Configuración Ajustes globales" [ref=e65] [cursor=pointer]:
+              - /url: /config
+              - img [ref=e66]
+              - generic [ref=e69]:
+                - paragraph [ref=e70]: Configuración
+                - paragraph [ref=e71]: Ajustes globales
+            - link "Integraciones APIs y conectores" [ref=e72] [cursor=pointer]:
+              - /url: /integraciones
+              - img [ref=e73]
+              - generic [ref=e76]:
+                - paragraph [ref=e77]: Integraciones
+                - paragraph [ref=e78]: APIs y conectores
+        - generic [ref=e80]:
+          - paragraph [ref=e81]: Ayuda
+          - link "Guía Instrucciones de uso" [ref=e83] [cursor=pointer]:
+            - /url: /help
+            - img [ref=e84]
+            - generic [ref=e87]:
+              - paragraph [ref=e88]: Guía
+              - paragraph [ref=e89]: Instrucciones de uso
+      - paragraph [ref=e91]: v2.0.0 · Production
+    - main [ref=e92]:
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - button "Volver a Clientes" [ref=e95] [cursor=pointer]:
+            - img [ref=e96]
+            - text: Volver a Clientes
+          - heading "Editar Cliente" [level=1] [ref=e98]
+          - paragraph [ref=e99]: Esgarden
+        - generic [ref=e102]:
+          - generic [ref=e104]:
+            - button "Identidad" [ref=e105] [cursor=pointer]:
+              - img [ref=e106]
+              - generic [ref=e110]: Identidad
+            - button "Audiencia" [ref=e111] [cursor=pointer]:
+              - img [ref=e112]
+              - generic [ref=e117]: Audiencia
+            - button "Marca" [ref=e118] [cursor=pointer]:
+              - img [ref=e119]
+              - generic [ref=e125]: Marca
+            - button "Contenido" [ref=e126] [cursor=pointer]:
+              - img [ref=e127]
+              - generic [ref=e129]: Contenido
+            - button "Keywords" [ref=e130] [cursor=pointer]:
+              - img [ref=e131]
+              - generic [ref=e133]: Keywords
+            - button "Competencia" [ref=e134] [cursor=pointer]:
+              - img [ref=e135]
+              - generic [ref=e140]: Competencia
+            - button "Canales" [ref=e141] [cursor=pointer]:
+              - img [ref=e142]
+              - generic [ref=e145]: Canales
+            - button "Referencias" [ref=e146] [cursor=pointer]:
+              - img [ref=e147]
+              - generic [ref=e149]: Referencias
+            - button "Integración" [ref=e150] [cursor=pointer]:
+              - img [ref=e151]
+              - generic [ref=e153]: Integración
+            - button "Métricas" [ref=e154] [cursor=pointer]:
+              - img [ref=e155]
+              - generic [ref=e157]: Métricas
+            - button "Gestión" [ref=e158] [cursor=pointer]:
+              - img [ref=e159]
+              - generic [ref=e162]: Gestión
+          - generic [ref=e194]:
+            - heading "Audiencia & Mercado" [level=3] [ref=e195]
+            - generic [ref=e196]:
+              - generic [ref=e197]:
+                - generic [ref=e198]: Público objetivo
+                - textbox "e.g., Agencias digitales, freelancers" [ref=e199]: Propietarios de vivienda, gestores de comunidades, profesionales del interiorismo y paisajismo, restauradores y dueños de hostelería, constructoras, diseñadores
+              - generic [ref=e200]:
+                - generic [ref=e201]: Edad promedio
+                - spinbutton [ref=e202]: "42"
+              - generic [ref=e203]:
+                - generic [ref=e204]: Nivel de ingresos
+                - combobox [ref=e205]:
+                  - option "Selecciona" [selected]
+                  - option "Bajo"
+                  - option "Medio"
+                  - option "Alto"
+                  - option "Lujo"
+            - generic [ref=e206]:
+              - generic [ref=e207]: 👥 Buyer Personas
+              - generic [ref=e208]:
+                - generic [ref=e209]:
+                  - generic [ref=e210]: Buyer Persona 1
+                  - generic [ref=e211]:
+                    - textbox "e.g., CTO/VP Technology" [ref=e212]: Propietario de Casa Premium
+                    - textbox "Breve descripción de su rol, responsabilidades y objetivos..." [ref=e213]: Edad 38-55, con casa propia de €400k+, busca mejorar y embellecer jardín/terraza, presupuesto €3k-€15k/proyecto, valora calidad y longevidad, presente en Redes (Facebook, Pinterest), influenciable por fotografías antes/después
+                - generic [ref=e214]:
+                  - generic [ref=e215]: Buyer Persona 2
+                  - generic [ref=e216]:
+                    - textbox "e.g., Marketing Manager" [ref=e217]: Gestor de Comunidad Residencial
+                    - textbox "Breve descripción de su rol, responsabilidades y objetivos..." [ref=e218]: Edad 45-65, responsable de espacios comunes en fincas, requiere proveedores B2B, presupuesto €10k-€50k/año, valora servicio profesional y garantías, requiere facturación y soporte técnico continuo
+                - generic [ref=e219]:
+                  - generic [ref=e220]: Buyer Persona 3
+                  - generic [ref=e221]:
+                    - textbox "e.g., Store Owner" [ref=e222]: Profesional Interiorista / Paisajista
+                    - textbox "Breve descripción de su rol, responsabilidades y objetivos..." [ref=e223]: Edad 28-50, recomienda a clientes, busca catálogo pro, márgenes mayoristas, presupuesto €5k-€50k/proyecto, requiere asesoramiento técnico, certificaciones y posible partnership a largo plazo
+                - generic [ref=e224]:
+                  - generic [ref=e225]: Buyer Persona 4
+                  - generic [ref=e226]:
+                    - textbox "e.g., Health Coach" [ref=e227]: Restaurador / Dueño Hostelería
+                    - textbox "Breve descripción de su rol, responsabilidades y objetivos..." [ref=e228]: Edad 35-60, equipa terrazas de bares/restaurantes, necesita durabilidad y fácil mantenimiento, presupuesto €2k-€20k/local, presiona en rentabilidad, requiere soluciones quick-install y bajo mantenimiento
+              - paragraph [ref=e229]: Estos buyer personas se desplegarán como botones con su contexto en el Paso 2 del generador
+            - generic [ref=e230]:
+              - generic [ref=e231]: Industrias principales (tags)
+              - textbox "e.g., Tech, Marketing, Finance" [ref=e232]: Inmobiliario, Hostelería, Diseño, Construcción, Paisajismo, Hogar & Lifestyle
+              - paragraph [ref=e233]: Separadas por comas
+            - generic [ref=e234]:
+              - generic [ref=e235]: Propuesta de valor (USP)
+              - textbox "¿Qué te hace diferente? ¿Por qué nos eligen?" [ref=e236]: Catálogo completamente integrado de plantas, barbacoas y piscinas con asesoramiento experto incluido, instalación profesional gratuita, garantías extendidas, y apoyo post-compra a largo plazo.
+            - generic [ref=e237]:
+              - generic [ref=e238]: Problemas que resuelve (tags)
+              - textbox "e.g., Automatizar procesos, Mejorar ROI" [ref=e239]: Dificultad para encontrar productos de exterior de calidad premium en una única plataforma, Confusión sobre qué plantas son resistentes a diferentes climas, Necesidad de asesoramiento técnico para instalación y mantenimiento, Búsqueda de soluciones duraderas y de bajo mantenimiento para terrazas y jardines, Deseo de mejorar valor estético y funcional del hogar sin obras mayor
+              - paragraph [ref=e240]: Separadas por comas
+            - generic [ref=e241]:
+              - generic [ref=e242]: Caso de éxito / Logro principal
+              - textbox "Describe un proyecto exitoso o resultado importante" [ref=e243]: "Cliente B2B de cadena de 15 hoteles rurales: implementamos solución integrada de mobiliario, plantas y barbacoas con 87% reducción de tiempo de aprovisionamiento y 23% mejora en satisfacción de huéspedes."
+  - alert [ref=e244]
+  - button "Open Next.js Dev Tools" [ref=e250] [cursor=pointer]:
+    - img [ref=e251]
+  - status [ref=e264]: ✅ Cliente guardado exitosamente

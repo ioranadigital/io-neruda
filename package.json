@@ -1,0 +1,7 @@
+{
+  "name": "tools-io-neruda",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "io-neruda project",
+  "private": true
+}

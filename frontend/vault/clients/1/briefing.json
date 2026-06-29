@@ -1,0 +1,24 @@
+{
+  "clientId": "1",
+  "sessionId": "session_1780923126712",
+  "configurationName": "",
+  "keywords": {
+    "niche": [
+      "miempresa barbacoa",
+      "parrilla",
+      "tienda barbacoas miempresa",
+      "miempresa parrillas"
+    ],
+    "longtail": []
+  },
+  "tone": "professional",
+  "enabledFormats": {
+    "blog": false,
+    "email": false,
+    "social_linkedin": false,
+    "social_instagram": false,
+    "whatsapp": false,
+    "pdf": false
+  },
+  "createdAt": "2026-06-08T12:52:06.712Z"
+}
