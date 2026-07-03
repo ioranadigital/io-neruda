@@ -1,0 +1,10 @@
+FROM node:18-alpine
+RUN npm install -g pnpm
+WORKDIR /app
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --frozen-lockfile || true
+COPY . .
+RUN cd backend && npm install
+EXPOSE 4005
+ENV NODE_ENV=production
+CMD ["node", "backend/server.js"]
