@@ -1,9 +1,10 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
-  Zap, Sparkles, Users, Settings, BarChart3, FileText, Bolt, HelpCircle, Map, Archive, Network
+  Zap, Sparkles, Users, Settings, BarChart3, FileText, Bolt, HelpCircle, Map, Archive, Network, ShieldCheck, LogOut
 } from 'lucide-react';
+import { clearMockSessionCookie, isTestAuthMode } from '@/src/lib/mockAuth';
 
 const NAV_SECTIONS = [
   {
@@ -28,6 +29,7 @@ const NAV_SECTIONS = [
     items: [
       { href: '/config', icon: Settings, label: 'Configuración', desc: 'Ajustes globales' },
       { href: '/integraciones', icon: Bolt, label: 'Integraciones', desc: 'APIs y conectores' },
+      { href: '/admin/usuarios', icon: ShieldCheck, label: 'Usuarios', desc: 'Accesos de la agencia' },
     ]
   },
   {
@@ -40,6 +42,12 @@ const NAV_SECTIONS = [
 
 export function Sidebar() {
   const path = usePathname() || '';
+  const router = useRouter();
+
+  function handleLogout() {
+    clearMockSessionCookie();
+    router.push('/login');
+  }
 
   return (
     <aside className="flex-shrink-0 w-64 h-screen border-r flex flex-col bg-[#e8f5ee]" style={{ borderColor: '#c8e6d4' }}>
@@ -95,7 +103,19 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t" style={{ borderColor: '#c8e6d4' }}>
+      <div className="px-5 py-4 border-t space-y-2" style={{ borderColor: '#c8e6d4' }}>
+        {isTestAuthMode() && (
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-xs font-medium transition-colors"
+            style={{ color: '#2d2d2d' }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#d4ece0'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
+          >
+            <LogOut size={13} />
+            Cerrar sesión (test)
+          </button>
+        )}
         <p className="text-[11px]" style={{ color: '#6b7280' }}>v2.0.0 · Production</p>
       </div>
     </aside>
