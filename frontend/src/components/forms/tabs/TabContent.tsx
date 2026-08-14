@@ -9,7 +9,10 @@ interface TabProps {
 export default function TabContent({ formData, onChange }: TabProps) {
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">Contenido & Estrategia SEO</h3>
+      <h3 className="text-xl font-bold text-gray-800 mb-6">Contenido & Publicación</h3>
+      <p className="text-xs text-gray-500 -mt-4">
+        Las keywords del cliente (nicho, long-tail, palabras prohibidas...) se gestionan en la pestaña Keywords.
+      </p>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
@@ -53,30 +56,6 @@ export default function TabContent({ formData, onChange }: TabProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Keywords Niche (tags)</label>
-        <input
-          type="text"
-          value={formData.keywords_niche?.join(', ') || ''}
-          onChange={(e) => onChange('keywords_niche', e.target.value.split(',').map(v => v.trim()))}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g., Marketing automation, Email marketing"
-        />
-        <p className="text-xs text-gray-500 mt-1">Separadas por comas</p>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Keywords Long-tail (tags)</label>
-        <input
-          type="text"
-          value={formData.keywords_longtail?.join(', ') || ''}
-          onChange={(e) => onChange('keywords_longtail', e.target.value.split(',').map(v => v.trim()))}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g., Cómo elegir herramientas de marketing automation"
-        />
-        <p className="text-xs text-gray-500 mt-1">Separadas por comas</p>
-      </div>
-
-      <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Content Pillars / Tópicos (tags)</label>
         <input
           type="text"
@@ -84,18 +63,6 @@ export default function TabContent({ formData, onChange }: TabProps) {
           onChange={(e) => onChange('content_pillars', e.target.value.split(',').map(v => v.trim()))}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           placeholder="e.g., Marketing Automation, CRM, Email Marketing"
-        />
-        <p className="text-xs text-gray-500 mt-1">Separadas por comas</p>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Palabras prohibidas (tags)</label>
-        <input
-          type="text"
-          value={formData.forbidden_keywords?.join(', ') || ''}
-          onChange={(e) => onChange('forbidden_keywords', e.target.value.split(',').map(v => v.trim()))}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g., spam, fake, cheap"
         />
         <p className="text-xs text-gray-500 mt-1">Separadas por comas</p>
       </div>

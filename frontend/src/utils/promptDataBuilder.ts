@@ -1,5 +1,5 @@
 import { PromptRenderData } from '@/src/types/aiGeneration';
-import { Client } from '@/src/types/client';
+import { Client, getForbiddenKeywords } from '@/src/types/client';
 
 export interface GeneratorFormData {
   name?: string;
@@ -120,7 +120,7 @@ export function buildPromptData(
       'Passive voice',
       'Clichés',
     ],
-    forbiddenKeywords: selectedClient.forbidden_keywords || [],
+    forbiddenKeywords: getForbiddenKeywords(selectedClient),
     referenceContent: formData.referenceContent || 'Similar successful content in the industry',
 
     // Output structure

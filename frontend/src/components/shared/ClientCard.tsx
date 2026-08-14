@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Client } from '../../types/client';
+import { Client, getForbiddenKeywords } from '../../types/client';
 import { Edit2, Trash2, FileText } from 'lucide-react';
 
 interface ClientCardProps {
@@ -20,6 +20,8 @@ export default function ClientCard({ client, onEdit, onDelete }: ClientCardProps
       </div>
     );
   }
+
+  const forbiddenKeywords = getForbiddenKeywords(client);
 
   return (
     <div className="p-6 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
@@ -98,13 +100,13 @@ export default function ClientCard({ client, onEdit, onDelete }: ClientCardProps
       </div>
 
       {/* Keywords Info */}
-      {(client.forbidden_keywords?.length > 0 || client.competitor_urls?.length > 0) && (
+      {(forbiddenKeywords.length > 0 || client.competitor_urls?.length > 0) && (
         <div className="mt-4 pt-4 border-t border-gray-100">
-          {client.forbidden_keywords?.length > 0 && (
+          {forbiddenKeywords.length > 0 && (
             <div className="mb-3">
               <p className="text-xs text-gray-500 font-semibold mb-2">Palabras prohibidas</p>
               <div className="flex flex-wrap gap-2">
-                {client.forbidden_keywords.map((keyword, idx) => (
+                {forbiddenKeywords.map((keyword, idx) => (
                   <span
                     key={idx}
                     className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs"

@@ -121,6 +121,16 @@ export interface Client {
   updated_at: string;
 }
 
+// Palabras prohibidas vive ahora en keywords_hierarchical.level6_banned_words
+// (pestaña Keywords, Nivel 6). Este helper conserva las que ya estaban
+// guardadas en el campo legacy forbidden_keywords para clientes antiguos.
+export function getForbiddenKeywords(client: Pick<Client, 'forbidden_keywords' | 'keywords_hierarchical'>): string[] {
+  return Array.from(new Set([
+    ...(client.keywords_hierarchical?.level6_banned_words ?? []),
+    ...(client.forbidden_keywords ?? []),
+  ]));
+}
+
 export interface ClientCreateInput {
   name: string;
   slug: string;
