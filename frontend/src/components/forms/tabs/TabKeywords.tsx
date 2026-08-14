@@ -12,11 +12,13 @@ interface TabKeywordsProps {
 
 export default function TabKeywords({ formData, onChange }: TabKeywordsProps) {
   const handleImportKeywords = (keywordsData: Record<string, string[]>) => {
-    // Map imported data to keywords_hierarchical structure
-    const hierarchical = formData.keywords_hierarchical || {};
+    // Fusiona con lo ya guardado (dedup) en vez de sobrescribir, para no
+    // perder keywords existentes al re-importar o ampliar el research.
+    const hierarchical = { ...(formData.keywords_hierarchical || {}) };
 
     Object.entries(keywordsData).forEach(([key, keywords]) => {
-      hierarchical[key as any] = keywords;
+      const existing = (hierarchical as Record<string, string[]>)[key] ?? [];
+      (hierarchical as Record<string, string[]>)[key] = Array.from(new Set([...existing, ...keywords]));
     });
 
     onChange('keywords_hierarchical', hierarchical);
