@@ -3,7 +3,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import {
   Cpu, Globe, Save, Upload, GitBranch, FlaskConical,
-  ChevronDown, ChevronRight, TrendingUp,
+  ChevronDown, ChevronRight, TrendingUp, Info,
   CheckCircle2, AlertCircle, Layers, Network, UserCircle2, RefreshCw,
 } from 'lucide-react';
 import { useGenerator } from '@/src/context/GeneratorContext';
@@ -971,6 +971,23 @@ export default function SiloBuilderView() {
               </span>
             )}
           </div>
+        </div>
+
+        {/* ── Explanatory box ── */}
+        <div
+          className="flex items-start gap-3 rounded-2xl border px-5 py-4"
+          style={{ backgroundColor: '#eff6ff', borderColor: '#bfdbfe' }}
+        >
+          <Info size={16} className="mt-0.5 flex-shrink-0" style={{ color: '#2563eb' }} />
+          <p className="text-xs leading-relaxed" style={{ color: '#1e3a8a' }}>
+            Genera arquitecturas de contenido en silo para SEO: agrupa keywords por intención de búsqueda,
+            o parte de la URL de un competidor, y organiza el resultado en un árbol de una página{' '}
+            <strong>Pilar</strong> con varias páginas <strong>Satélite</strong>, cada una etiquetada con su
+            intención (comercial, informativa, comparativa, transaccional). Al pulsar &quot;Inyectar&quot;,
+            esas keywords se reparten automáticamente en los niveles correspondientes de la ficha del
+            cliente seleccionado. En <strong>modo test</strong> los resultados se generan con reglas y
+            plantillas fijas — no hay clustering por IA ni se escanea ningún sitemap real.
+          </p>
         </div>
 
         {/* ── Two operative cards ── */}
