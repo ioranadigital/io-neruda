@@ -1,22 +1,13 @@
 /**
- * AUTH GUARD — MODO TEST (MOCKED)
+ * AUTH GUARD — Supabase Auth
  *
- * Muro de autenticación piloto para io-neruda. Bloquea el acceso a las rutas
- * críticas de la app si no existe la cookie de sesión simulada
- * `neruda_session_test` (ver src/lib/mockAuth.ts, que la crea/valida).
- *
- * Activación: controlada por NEXT_PUBLIC_AUTH_MODE === 'test' (.env.local).
- * Si el flag no está en 'test', el middleware deja pasar todo el tráfico sin
- * tocar Supabase ni ninguna tabla real — cero interferencia con el flujo
- * de desarrollo actual.
- *
- * Migración futura a Supabase Auth real: sustituir la lectura de la cookie
- * mock por `supabase.auth.getSession()` (vía @supabase/ssr) en este mismo
- * archivo; el resto del guard (rutas protegidas, redirect a /login) no cambia.
+ * Bloquea el acceso a las rutas de la herramienta si no hay una sesión de
+ * Supabase Auth válida. La landing pública (`/`) y `/login` quedan fuera del
+ * guard a propósito.
  */
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { SESSION_COOKIE_NAME } from '@/src/lib/mockAuth';
+import { createServerClient } from '@supabase/ssr';
 
 const PROTECTED_PATHS = [
   '/dashboard',
@@ -27,13 +18,12 @@ const PROTECTED_PATHS = [
   '/silos',
   '/config',
   '/admin',
+  '/templates',
+  '/analytics',
+  '/integraciones',
 ];
 
-export function middleware(request: NextRequest) {
-  if (process.env.NEXT_PUBLIC_AUTH_MODE !== 'test') {
-    return NextResponse.next();
-  }
-
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isProtected = PROTECTED_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
@@ -43,14 +33,38 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = request.cookies.get(SESSION_COOKIE_NAME);
-  if (!session) {
+  let response = NextResponse.next({ request });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
@@ -63,5 +77,8 @@ export const config = {
     '/silos/:path*',
     '/config/:path*',
     '/admin/:path*',
+    '/templates/:path*',
+    '/analytics/:path*',
+    '/integraciones/:path*',
   ],
 };

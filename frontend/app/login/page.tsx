@@ -1,20 +1,9 @@
-/**
- * LOGIN — MODO TEST (MOCKED)
- *
- * Valida contra credenciales fijas (`validateMockCredentials` en
- * src/lib/mockAuth.ts), sin llamar a Supabase Auth. Al validar con éxito
- * escribe la cookie `neruda_session_test` (setMockSessionCookie) que lee
- * middleware.ts para dejar pasar al resto de la app.
- *
- * Migración futura: sustituir el bloque `handleSubmit` por
- * `supabase.auth.signInWithPassword({ email, password })`.
- */
 'use client';
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sparkles, Lock, Mail, AlertCircle } from 'lucide-react';
-import { validateMockCredentials, setMockSessionCookie } from '@/src/lib/mockAuth';
+import { supabase } from '@/src/lib/supabase';
 
 function LoginForm() {
   const router = useRouter();
@@ -24,20 +13,25 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (!validateMockCredentials(email, password)) {
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
+
+    if (signInError) {
+      setLoading(false);
       setError('Credenciales incorrectas. Verifica tu email y contraseña.');
       return;
     }
 
-    setLoading(true);
-    setMockSessionCookie(email.trim().toLowerCase());
-
     const redirectTo = searchParams.get('redirect') || '/dashboard';
     router.push(redirectTo);
+    router.refresh();
   };
 
   return (
@@ -116,7 +110,7 @@ function LoginForm() {
         </form>
 
         <p className="mt-6 text-center text-[11px] text-slate-400">
-          Entorno de pruebas · sesión simulada (no Supabase Auth)
+          Acceso exclusivo para el equipo de la agencia
         </p>
       </div>
     </div>

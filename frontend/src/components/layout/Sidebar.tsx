@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Zap, Sparkles, Users, Settings, BarChart3, FileText, Bolt, HelpCircle, Map, Archive, Network, ShieldCheck, LogOut
 } from 'lucide-react';
-import { clearMockSessionCookie, isTestAuthMode } from '@/src/lib/mockAuth';
+import { supabase } from '@/src/lib/supabase';
 
 const NAV_SECTIONS = [
   {
@@ -44,8 +44,8 @@ export function Sidebar() {
   const path = usePathname() || '';
   const router = useRouter();
 
-  function handleLogout() {
-    clearMockSessionCookie();
+  async function handleLogout() {
+    await supabase.auth.signOut();
     router.push('/login');
   }
 
@@ -104,18 +104,16 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="px-5 py-4 border-t space-y-2" style={{ borderColor: '#c8e6d4' }}>
-        {isTestAuthMode() && (
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-xs font-medium transition-colors"
-            style={{ color: '#2d2d2d' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#d4ece0'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
-          >
-            <LogOut size={13} />
-            Cerrar sesión (test)
-          </button>
-        )}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-xs font-medium transition-colors"
+          style={{ color: '#2d2d2d' }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#d4ece0'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
+        >
+          <LogOut size={13} />
+          Cerrar sesión
+        </button>
         <p className="text-[11px]" style={{ color: '#6b7280' }}>v2.0.0 · Production</p>
       </div>
     </aside>

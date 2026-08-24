@@ -47,16 +47,10 @@ services:
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.io-neruda.rule=Host(`neruda.iorana.dev`) || Host(`www.neruda.iorana.dev`)"
+      - "traefik.http.routers.io-neruda.rule=Host(`neruda.iorana.dev`) || Host(`www.neruda.iorana.dev`) || Host(`neruda.dev`) || Host(`www.neruda.dev`)"
       - "traefik.http.routers.io-neruda.entrypoints=https"
       - "traefik.http.routers.io-neruda.tls.certresolver=letsencrypt"
       - "traefik.http.routers.io-neruda.service=io-neruda-service"
-      - "traefik.http.routers.io-neruda-alt.rule=Host(`neruda.dev`) || Host(`www.neruda.dev`)"
-      - "traefik.http.routers.io-neruda-alt.entrypoints=https"
-      - "traefik.http.routers.io-neruda-alt.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.io-neruda-alt.service=io-neruda-service"
-      - "traefik.http.routers.io-neruda-alt.middlewares=io-neruda-auth"
-      - "traefik.http.middlewares.io-neruda-auth.basicauth.users=honatuya@gmail.com:$$2y$$05$$SvDaIdOtZ9v4mh9WA756pOdQy9yTyLFtp4AYONGpYAB6ZdvSae5um"
       - "traefik.http.services.io-neruda-service.loadbalancer.server.port=3003"
 
 networks:
