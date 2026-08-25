@@ -56,7 +56,7 @@ export default function GeneratorPanel() {
   const { generateContent, isGenerating } = useGenerateContent();
   const { generateContent: generateAIContent, isGenerating: isAIGenerating, step: aiStep, qualityScore, error: aiError } = useClaudeGeneration();
   const { injectionData, isFromPlanner, applyInjection } = usePlannerInjection();
-  const { injectionData: templateData, isFromTemplate, applyInjection: applyTemplateInjection } = useTemplateInjection();
+  const { injectionData: templateData, isFromTemplate, templateName, applyInjection: applyTemplateInjection } = useTemplateInjection();
 
   // Wrapper to ensure latest client version is selected
   const selectClient = useCallback((clientToSelect: Client | null) => {
@@ -742,7 +742,12 @@ export default function GeneratorPanel() {
       <div className="flex-1 overflow-y-auto w-full pt-2">
         {/* PASO 0: Cliente Welcome - Full Height */}
         {currentStep === 0 && !selectedClient && (
-          <PasoClienteWelcome clients={clients} onSelectClient={selectClient} />
+          <PasoClienteWelcome
+            clients={clients}
+            onSelectClient={selectClient}
+            isFromTemplate={isFromTemplate}
+            templateName={templateName}
+          />
         )}
 
         {/* Resto de pasos */}

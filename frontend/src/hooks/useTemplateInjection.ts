@@ -4,6 +4,7 @@ import { TemplateInjection } from '@/src/types/templates';
 export function useTemplateInjection() {
   const [injectionData, setInjectionData] = useState<TemplateInjection | null>(null);
   const [isFromTemplate, setIsFromTemplate] = useState(false);
+  const [templateName, setTemplateName] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if there's injected data from the templates factory
@@ -15,6 +16,9 @@ export function useTemplateInjection() {
         const data = JSON.parse(stored) as TemplateInjection;
         setInjectionData(data);
         setIsFromTemplate(true);
+        if (data.templateName) {
+          setTemplateName(data.templateName);
+        }
 
         // Clean up immediately after reading
         sessionStorage.removeItem('template-injection');
@@ -45,6 +49,7 @@ export function useTemplateInjection() {
   return {
     injectionData,
     isFromTemplate,
+    templateName,
     applyInjection,
     clearInjection,
   };

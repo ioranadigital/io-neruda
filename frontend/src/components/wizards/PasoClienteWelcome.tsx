@@ -2,18 +2,47 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, Target, Zap, BookOpen, AlertCircle } from 'lucide-react';
+import { Sparkles, Target, Zap, BookOpen, AlertCircle, CheckCircle } from 'lucide-react';
 import { Client } from '@/src/types/client';
 
 interface PasoClienteWelcomeProps {
   clients: Client[];
   onSelectClient: (client: Client | null) => void;
+  isFromTemplate?: boolean;
+  templateName?: string | null;
 }
 
-export default function PasoClienteWelcome({ clients, onSelectClient }: PasoClienteWelcomeProps) {
+export default function PasoClienteWelcome({
+  clients,
+  onSelectClient,
+  isFromTemplate = false,
+  templateName = null,
+}: PasoClienteWelcomeProps) {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center py-12 px-4">
       <div className="max-w-2xl w-full text-center space-y-8 bg-white rounded-2xl border border-slate-200 shadow-sm px-10 py-10">
+
+        {/* Banner si viene de template */}
+        {isFromTemplate && templateName && (
+          <div
+            className="flex items-start gap-3 px-4 py-3 rounded-lg border-l-4 -mx-10 -mt-10 mb-6 rounded-t-none"
+            style={{
+              backgroundColor: '#f0fdff',
+              borderColor: '#06b6d4',
+              borderRadius: '0 0 0.5rem 0.5rem',
+            }}
+          >
+            <CheckCircle size={18} style={{ color: '#0891b2', flexShrink: 0 }} className="mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold" style={{ color: '#0e7490' }}>
+                Plantilla seleccionada
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: '#0c6b7d' }}>
+                Usarás la estructura de <strong>{templateName}</strong> para generar contenido
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Hero Icon */}
         <div className="flex justify-center">

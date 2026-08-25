@@ -11,10 +11,13 @@ export interface Template {
   structurePrompt: string;
   colorBadge: string;
   icon: string;
+  visibleInStep1?: boolean;
 }
 
 export interface TemplateInjection {
   tipoPropuesta: TemplatePropuesta;
   subcategoriaPropuesta: string;
   promptEstructuraFijada: string;
+  templateName?: string;
+  templateId?: string;
 }
