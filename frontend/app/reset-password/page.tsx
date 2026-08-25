@@ -30,8 +30,18 @@ function ResetPasswordForm() {
         error: sessionError,
       } = await supabase.auth.exchangeCodeForSession(token);
 
-      if (sessionError || !session) {
-        setError('El link de recuperación es inválido o ha expirado. Solicita uno nuevo.');
+      if (sessionError) {
+        console.error('Token exchange error:', sessionError.message);
+        setError(`Token inválido: ${sessionError.message}`);
+        setValidating(false);
+        return;
+      }
+
+      if (!session) {
+        console.error('No session returned after token exchange');
+        setError('No se pudo establecer la sesión. El link podría estar expirado.');
+        setValidating(false);
+        return;
       }
 
       setValidating(false);
@@ -63,7 +73,8 @@ function ResetPasswordForm() {
     setLoading(false);
 
     if (updateError) {
-      setError('No pudimos actualizar tu contraseña. Intenta de nuevo.');
+      console.error('Password update error:', updateError.message);
+      setError(`Error: ${updateError.message || 'No pudimos actualizar tu contraseña. Intenta de nuevo.'}`);
       return;
     }
 
