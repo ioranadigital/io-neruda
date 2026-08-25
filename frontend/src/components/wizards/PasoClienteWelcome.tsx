@@ -21,6 +21,7 @@ export default function PasoClienteWelcome({
   templateName = null,
 }: PasoClienteWelcomeProps) {
   const [selectedClientId, setSelectedClientId] = useState<string>('');
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
 
   const handleSelectClient = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const clientId = e.target.value;
@@ -28,21 +29,26 @@ export default function PasoClienteWelcome({
   };
 
   const handleContinue = () => {
+    // Si hay plantilla seleccionada, inyectarla primero
+    if (selectedTemplate) {
+      const injectionPayload: TemplateInjection = {
+        tipoPropuesta: selectedTemplate.targetPropuesta,
+        subcategoriaPropuesta: selectedTemplate.subcategoria,
+        promptEstructuraFijada: selectedTemplate.structurePrompt,
+        templateName: selectedTemplate.nombre,
+        templateId: selectedTemplate.id,
+      };
+      sessionStorage.setItem('template-injection', JSON.stringify(injectionPayload));
+      sessionStorage.setItem('template-source', 'true');
+    }
+
     const client = clients.find((c) => c.id === selectedClientId);
     onSelectClient(client || null);
   };
 
   const handleUseTemplate = (template: Template) => {
-    const injectionPayload: TemplateInjection = {
-      tipoPropuesta: template.targetPropuesta,
-      subcategoriaPropuesta: template.subcategoria,
-      promptEstructuraFijada: template.structurePrompt,
-      templateName: template.nombre,
-      templateId: template.id,
-    };
-    sessionStorage.setItem('template-injection', JSON.stringify(injectionPayload));
-    sessionStorage.setItem('template-source', 'true');
-    window.location.reload();
+    // Solo guardar en estado, SIN reload
+    setSelectedTemplate(template);
   };
 
   return (
@@ -169,9 +175,18 @@ export default function PasoClienteWelcome({
 
               {/* Footer - CTA */}
               <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: template.colorBadge }}>
-                <Sparkles size={13} />
-                Usar este molde
-                <ArrowRight size={12} />
+                {selectedTemplate?.id === template.id ? (
+                  <>
+                    <CheckCircle size={13} />
+                    Seleccionada
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={13} />
+                    Usar este molde
+                    <ArrowRight size={12} />
+                  </>
+                )}
               </div>
             </button>
                   ))}
@@ -189,6 +204,26 @@ export default function PasoClienteWelcome({
           </p>
         </div>
       </div>
+
+      {/* Summary Banner */}
+      {selectedClientId && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
+          <div className="flex items-center gap-2">
+            <CheckCircle size={18} className="text-green-600" />
+            <p className="text-sm font-semibold text-green-900">
+              Cliente: <span className="text-green-700">{clients.find(c => c.id === selectedClientId)?.name}</span>
+            </p>
+          </div>
+          {selectedTemplate && (
+            <div className="flex items-center gap-2 ml-6">
+              <Sparkles size={16} className="text-green-600" />
+              <p className="text-sm text-green-800">
+                Plantilla: <span className="font-semibold">{selectedTemplate.nombre}</span>
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* CONTINUAR Button - Only enabled if client selected */}
       <div className="flex justify-end">
