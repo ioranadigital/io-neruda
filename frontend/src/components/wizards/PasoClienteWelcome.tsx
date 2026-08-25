@@ -25,7 +25,10 @@ export default function PasoClienteWelcome({
   const handleSelectClient = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const clientId = e.target.value;
     setSelectedClientId(clientId);
-    const client = clients.find((c) => c.id === clientId);
+  };
+
+  const handleContinue = () => {
+    const client = clients.find((c) => c.id === selectedClientId);
     onSelectClient(client || null);
   };
 
@@ -157,6 +160,22 @@ export default function PasoClienteWelcome({
             sin plantilla para crear desde cero.
           </p>
         </div>
+      </div>
+
+      {/* CONTINUAR Button - Only enabled if client selected */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleContinue}
+          disabled={!selectedClientId}
+          className="px-8 py-3 rounded-lg font-semibold text-white transition-all flex items-center gap-2"
+          style={{
+            backgroundColor: selectedClientId ? '#4aa87a' : '#ccc',
+            cursor: selectedClientId ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Continuar al Paso 2
+          <ArrowRight size={16} />
+        </button>
       </div>
     </div>
   );
