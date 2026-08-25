@@ -17,11 +17,13 @@ function ForgotPasswordForm() {
     setSuccess(false);
     setLoading(true);
 
+    const redirectTo =
+      process.env.NEXT_PUBLIC_RESET_PASSWORD_URL ||
+      `${window.location.origin}/reset-password`;
+
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(
       email.trim().toLowerCase(),
-      {
-        redirectTo: `${window.location.origin}/reset-password`,
-      }
+      { redirectTo }
     );
 
     setLoading(false);
