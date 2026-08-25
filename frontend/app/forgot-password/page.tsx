@@ -29,7 +29,8 @@ function ForgotPasswordForm() {
     setLoading(false);
 
     if (resetError) {
-      setError('No pudimos procesar tu solicitud. Verifica el email e intenta de nuevo.');
+      console.error('Password reset error:', resetError.message);
+      setError(`Error: ${resetError.message || 'No pudimos procesar tu solicitud. Verifica el email e intenta de nuevo.'}`);
       return;
     }
 
