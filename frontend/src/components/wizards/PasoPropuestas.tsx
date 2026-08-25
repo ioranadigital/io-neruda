@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Client } from '@/src/types/client';
+import { Template, TemplateInjection } from '@/src/types/templates';
+import { MASTER_TEMPLATES } from '@/src/data/templates';
 import StepContainer from './StepContainer';
-import { BookOpen, BarChart3, Lightbulb, TrendingUp, Wrench, Zap, PenTool } from 'lucide-react';
+import { BookOpen, BarChart3, Lightbulb, TrendingUp, Wrench, Zap, PenTool, CheckCircle, Sparkles, ArrowRight } from 'lucide-react';
 import { SUBCATEGORIAS_POR_PROPUESTA } from '@/src/data/incubacionPropuestas';
 
 interface PasoPropuestasProps {
@@ -13,7 +15,8 @@ interface PasoPropuestasProps {
     selectedProposal: string | null;
     subcategoriaPropuesta: string | null;
   };
-  onChange: (data: { name?: string; selectedProposal?: string | null; subcategoriaPropuesta?: string | null }) => void;
+  onChange: (data: { name?: string; selectedProposal?: string | null; subcategoriaPropuesta?: string | null; templateId?: string; templateName?: string }) => void;
+  templateInjection?: TemplateInjection | null;
 }
 
 const CONTENT_PROPOSALS = [
@@ -59,7 +62,23 @@ export default function PasoPropuestas({
   selectedClient,
   formData,
   onChange,
+  templateInjection,
 }: PasoPropuestasProps) {
+  const propuestaLabels: Record<string, string> = {
+    'guide': 'Guía Completa',
+    'comparison': 'Comparativa',
+    'tips': 'Tips & Trucos',
+    'case_study': 'Caso de Estudio',
+    'tutorial': 'Tutorial Paso a Paso',
+    'trends': 'Tendencias & Futuro',
+  };
+
+  // Encontrar plantilla elegida en Paso 1 (DEBE estar antes de cualquier condicional)
+  const selectedTemplate = useMemo(() => {
+    if (!templateInjection?.templateId) return null;
+    return MASTER_TEMPLATES.find(t => t.id === templateInjection.templateId);
+  }, [templateInjection]);
+
   if (!selectedClient) {
     return (
       <div className="text-center py-12">
@@ -68,90 +87,122 @@ export default function PasoPropuestas({
     );
   }
 
+  // Manejar cambio de plantilla
+  const handleUseTemplate = (template: Template) => {
+    onChange({
+      selectedProposal: template.targetPropuesta,
+      subcategoriaPropuesta: template.subcategoria,
+      templateId: template.id,
+      templateName: template.nombre,
+    });
+  };
+
   return (
-    <StepContainer
-      title="Propuestas de Contenido"
-      icon={PenTool}
-      iconColor="green"
-      columns={1}
-      gap="medium"
-    >
-      {/* Grid de 6 Columnas con Tarjetas */}
-      <div className="grid grid-cols-6 gap-4 w-full">
-        {CONTENT_PROPOSALS.map((proposal) => {
-          const Icon = proposal.icon;
-          const isSelected = formData.selectedProposal === proposal.id;
-          const subcategorias = SUBCATEGORIAS_POR_PROPUESTA[proposal.id] || [];
+    <div className="w-full space-y-6 px-4 py-6">
+      {/* Banner si viene de plantilla */}
+      {selectedTemplate && (
+        <div
+          className="flex items-start gap-3 px-5 py-4 rounded-lg border-l-4"
+          style={{
+            backgroundColor: '#f0fdff',
+            borderColor: '#06b6d4',
+          }}
+        >
+          <CheckCircle size={18} style={{ color: '#0891b2', flexShrink: 0 }} className="mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: '#0e7490' }}>
+              Plantilla seleccionada
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: '#0c6b7d' }}>
+              Usarás la estructura de <strong>{selectedTemplate.nombre}</strong>
+            </p>
+            <p className="text-xs mt-1 text-slate-600">
+              ¿Quieres cambiarla? Selecciona otra plantilla a continuación.
+            </p>
+          </div>
+        </div>
+      )}
 
-          return (
-            <div key={proposal.id} className="flex flex-col">
-              {/* Tarjeta Individual de Propuesta */}
-              <div
-                className={`rounded-xl border p-4 transition-all duration-300 text-left flex flex-col h-full relative ${
-                  isSelected
-                    ? 'border-green-400 bg-green-50 ring-2 ring-green-200 shadow-md'
-                    : 'border-slate-200 bg-white hover:bg-green-50 hover:border-green-300 hover:shadow-md cursor-pointer'
-                }`}
-              >
-                {/* Contenedor clickeable para la propuesta */}
-                <button
-                  onClick={() => onChange({ selectedProposal: proposal.id, subcategoriaPropuesta: null })}
-                  className="flex flex-col flex-1 text-left w-full"
-                >
-                  {/* Icon */}
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 flex-shrink-0 ${
-                    isSelected ? 'bg-green-100' : 'bg-slate-100'
-                  }`}>
-                    <Icon size={20} className={isSelected ? 'text-green-600' : 'text-slate-600'} />
-                  </div>
+      {/* Plantillas agrupadas por propuesta */}
+      <div className="space-y-6">
+        {(['guide', 'comparison', 'tips', 'case_study', 'tutorial', 'trends'] as const).map(
+          (propuestaType) => {
+            const templatesByPropuesta = MASTER_TEMPLATES.filter(
+              (t) => t.targetPropuesta === propuestaType
+            );
+            if (templatesByPropuesta.length === 0) return null;
 
-                  {/* Título */}
-                  <h4 className={`font-semibold text-sm mb-1 transition ${
-                    isSelected ? 'text-green-700' : 'text-slate-900'
-                  }`}>
-                    {proposal.title}
-                  </h4>
-
-                  {/* Descripción */}
-                  <p className="text-xs text-slate-600 leading-tight flex-1">
-                    {proposal.description}
-                  </p>
-                </button>
-
-                {/* Check Arriba a la Derecha */}
-                {isSelected && (
-                  <div className="absolute top-3 right-3">
-                    <span className="text-xl font-bold text-green-600">✓</span>
-                  </div>
-                )}
-
-                {/* Subcategorías Dentro de la Tarjeta - Siempre Visibles */}
-                {subcategorias.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-slate-200 space-y-2">
-                    <p className="text-xs font-semibold text-slate-600 mb-2">Subcategoría:</p>
-                    {subcategorias.map((subcategoria) => (
+            return (
+              <div key={propuestaType} className="space-y-3">
+                <h3 className="text-sm font-bold text-slate-900 pl-1 border-l-4" style={{ borderColor: '#4aa87a' }}>
+                  {propuestaLabels[propuestaType]}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {templatesByPropuesta.map((template) => {
+                    const isSelected = selectedTemplate?.id === template.id;
+                    return (
                       <button
-                        key={subcategoria.id}
-                        onClick={() => onChange({ selectedProposal: proposal.id, subcategoriaPropuesta: subcategoria.id })}
-                        className={`w-full text-left p-2 rounded-lg border-2 transition ${
-                          formData.subcategoriaPropuesta === subcategoria.id && isSelected
-                            ? 'bg-green-100 border-green-400'
-                            : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-                        }`}
+                        key={template.id}
+                        onClick={() => handleUseTemplate(template)}
+                        className="text-left p-4 rounded-lg border-2 transition-all hover:shadow-md"
+                        style={{
+                          borderColor: isSelected ? template.colorBadge : template.colorBadge + '40',
+                          backgroundColor: isSelected ? template.colorBadge + '15' : template.colorBadge + '08',
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.borderColor =
+                            template.colorBadge + '80';
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 4px 12px ${template.colorBadge}20`;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.borderColor =
+                            isSelected ? template.colorBadge : template.colorBadge + '40';
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
+                        }}
                       >
-                        <p className={`text-xs font-semibold transition ${
-                          formData.subcategoriaPropuesta === subcategoria.id && isSelected ? 'text-green-700' : 'text-slate-900'
-                        }`}>{subcategoria.nombre}</p>
-                        <p className="text-slate-500 text-[10px] mt-0.5 leading-tight">{subcategoria.descripcion}</p>
+                        {/* Header */}
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <p className="text-xs font-semibold mb-1" style={{ color: template.colorBadge }}>
+                              🏷️ {template.categoria}
+                            </p>
+                            <h3 className="font-bold text-sm text-slate-900">{template.nombre}</h3>
+                          </div>
+                          {isSelected && (
+                            <div className="ml-2 flex-shrink-0">
+                              <CheckCircle size={20} style={{ color: template.colorBadge }} />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Subcategoría */}
+                        <p className="text-xs text-slate-500 mb-2">→ {template.subcategoria}</p>
+
+                        {/* Description */}
+                        <p className="text-xs text-slate-600 mb-3 line-clamp-2">{template.descripcion}</p>
+
+                        {/* Footer - CTA */}
+                        <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: template.colorBadge }}>
+                          <Sparkles size={13} />
+                          {isSelected ? 'Seleccionada' : 'Usar este molde'}
+                          <ArrowRight size={12} />
+                        </div>
                       </button>
-                    ))}
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          }
+        )}
       </div>
-    </StepContainer>
+
+      {/* Info */}
+      <div className="bg-slate-50 rounded p-3">
+        <p className="text-xs text-slate-600">
+          💡 <strong>Tip:</strong> Selecciona una plantilla para usar su estructura de contenido.
+        </p>
+      </div>
+    </div>
   );
 }

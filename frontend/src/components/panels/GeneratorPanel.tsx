@@ -788,6 +788,7 @@ export default function GeneratorPanel() {
               selectedClient={selectedClient}
               formData={{ name: formData.name, selectedProposal: formData.selectedProposal, subcategoriaPropuesta: formData.subcategoriaPropuesta }}
               onChange={(data) => setFormData({ ...formData, ...data })}
+              templateInjection={templateData}
             />
           )}
 

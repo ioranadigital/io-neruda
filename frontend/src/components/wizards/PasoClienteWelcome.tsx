@@ -105,24 +105,33 @@ export default function PasoClienteWelcome({
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6 space-y-4">
         <div>
           <h2 className="text-lg font-bold text-slate-900 mb-2">2. Elige una Plantilla (Opcional)</h2>
-          <p className="text-sm text-slate-600">Usa una estructura predefinida o crea desde cero</p>
+          <p className="text-sm text-slate-600">Selecciona una estructura de contenido o crea desde cero</p>
         </div>
 
-        {/* Agrupar por categoría */}
-        {['SEO Informativo', 'SEO Comercial', 'Conversión Directa', 'Optimización GEO'].map(
-          (categoryName) => {
-            const templatesByCategory = MASTER_TEMPLATES.filter(
-              (t) => t.categoria === categoryName
+        {/* Agrupar por propuesta */}
+        {(['guide', 'comparison', 'tips', 'case_study', 'tutorial', 'trends'] as const).map(
+          (propuestaType) => {
+            const propuestaLabels: Record<string, string> = {
+              'guide': 'Guía Completa',
+              'comparison': 'Comparativa',
+              'tips': 'Tips & Trucos',
+              'case_study': 'Caso de Estudio',
+              'tutorial': 'Tutorial Paso a Paso',
+              'trends': 'Tendencias & Futuro',
+            };
+
+            const templatesByPropuesta = MASTER_TEMPLATES.filter(
+              (t) => t.targetPropuesta === propuestaType
             );
-            if (templatesByCategory.length === 0) return null;
+            if (templatesByPropuesta.length === 0) return null;
 
             return (
-              <div key={categoryName} className="space-y-3">
+              <div key={propuestaType} className="space-y-3">
                 <h3 className="text-sm font-bold text-slate-900 pl-1 border-l-4" style={{ borderColor: '#4aa87a' }}>
-                  {categoryName}
+                  {propuestaLabels[propuestaType]}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {templatesByCategory.map((template) => (
+                  {templatesByPropuesta.map((template) => (
             <button
               key={template.id}
               onClick={() => handleUseTemplate(template)}
@@ -144,13 +153,16 @@ export default function PasoClienteWelcome({
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-3">
-                <div>
+                <div className="flex-1">
                   <p className="text-xs font-semibold mb-1" style={{ color: template.colorBadge }}>
-                    {template.categoria}
+                    🏷️ {template.categoria}
                   </p>
                   <h3 className="font-bold text-sm text-slate-900">{template.nombre}</h3>
                 </div>
               </div>
+
+              {/* Subcategoría */}
+              <p className="text-xs text-slate-500 mb-2">→ {template.subcategoria}</p>
 
               {/* Description */}
               <p className="text-xs text-slate-600 mb-3 line-clamp-2">{template.descripcion}</p>
