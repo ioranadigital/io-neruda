@@ -818,14 +818,36 @@ export default function TemplatesListView() {
           </p>
         </div>
 
-        {/* TEMPLATES GRID */}
-        <TemplateGrid
-          templates={MASTER_TEMPLATES}
-          onUseTemplate={handleUseTemplate}
-          onPreview={setPreviewTemplate}
-          onToggleStep1={toggleStep1}
-          enabledInStep1={enabledInStep1}
-        />
+        {/* TEMPLATES GROUPED BY CATEGORY */}
+        {['SEO Informativo', 'SEO Comercial', 'Conversión Directa', 'Optimización GEO'].map(
+          (categoryName) => {
+            const templatesByCategory = MASTER_TEMPLATES.filter(
+              (t) => t.categoria === categoryName
+            );
+            if (templatesByCategory.length === 0) return null;
+
+            return (
+              <div key={categoryName} className="space-y-4">
+                <div className="border-b-2 pb-3" style={{ borderColor: '#4aa87a' }}>
+                  <h2 className="text-xl font-bold text-slate-900">{categoryName}</h2>
+                  <p className="text-sm text-slate-600 mt-1">
+                    {categoryName === 'SEO Informativo' && 'Contenido educativo y informativo optimizado para SEO'}
+                    {categoryName === 'SEO Comercial' && 'Contenido comercial y de comparativas de productos'}
+                    {categoryName === 'Conversión Directa' && 'Contenido enfocado en convertir usuarios en clientes'}
+                    {categoryName === 'Optimización GEO' && 'Contenido localizado geográficamente optimizado'}
+                  </p>
+                </div>
+                <TemplateGrid
+                  templates={templatesByCategory}
+                  onUseTemplate={handleUseTemplate}
+                  onPreview={setPreviewTemplate}
+                  onToggleStep1={toggleStep1}
+                  enabledInStep1={enabledInStep1}
+                />
+              </div>
+            );
+          }
+        )}
 
         {/* INFO SECTION */}
         <div

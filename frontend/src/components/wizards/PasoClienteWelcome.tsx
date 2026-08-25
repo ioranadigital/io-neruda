@@ -108,9 +108,21 @@ export default function PasoClienteWelcome({
           <p className="text-sm text-slate-600">Usa una estructura predefinida o crea desde cero</p>
         </div>
 
-        {/* Grid de Plantillas Resumidas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {MASTER_TEMPLATES.map((template) => (
+        {/* Agrupar por categoría */}
+        {['SEO Informativo', 'SEO Comercial', 'Conversión Directa', 'Optimización GEO'].map(
+          (categoryName) => {
+            const templatesByCategory = MASTER_TEMPLATES.filter(
+              (t) => t.categoria === categoryName
+            );
+            if (templatesByCategory.length === 0) return null;
+
+            return (
+              <div key={categoryName} className="space-y-3">
+                <h3 className="text-sm font-bold text-slate-900 pl-1 border-l-4" style={{ borderColor: '#4aa87a' }}>
+                  {categoryName}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {templatesByCategory.map((template) => (
             <button
               key={template.id}
               onClick={() => handleUseTemplate(template)}
@@ -150,8 +162,12 @@ export default function PasoClienteWelcome({
                 <ArrowRight size={12} />
               </div>
             </button>
-          ))}
-        </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+        )}
 
         {/* Info */}
         <div className="bg-slate-50 rounded p-3 mt-4">
