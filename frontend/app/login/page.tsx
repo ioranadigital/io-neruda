@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { Sparkles, Lock, Mail, AlertCircle } from 'lucide-react';
 import { supabase } from '@/src/lib/supabase';
 
@@ -108,6 +109,16 @@ function LoginForm() {
             {loading ? 'Entrando…' : 'Iniciar sesión'}
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <Link
+            href="/forgot-password"
+            className="text-xs hover:underline"
+            style={{ color: '#4aa87a' }}
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
 
         <p className="mt-6 text-center text-[11px] text-slate-400">
           Acceso exclusivo para el equipo de la agencia
