@@ -1,5 +1,5 @@
 export type TemplateCategory = 'SEO Comercial' | 'SEO Informativo' | 'Conversión Directa' | 'Optimización GEO';
-export type TemplatePropuesta = 'comparativa' | 'guia' | 'tutorial' | 'tips' | 'tendencias' | 'caso';
+export type TemplatePropuesta = 'comparison' | 'guide' | 'tutorial' | 'tips' | 'trends' | 'case_study';
 
 export interface Template {
   id: string;
