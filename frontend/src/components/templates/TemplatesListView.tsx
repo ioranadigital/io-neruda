@@ -814,7 +814,7 @@ export default function TemplatesListView() {
           <p className="text-xs" style={{ color: '#666' }}>
             <strong>Gestión de Paso 1:</strong> Usa los botones verdes/grises en cada plantilla para
             controlar cuáles aparecen en el Paso 1 del generador. Solo las plantillas marcadas como
-            "Visible en Paso 1" estarán disponibles para los usuarios.
+            &quot;Visible en Paso 1&quot; estarán disponibles para los usuarios.
           </p>
         </div>
 
