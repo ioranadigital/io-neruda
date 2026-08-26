@@ -75,20 +75,57 @@ function findColumn(row: Record<string, unknown>, aliases: string[]): string | n
 export default function KeywordsImportExport({ clientName, onImport }: KeywordsImportExportProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Descarga plantilla en formato largo: una fila por keyword, sin límite,
+  // Descarga plantilla con estructura completa (keyword_limpia, NIVEL, SUBNIVEL, etc.)
   // más una hoja de referencia con los 17 subniveles válidos.
   const downloadTemplate = () => {
     try {
       const wb = XLSX.utils.book_new();
 
+      // Estructura completa idéntica a keywords-base-analisis.xlsx
       const exampleRows = [
-        { keyword: 'barbacoas weber', subnivel: 'Fabricantes / Marcas de Terceros' },
-        { keyword: 'cómo elegir barbacoa de gas', subnivel: 'Educacionales / How-to' },
-        { keyword: 'barbacoa gas vs carbón', subnivel: 'Comparativas (Vs)' },
-        { keyword: 'dónde comprar recambios weber', subnivel: 'Long-Tail Transaccional Oculta' },
+        {
+          keyword_limpia: 'barbacoas weber',
+          NIVEL: 'Nivel 1',
+          SUBNIVEL: 'Fabricantes / Marcas de Terceros',
+          'BUYER PERSONA': 'Propietario vivienda unifamiliar',
+          'Intención / Pain Point': 'Búsqueda de marca específica',
+          ESTADO: 'Activa'
+        },
+        {
+          keyword_limpia: 'cómo elegir barbacoa de gas',
+          NIVEL: 'Nivel 3',
+          SUBNIVEL: 'Educacionales / How-to',
+          'BUYER PERSONA': 'Comprador indeciso',
+          'Intención / Pain Point': 'Necesita guía de selección',
+          ESTADO: 'Activa'
+        },
+        {
+          keyword_limpia: 'barbacoa gas vs carbón',
+          NIVEL: 'Nivel 4',
+          SUBNIVEL: 'Comparativas (Vs)',
+          'BUYER PERSONA': 'Comprador indeciso',
+          'Intención / Pain Point': 'Comparar opciones',
+          ESTADO: 'Activa'
+        },
+        {
+          keyword_limpia: 'dónde comprar recambios weber',
+          NIVEL: 'Nivel 5',
+          SUBNIVEL: 'Long-Tail Transaccional Oculta',
+          'BUYER PERSONA': 'Cliente actual',
+          'Intención / Pain Point': 'Compra de accesorios',
+          ESTADO: 'Activa'
+        },
       ];
-      const wsKeywords = XLSX.utils.json_to_sheet(exampleRows, { header: ['keyword', 'subnivel'] });
-      wsKeywords['!cols'] = [{ wch: 45 }, { wch: 38 }];
+
+      const wsKeywords = XLSX.utils.json_to_sheet(exampleRows);
+      wsKeywords['!cols'] = [
+        { wch: 30 },  // keyword_limpia
+        { wch: 15 },  // NIVEL
+        { wch: 35 },  // SUBNIVEL
+        { wch: 30 },  // BUYER PERSONA
+        { wch: 30 },  // Intención / Pain Point
+        { wch: 12 },  // ESTADO
+      ];
       XLSX.utils.book_append_sheet(wb, wsKeywords, 'Keywords');
 
       const wsSubniveles = XLSX.utils.json_to_sheet(SUBNIVEL_REFERENCE);
@@ -96,6 +133,7 @@ export default function KeywordsImportExport({ clientName, onImport }: KeywordsI
       XLSX.utils.book_append_sheet(wb, wsSubniveles, 'Subniveles');
 
       XLSX.writeFile(wb, `keywords_template_${clientName}.xlsx`);
+      showToast.success('Plantilla descargada con estructura completa');
     } catch (error) {
       console.error('❌ Error generating template:', error);
       showToast.error('Error al descargar la plantilla');

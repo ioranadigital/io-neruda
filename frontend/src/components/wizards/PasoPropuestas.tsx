@@ -105,25 +105,25 @@ export default function PasoPropuestas({
 
   return (
     <div className="w-full space-y-6 px-4 py-6">
-      {/* Banner si viene de plantilla */}
+      {/* Banner prominente si viene de plantilla */}
       {selectedTemplate && (
         <div
-          className="flex items-start gap-3 px-5 py-4 rounded-lg border-l-4"
+          className="flex items-start gap-3 px-6 py-4 rounded-xl border-2 shadow-sm"
           style={{
-            backgroundColor: '#f0fdff',
-            borderColor: '#06b6d4',
+            backgroundColor: selectedTemplate.colorBadge + '15',
+            borderColor: selectedTemplate.colorBadge,
           }}
         >
-          <CheckCircle size={18} style={{ color: '#0891b2', flexShrink: 0 }} className="mt-0.5" />
-          <div>
-            <p className="text-sm font-semibold" style={{ color: '#0e7490' }}>
-              Plantilla seleccionada
+          <CheckCircle size={20} style={{ color: selectedTemplate.colorBadge, flexShrink: 0 }} className="mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-bold text-slate-900">
+              ✓ Plantilla elegida
             </p>
-            <p className="text-xs mt-0.5" style={{ color: '#0c6b7d' }}>
-              Usarás la estructura de <strong>{selectedTemplate.nombre}</strong>
+            <p className="text-sm mt-1 font-semibold" style={{ color: selectedTemplate.colorBadge }}>
+              {selectedTemplate.nombre}
             </p>
-            <p className="text-xs mt-1 text-slate-600">
-              ¿Quieres cambiarla? Selecciona otra plantilla a continuación.
+            <p className="text-xs mt-2 text-slate-600">
+              Esta estructura guiará tu contenido. Puedes <strong>cambiar de idea</strong> seleccionando otra plantilla abajo.
             </p>
           </div>
         </div>
@@ -154,32 +154,38 @@ export default function PasoPropuestas({
                         className="relative text-left p-2 rounded-lg border-2 transition-all hover:shadow-md group"
                         style={{
                           borderColor: isSelected ? template.colorBadge : template.colorBadge + '30',
-                          backgroundColor: isSelected ? template.colorBadge + '20' : template.colorBadge + '05',
+                          backgroundColor: isSelected ? template.colorBadge + '30' : template.colorBadge + '08',
+                          fontWeight: isSelected ? '600' : 'normal',
                         }}
                         onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.borderColor = template.colorBadge;
-                          (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 4px 12px ${template.colorBadge}20`;
+                          if (!isSelected) {
+                            (e.currentTarget as HTMLButtonElement).style.borderColor = template.colorBadge;
+                          }
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 4px 12px ${template.colorBadge}30`;
                         }}
                         onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.borderColor =
-                            isSelected ? template.colorBadge : template.colorBadge + '30';
+                          if (!isSelected) {
+                            (e.currentTarget as HTMLButtonElement).style.borderColor = template.colorBadge + '30';
+                          }
                           (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
                         }}
                       >
-                        {/* Checkmark si está seleccionada */}
+                        {/* Checkmark si está seleccionada - más visible */}
                         {isSelected && (
-                          <div className="absolute top-1 right-1">
-                            <CheckCircle size={16} style={{ color: template.colorBadge }} />
+                          <div className="absolute -top-2 -right-2 z-10">
+                            <div className="flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: template.colorBadge }}>
+                              <CheckCircle size={16} className="text-white" />
+                            </div>
                           </div>
                         )}
 
                         {/* Nombre compacto */}
-                        <h4 className="font-bold text-xs text-slate-900 leading-tight pr-4">
+                        <h4 className={`font-bold text-xs leading-tight pr-4 ${isSelected ? 'text-slate-900' : 'text-slate-700'}`}>
                           {template.nombre}
                         </h4>
 
                         {/* Subcategoría pequeña */}
-                        <p className="text-[10px] text-slate-500 mt-1 leading-tight">
+                        <p className={`text-[10px] mt-1 leading-tight ${isSelected ? 'text-slate-600 font-semibold' : 'text-slate-500'}`}>
                           {template.subcategoria}
                         </p>
 
