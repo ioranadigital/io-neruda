@@ -386,13 +386,14 @@ export default function GeneratorPanel() {
       const injectedFormData = applyTemplateInjection(formData);
       setFormData(injectedFormData);
 
-      // Stay in PASO 0 so user can confirm client selection
-      setCurrentStep(0);
-
-      // Show success notification
-      showToast.success('🏭 Plantilla inyectada. Selecciona un cliente para continuar');
+      // Only stay in PASO 0 if we're not coming from a direct step progression
+      // If user already selected client and we're advancing, don't reset
+      if (currentStep === 0) {
+        // Show success notification only if still in Paso 0
+        showToast.success('🏭 Plantilla inyectada. Selecciona un cliente para continuar');
+      }
     }
-  }, [isFromTemplate, selectedClient]);
+  }, [isFromTemplate, templateData, selectedClient, currentStep]);
 
   // Validación por paso
   const getStepValidation = (step: number): boolean => {
