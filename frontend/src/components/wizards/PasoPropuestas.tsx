@@ -73,11 +73,17 @@ export default function PasoPropuestas({
     'trends': 'Tendencias & Futuro',
   };
 
-  // Encontrar plantilla elegida en Paso 1 (DEBE estar antes de cualquier condicional)
+  // Encontrar plantilla elegida (desde Paso 1 o cambios en Paso 4)
   const selectedTemplate = useMemo(() => {
+    // Primero checkear cambios en Paso 4 (formData.templateId)
+    const templateIdFromForm = (formData as any).templateId;
+    if (templateIdFromForm) {
+      return MASTER_TEMPLATES.find(t => t.id === templateIdFromForm);
+    }
+    // Luego checkear inyección original de Paso 1
     if (!templateInjection?.templateId) return null;
     return MASTER_TEMPLATES.find(t => t.id === templateInjection.templateId);
-  }, [templateInjection]);
+  }, [templateInjection, formData]);
 
   if (!selectedClient) {
     return (
@@ -137,55 +143,49 @@ export default function PasoPropuestas({
                 <h3 className="text-sm font-bold text-slate-900 pl-1 border-l-4" style={{ borderColor: '#4aa87a' }}>
                   {propuestaLabels[propuestaType]}
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {templatesByPropuesta.map((template) => {
                     const isSelected = selectedTemplate?.id === template.id;
                     return (
                       <button
                         key={template.id}
                         onClick={() => handleUseTemplate(template)}
-                        className="text-left p-4 rounded-lg border-2 transition-all hover:shadow-md"
+                        title={`${template.nombre}\n${template.descripcion}`}
+                        className="relative text-left p-2 rounded-lg border-2 transition-all hover:shadow-md group"
                         style={{
-                          borderColor: isSelected ? template.colorBadge : template.colorBadge + '40',
-                          backgroundColor: isSelected ? template.colorBadge + '15' : template.colorBadge + '08',
+                          borderColor: isSelected ? template.colorBadge : template.colorBadge + '30',
+                          backgroundColor: isSelected ? template.colorBadge + '20' : template.colorBadge + '05',
                         }}
                         onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.borderColor =
-                            template.colorBadge + '80';
+                          (e.currentTarget as HTMLButtonElement).style.borderColor = template.colorBadge;
                           (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 4px 12px ${template.colorBadge}20`;
                         }}
                         onMouseLeave={(e) => {
                           (e.currentTarget as HTMLButtonElement).style.borderColor =
-                            isSelected ? template.colorBadge : template.colorBadge + '40';
+                            isSelected ? template.colorBadge : template.colorBadge + '30';
                           (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
                         }}
                       >
-                        {/* Header */}
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1">
-                            <p className="text-xs font-semibold mb-1" style={{ color: template.colorBadge }}>
-                              🏷️ {template.categoria}
-                            </p>
-                            <h3 className="font-bold text-sm text-slate-900">{template.nombre}</h3>
+                        {/* Checkmark si está seleccionada */}
+                        {isSelected && (
+                          <div className="absolute top-1 right-1">
+                            <CheckCircle size={16} style={{ color: template.colorBadge }} />
                           </div>
-                          {isSelected && (
-                            <div className="ml-2 flex-shrink-0">
-                              <CheckCircle size={20} style={{ color: template.colorBadge }} />
-                            </div>
-                          )}
-                        </div>
+                        )}
 
-                        {/* Subcategoría */}
-                        <p className="text-xs text-slate-500 mb-2">→ {template.subcategoria}</p>
+                        {/* Nombre compacto */}
+                        <h4 className="font-bold text-xs text-slate-900 leading-tight pr-4">
+                          {template.nombre}
+                        </h4>
 
-                        {/* Description */}
-                        <p className="text-xs text-slate-600 mb-3 line-clamp-2">{template.descripcion}</p>
+                        {/* Subcategoría pequeña */}
+                        <p className="text-[10px] text-slate-500 mt-1 leading-tight">
+                          {template.subcategoria}
+                        </p>
 
-                        {/* Footer - CTA */}
-                        <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: template.colorBadge }}>
-                          <Sparkles size={13} />
-                          {isSelected ? 'Seleccionada' : 'Usar este molde'}
-                          <ArrowRight size={12} />
+                        {/* Tooltip en hover (descripción) */}
+                        <div className="invisible group-hover:visible absolute left-0 bottom-full mb-2 bg-slate-900 text-white text-xs p-2 rounded max-w-xs z-50 pointer-events-none">
+                          {template.descripcion}
                         </div>
                       </button>
                     );
